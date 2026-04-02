@@ -1,0 +1,5 @@
+{
+  "name": "AgriPresyo Mobile",
+  "description": "Philippine agricultural market price monitoring PWA with real-time analytics and budget tools.",
+  "requestFramePermissions": []
+}
