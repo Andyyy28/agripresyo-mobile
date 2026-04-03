@@ -1,4 +1,17 @@
-import { Commodity, Announcement } from '../types';
+import { Commodity, Announcement, Vendor } from '../types';
+
+function generatePriceHistory(basePrice: number, volatility: number = 0.08): number[] {
+  const points: number[] = [];
+  let price = basePrice * (1 - volatility * 2);
+  for (let i = 0; i < 30; i++) {
+    const change = (Math.random() - 0.45) * basePrice * volatility;
+    price = Math.max(basePrice * 0.7, Math.min(basePrice * 1.3, price + change));
+    points.push(Math.round(price * 100) / 100);
+  }
+  // Ensure the last point is close to current price
+  points[29] = basePrice;
+  return points;
+}
 
 export const commodities: Commodity[] = [
   {
@@ -11,7 +24,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [80, 82, 81, 84, 83, 85],
-    emoji: '🍍'
+    emoji: '🍍',
+    unitWeight: 1.5,
+    priceHistory: generatePriceHistory(85)
   },
   {
     id: '2',
@@ -23,7 +38,9 @@ export const commodities: Commodity[] = [
     isInSeason: false,
     availability: 'Off Season',
     sparklineData: [135, 130, 128, 125, 122, 120],
-    emoji: '🍉'
+    emoji: '🍉',
+    unitWeight: 4.0,
+    priceHistory: generatePriceHistory(120)
   },
   {
     id: '3',
@@ -35,7 +52,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [420, 430, 425, 440, 445, 450],
-    emoji: '🍓'
+    emoji: '🍓',
+    unitWeight: 0.25,
+    priceHistory: generatePriceHistory(450)
   },
   {
     id: '4',
@@ -47,7 +66,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [175, 178, 176, 179, 182, 180],
-    emoji: '🥑'
+    emoji: '🥑',
+    unitWeight: 0.3,
+    priceHistory: generatePriceHistory(180)
   },
   {
     id: '5',
@@ -59,7 +80,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [155, 153, 154, 152, 151, 150],
-    emoji: '🍊'
+    emoji: '🍊',
+    unitWeight: 1.2,
+    priceHistory: generatePriceHistory(150)
   },
   {
     id: '6',
@@ -71,7 +94,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [200, 210, 205, 215, 218, 220],
-    emoji: '🥭'
+    emoji: '🥭',
+    unitWeight: 0.35,
+    priceHistory: generatePriceHistory(220)
   },
   {
     id: '7',
@@ -83,7 +108,9 @@ export const commodities: Commodity[] = [
     isInSeason: false,
     availability: 'Low Stock',
     sparklineData: [550, 570, 560, 580, 590, 600],
-    emoji: '🌶️'
+    emoji: '🌶️',
+    unitWeight: 0.1,
+    priceHistory: generatePriceHistory(600)
   },
   {
     id: '8',
@@ -95,7 +122,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [190, 185, 188, 184, 182, 180],
-    emoji: '🧅'
+    emoji: '🧅',
+    unitWeight: 0.15,
+    priceHistory: generatePriceHistory(180)
   },
   {
     id: '9',
@@ -107,7 +136,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [115, 118, 116, 119, 121, 120],
-    emoji: '🫚'
+    emoji: '🫚',
+    unitWeight: 0.2,
+    priceHistory: generatePriceHistory(120)
   },
   {
     id: '10',
@@ -119,7 +150,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [100, 98, 99, 97, 96, 95],
-    emoji: '🥔'
+    emoji: '🥔',
+    unitWeight: 0.3,
+    priceHistory: generatePriceHistory(95)
   },
   {
     id: '11',
@@ -131,7 +164,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [75, 78, 76, 79, 81, 80],
-    emoji: '🥕'
+    emoji: '🥕',
+    unitWeight: 0.25,
+    priceHistory: generatePriceHistory(80)
   },
   {
     id: '12',
@@ -143,7 +178,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [65, 63, 64, 62, 61, 60],
-    emoji: '🥬'
+    emoji: '🥬',
+    unitWeight: 0.5,
+    priceHistory: generatePriceHistory(60)
   },
   {
     id: '13',
@@ -155,7 +192,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [68, 70, 69, 71, 72, 70],
-    emoji: '🫛'
+    emoji: '🫛',
+    unitWeight: 0.3,
+    priceHistory: generatePriceHistory(70)
   },
   {
     id: '14',
@@ -167,7 +206,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [120, 115, 118, 114, 112, 110],
-    emoji: '🍅'
+    emoji: '🍅',
+    unitWeight: 0.2,
+    priceHistory: generatePriceHistory(110)
   },
   {
     id: '15',
@@ -179,7 +220,9 @@ export const commodities: Commodity[] = [
     isInSeason: true,
     availability: 'In Season',
     sparklineData: [45, 48, 46, 49, 51, 50],
-    emoji: '🥒'
+    emoji: '🥒',
+    unitWeight: 0.15,
+    priceHistory: generatePriceHistory(50)
   }
 ];
 
@@ -197,3 +240,43 @@ export const announcements: Announcement[] = [
     content: 'Local government is offering seed subsidies for vegetable farmers in the region. Visit the market office for details.'
   }
 ];
+
+const vendorColors = ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+
+export function getVendorsForCommodity(commodity: Commodity): Vendor[] {
+  const vendorNames = [
+    { name: "NANAY CORING'S TROPICALS", initial: 'N' },
+    { name: "MANG TOMAS FARM GOODS", initial: 'M' },
+    { name: "ATE LOURDES PRODUCE", initial: 'A' },
+    { name: "KUYA BERT'S HARVEST", initial: 'K' },
+    { name: "ALING NENA'S GARDEN", initial: 'A' },
+    { name: "TATAY DOMING AGRI", initial: 'T' },
+    { name: "INAY ROSA'S FRESH PICKS", initial: 'I' },
+    { name: "DON PEPE FARMS", initial: 'D' },
+  ];
+
+  // Use commodity id as seed for consistent vendor selection
+  const seed = parseInt(commodity.id);
+  const selectedVendors = [];
+
+  for (let i = 0; i < 4; i++) {
+    const vendorIndex = (seed + i * 3) % vendorNames.length;
+    const vendor = vendorNames[vendorIndex];
+    // Price varies ±15% from base price
+    const priceVariation = 0.85 + (((seed * (i + 1) * 7) % 30) / 100);
+    const price = Math.round(commodity.price * priceVariation * 100) / 100;
+
+    selectedVendors.push({
+      id: `v-${commodity.id}-${i}`,
+      name: vendor.name,
+      initial: vendor.initial,
+      rating: Math.round((4.0 + ((seed * (i + 1)) % 10) / 10) * 10) / 10,
+      reviewCount: 10 + ((seed * (i + 2) * 13) % 90),
+      price: price,
+      color: vendorColors[(seed + i) % vendorColors.length],
+    });
+  }
+
+  // Sort by lowest price first
+  return selectedVendors.sort((a, b) => a.price - b.price);
+}

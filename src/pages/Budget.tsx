@@ -1,172 +1,208 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { commodities } from '../data/mockData';
-import { Plus, Trash2, Calculator, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Calculator, Trash2, Minus, Plus, AlertTriangle, ShoppingBasket } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-
-interface CartItem {
-  id: string;
-  commodityId: string;
-  quantity: number;
-}
+import { useAssets } from '../context/AssetContext';
 
 const Budget: React.FC = () => {
-  const [selectedCommodityId, setSelectedCommodityId] = useState(commodities[0].id);
-  const [quantity, setQuantity] = useState<number>(1);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const { assets, liquidity, removeAsset, updateQuantity, setLiquidity } = useAssets();
 
-  const selectedCommodity = useMemo(() => 
-    commodities.find(c => c.id === selectedCommodityId)!, 
-  [selectedCommodityId]);
+  const assetDetails = useMemo(() =>
+    assets.map(asset => {
+      const commodity = commodities.find(c => c.id === asset.commodityId)!;
+      const totalKg = asset.quantity * commodity.unitWeight;
+      const totalPrice = totalKg * commodity.price;
+      return { ...asset, commodity, totalKg, totalPrice };
+    }),
+    [assets]
+  );
 
-  const currentCost = useMemo(() => 
-    selectedCommodity.price * quantity, 
-  [selectedCommodity, quantity]);
+  const totalKg = useMemo(() =>
+    assetDetails.reduce((sum, a) => sum + a.totalKg, 0),
+    [assetDetails]
+  );
 
-  const addToCart = () => {
-    const newItem: CartItem = {
-      id: Math.random().toString(36).substr(2, 9),
-      commodityId: selectedCommodityId,
-      quantity: quantity
-    };
-    setCart([...cart, newItem]);
-    setQuantity(1);
+  const totalCost = useMemo(() =>
+    assetDetails.reduce((sum, a) => sum + a.totalPrice, 0),
+    [assetDetails]
+  );
+
+  const liquidityPercent = useMemo(() =>
+    liquidity > 0 ? (totalCost / liquidity) * 100 : 0,
+    [totalCost, liquidity]
+  );
+
+  const getBarColor = () => {
+    if (liquidityPercent >= 100) return '#ef4444';
+    if (liquidityPercent > 80) return '#f59e0b';
+    return '#22c55e';
   };
 
-  const removeFromCart = (id: string) => {
-    setCart(cart.filter(item => item.id !== id));
+  const handleLiquidityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^0-9]/g, '');
+    setLiquidity(parseInt(val) || 0);
   };
-
-  const totalCost = useMemo(() => 
-    cart.reduce((total, item) => {
-      const commodity = commodities.find(c => c.id === item.commodityId)!;
-      return total + (commodity.price * item.quantity);
-    }, 0), 
-  [cart]);
 
   return (
-    <div className="px-5 py-6 flex flex-col gap-8">
+    <div className="px-5 py-6 flex flex-col gap-6">
+      {/* Header */}
       <header>
-        <h1 className="text-2xl font-bold mb-2">Budget Estimator</h1>
-        <p className="text-gray-500 text-sm">Plan your market trip with real-time prices.</p>
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-9 h-9 bg-[#22c55e]/15 rounded-xl flex items-center justify-center">
+            <Calculator size={20} className="text-[#22c55e]" />
+          </div>
+          <h1 className="text-xl font-black">Smart Asset Projection</h1>
+        </div>
+        <p className="text-gray-500 text-xs ml-12">Auto-calculating unit weight vs market index values</p>
       </header>
 
-      {/* Estimator Form */}
-      <section className="bg-[#141418] rounded-2xl border border-[#1f1f23] p-6 flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Commodity</label>
-          <select
-            value={selectedCommodityId}
-            onChange={(e) => setSelectedCommodityId(e.target.value)}
-            className="w-full bg-[#1a1a1e] border border-[#2a2a2e] rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-[#22c55e] transition-colors"
-          >
-            {commodities.map(c => (
-              <option key={c.id} value={c.id}>{c.emoji} {c.name} - ₱{c.price}/kg</option>
-            ))}
-          </select>
+      {/* Liquidity Input */}
+      <div className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4 flex items-center justify-between">
+        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Liquidity</p>
+        <div className="flex items-center gap-1 bg-[#1a1a1e] rounded-lg border border-[#2a2a2e] px-3 py-2">
+          <span className="text-[#22c55e] font-black text-sm">₱</span>
+          <input
+            type="text"
+            value={liquidity}
+            onChange={handleLiquidityChange}
+            className="bg-transparent text-white font-black text-sm w-20 text-right focus:outline-none"
+          />
         </div>
+      </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Quantity (kg)</label>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="w-12 h-12 bg-[#1a1a1e] border border-[#2a2a2e] rounded-xl flex items-center justify-center text-xl font-bold hover:bg-[#22c55e] hover:text-black transition-all"
+      {/* Asset List */}
+      <div className="flex flex-col gap-3">
+        <AnimatePresence mode="popLayout">
+          {assets.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col items-center justify-center py-16 gap-4"
             >
-              -
-            </button>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-              className="flex-1 bg-[#1a1a1e] border border-[#2a2a2e] rounded-xl py-3 px-4 text-center text-xl font-bold focus:outline-none focus:border-[#22c55e]"
-            />
-            <button 
-              onClick={() => setQuantity(quantity + 1)}
-              className="w-12 h-12 bg-[#1a1a1e] border border-[#2a2a2e] rounded-xl flex items-center justify-center text-xl font-bold hover:bg-[#22c55e] hover:text-black transition-all"
-            >
-              +
-            </button>
-          </div>
-        </div>
-
-        <div className="pt-4 border-t border-[#1f1f23] flex justify-between items-end">
-          <div>
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Estimated Cost</p>
-            <p className="text-3xl font-bold text-[#22c55e]">₱{currentCost.toLocaleString()}</p>
-          </div>
-          <button 
-            onClick={addToCart}
-            className="bg-[#22c55e] text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-105 transition-transform active:scale-95"
-          >
-            <Plus size={20} />
-            Add to List
-          </button>
-        </div>
-      </section>
-
-      {/* Shopping List */}
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 mb-2">
-          <ShoppingBag size={20} className="text-[#22c55e]" />
-          <h2 className="text-lg font-bold">Shopping List</h2>
-          <span className="ml-auto text-xs font-bold text-gray-500 uppercase">{cart.length} Items</span>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <AnimatePresence mode="popLayout">
-            {cart.length === 0 ? (
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-10 text-gray-600 text-sm italic"
+              <div className="w-16 h-16 bg-[#141418] rounded-2xl flex items-center justify-center border border-[#1f1f23]">
+                <ShoppingBasket size={28} className="text-gray-600" />
+              </div>
+              <p className="text-center text-gray-600 text-sm max-w-[250px] leading-relaxed">
+                No active trades. Select produce from market to begin.
+              </p>
+            </motion.div>
+          ) : (
+            assetDetails.map((asset) => (
+              <motion.div
+                key={asset.commodityId}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                layout
+                className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4"
               >
-                Your list is empty. Start adding items!
-              </motion.p>
-            ) : (
-              cart.map((item) => {
-                const commodity = commodities.find(c => c.id === item.commodityId)!;
-                return (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4 flex items-center gap-4"
-                  >
-                    <span className="text-2xl">{commodity.emoji}</span>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-sm">{commodity.name}</h4>
-                      <p className="text-xs text-gray-500">{item.quantity}kg × ₱{commodity.price}</p>
+                <div className="flex items-center gap-3">
+                  {/* Emoji */}
+                  <div className="w-11 h-11 bg-[#1a1a1e] rounded-xl flex items-center justify-center text-2xl border border-[#2a2a2e] shrink-0">
+                    {asset.commodity.emoji}
+                  </div>
+
+                  {/* Name & Weight */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-white truncate">{asset.commodity.name}</p>
+                    <p className="text-[9px] font-black text-[#22c55e] uppercase tracking-widest mt-0.5">
+                      {asset.quantity} Units = {asset.totalKg.toFixed(2)}KG
+                    </p>
+                  </div>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-0 shrink-0">
+                    <span className="text-[8px] font-black text-[#22c55e] uppercase tracking-widest mr-2 bg-[#22c55e]/10 px-1.5 py-0.5 rounded">QTY</span>
+                    <button
+                      onClick={() => updateQuantity(asset.commodityId, asset.quantity - 1)}
+                      className="w-7 h-7 bg-[#1a1a1e] border border-[#2a2a2e] rounded-l-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2a2a2e] transition-colors active:scale-95"
+                    >
+                      <Minus size={12} />
+                    </button>
+                    <div className="w-8 h-7 bg-[#1a1a1e] border-y border-[#2a2a2e] flex items-center justify-center">
+                      <span className="text-xs font-black text-white">{asset.quantity}</span>
                     </div>
-                    <p className="font-bold">₱{(commodity.price * item.quantity).toLocaleString()}</p>
-                    <button 
-                      onClick={() => removeFromCart(item.id)}
+                    <button
+                      onClick={() => updateQuantity(asset.commodityId, asset.quantity + 1)}
+                      className="w-7 h-7 bg-[#1a1a1e] border border-[#2a2a2e] rounded-r-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2a2a2e] transition-colors active:scale-95"
+                    >
+                      <Plus size={12} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Price Row */}
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#1f1f23]">
+                  <p className="text-[9px] font-bold text-gray-600 uppercase tracking-wider">
+                    {asset.totalKg.toFixed(2)}kg × ₱{asset.commodity.price.toFixed(2)}/kg
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-base font-black text-white">₱{asset.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <button
+                      onClick={() => removeAsset(asset.commodityId)}
                       className="text-gray-600 hover:text-[#ef4444] transition-colors p-1"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={14} />
                     </button>
-                  </motion.div>
-                );
-              })
-            )}
-          </AnimatePresence>
-        </div>
-      </section>
+                  </div>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </AnimatePresence>
+      </div>
 
-      {/* Total Summary */}
-      {cart.length > 0 && (
-        <section className="sticky bottom-4 z-10">
-          <div className="bg-[#22c55e] rounded-2xl p-5 shadow-2xl shadow-[#22c55e]/20 flex justify-between items-center">
-            <div>
-              <p className="text-black/60 text-xs font-bold uppercase tracking-wider mb-1">Total Budget</p>
-              <p className="text-3xl font-black text-black">₱{totalCost.toLocaleString()}</p>
+      {/* Summary Cards */}
+      {assets.length > 0 && (
+        <div className="flex flex-col gap-3 pb-4">
+          {/* Total Projected Commitment */}
+          <div className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4">
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Total Projected Commitment</p>
+            <div className="flex justify-between items-end">
+              <p className="text-gray-500 text-sm font-bold">{totalKg.toFixed(2)}kg</p>
+              <p className="text-2xl font-black text-white">₱{totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
-            <button className="bg-black text-[#22c55e] px-5 py-3 rounded-xl font-bold flex items-center gap-2">
-              Checkout
-              <ArrowRight size={18} />
-            </button>
           </div>
-        </section>
+
+          {/* Inventory Liquidity Used */}
+          <div className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4">
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Inventory Liquidity Used</p>
+            
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-sm font-bold" style={{ color: getBarColor() }}>
+                {liquidityPercent.toFixed(1)}%
+              </p>
+              <p className="text-xs text-gray-500 font-medium">
+                ₱{totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / ₱{liquidity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </p>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full h-2.5 bg-[#1a1a1e] rounded-full overflow-hidden border border-[#2a2a2e]">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ backgroundColor: getBarColor() }}
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.min(liquidityPercent, 100)}%` }}
+                transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+              />
+            </div>
+
+            {/* Over Budget Warning */}
+            {liquidityPercent >= 100 && (
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 mt-3 p-3 bg-[#ef4444]/10 rounded-lg border border-[#ef4444]/20"
+              >
+                <AlertTriangle size={14} className="text-[#ef4444] shrink-0" />
+                <p className="text-[10px] font-black text-[#ef4444] uppercase tracking-wider leading-relaxed">
+                  ⚠️ Warning: Projected cost exceeds available liquidity
+                </p>
+              </motion.div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
