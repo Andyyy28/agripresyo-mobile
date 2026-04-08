@@ -1,11 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Store, CheckCircle, Settings, Bell, Moon, Globe, ChevronRight, LogOut, Shield, MapPin, Package } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
+import { Store, CheckCircle, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, MapPin, Package } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const VendorProfile: React.FC = () => {
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -14,8 +16,8 @@ const VendorProfile: React.FC = () => {
   };
 
   const stallInfo = {
-    name: "Mang Juan's Fresh",
-    location: 'Stall #42-B • Main Market',
+    name: user?.shopName || "Mang Juan's Fresh",
+    location: user?.marketLocation ? `${user.marketLocation} Market` : 'Stall #42-B • Main Market',
     verified: true,
   };
 
@@ -29,37 +31,37 @@ const VendorProfile: React.FC = () => {
   ];
 
   const settingsItems = [
-    { icon: Bell, label: 'Notifications', value: 'On', color: '#22c55e' },
-    { icon: Moon, label: 'Dark Mode', value: 'Always', color: '#8b5cf6' },
-    { icon: Globe, label: 'Language', value: 'English', color: '#3b82f6' },
-    { icon: Shield, label: 'Privacy', value: '', color: '#f59e0b' },
+    { icon: Bell, label: 'Notifications', value: 'On', color: '#22c55e', onClick: () => {} },
+    { icon: isDark ? Moon : Sun, label: 'Dark Mode', value: isDark ? 'On' : 'Off', color: '#8b5cf6', onClick: toggleTheme },
+    { icon: Globe, label: 'Language', value: 'English', color: '#3b82f6', onClick: () => {} },
+    { icon: Shield, label: 'Privacy', value: '', color: '#f59e0b', onClick: () => {} },
   ];
 
   return (
     <div className="px-5 py-6 flex flex-col gap-6">
       <header>
-        <h1 className="text-2xl font-black mb-6">Profile</h1>
+        <h1 className={`text-2xl font-black mb-6 ${isDark ? 'text-white' : 'text-[#111827]'}`}>Profile</h1>
 
         {/* Vendor Profile Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-[#141418] to-[#1a1a20] rounded-2xl border border-[#1f1f23] p-6 relative overflow-hidden"
+          className={`rounded-2xl border p-6 relative overflow-hidden ${
+            isDark ? 'bg-gradient-to-br from-[#141418] to-[#1a1a20] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+          }`}
         >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#22c55e]/5 rounded-full blur-3xl" />
-          
+          <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl ${isDark ? 'bg-[#22c55e]/5' : 'bg-[#22c55e]/10'}`} />
+
           <div className="flex items-center gap-4 relative z-10 mb-4">
             <div className="w-16 h-16 bg-[#22c55e]/10 rounded-2xl flex items-center justify-center text-[#22c55e] border border-[#22c55e]/20">
               <Store size={32} />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-lg font-black">{stallInfo.name}</h2>
-                {stallInfo.verified && (
-                  <CheckCircle size={16} className="text-[#22c55e]" />
-                )}
+                <h2 className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{stallInfo.name}</h2>
+                {stallInfo.verified && (<CheckCircle size={16} className="text-[#22c55e]" />)}
               </div>
-              <div className="flex items-center gap-1.5 text-gray-500 text-sm">
+              <div className={`flex items-center gap-1.5 text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
                 <MapPin size={12} />
                 <p>{stallInfo.location}</p>
               </div>
@@ -80,36 +82,34 @@ const VendorProfile: React.FC = () => {
       </header>
 
       {/* Account Info */}
-      <section className="bg-[#141418] rounded-2xl border border-[#1f1f23] p-5">
-        <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Account</h3>
+      <section className={`rounded-2xl border p-5 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
+        <h3 className={`text-xs font-black uppercase tracking-widest mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Account</h3>
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Name</span>
-            <span className="font-semibold">{user?.name || 'Vendor'}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Email</span>
-            <span className="font-semibold">{user?.email || 'vendor@email.com'}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Member Since</span>
-            <span className="font-semibold">Jan 2026</span>
-          </div>
+          {[
+            { label: 'Name', value: user?.name || 'Vendor' },
+            { label: 'Email', value: user?.email || 'vendor@email.com' },
+            { label: 'Member Since', value: 'Jan 2026' },
+          ].map(item => (
+            <div key={item.label} className="flex justify-between text-sm">
+              <span className={isDark ? 'text-gray-500' : 'text-gray-400'}>{item.label}</span>
+              <span className={`font-semibold ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.value}</span>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Commodities Sold */}
       <section className="flex flex-col gap-3">
-        <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest px-1 flex items-center gap-2">
+        <h3 className={`text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
           <Package size={12} />
           Commodities Sold
         </h3>
-        <div className="bg-[#141418] rounded-2xl border border-[#1f1f23] p-4">
+        <div className={`rounded-2xl border p-4 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
           <div className="flex flex-wrap gap-2">
             {commoditiesSold.map((item) => (
-              <div key={item.name} className="bg-[#1a1a1e] border border-[#2a2a2e] rounded-lg px-3 py-2 flex items-center gap-2">
+              <div key={item.name} className={`border rounded-lg px-3 py-2 flex items-center gap-2 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb]'}`}>
                 <span className="text-sm">{item.emoji}</span>
-                <span className="text-xs font-bold text-gray-300">{item.name}</span>
+                <span className={`text-xs font-bold ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{item.name}</span>
               </div>
             ))}
           </div>
@@ -118,16 +118,20 @@ const VendorProfile: React.FC = () => {
 
       {/* Settings */}
       <section className="flex flex-col gap-2">
-        <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest px-1 mb-1">Settings</h3>
-        <div className="bg-[#141418] rounded-2xl border border-[#1f1f23] divide-y divide-[#1f1f23] overflow-hidden">
+        <h3 className={`text-xs font-black uppercase tracking-widest px-1 mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Settings</h3>
+        <div className={`rounded-2xl border divide-y overflow-hidden ${isDark ? 'bg-[#141418] border-[#1f1f23] divide-[#1f1f23]' : 'bg-white border-[#e5e7eb] divide-[#e5e7eb]'}`}>
           {settingsItems.map((item) => (
-            <button key={item.label} className="w-full flex items-center gap-4 px-5 py-4 hover:bg-[#1a1a1e] transition-colors text-left">
+            <button
+              key={item.label}
+              onClick={item.onClick}
+              className={`w-full flex items-center gap-4 px-5 py-4 transition-colors text-left ${isDark ? 'hover:bg-[#1a1a1e]' : 'hover:bg-gray-50'}`}
+            >
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${item.color}15`, color: item.color }}>
                 <item.icon size={18} />
               </div>
-              <span className="flex-1 text-sm font-semibold">{item.label}</span>
-              {item.value && <span className="text-gray-500 text-xs font-bold">{item.value}</span>}
-              <ChevronRight size={16} className="text-gray-700" />
+              <span className={`flex-1 text-sm font-semibold ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.label}</span>
+              {item.value && <span className={`text-xs font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{item.value}</span>}
+              <ChevronRight size={16} className={isDark ? 'text-gray-700' : 'text-gray-300'} />
             </button>
           ))}
         </div>
@@ -145,8 +149,8 @@ const VendorProfile: React.FC = () => {
         </button>
       </section>
 
-      <p className="text-center text-gray-700 text-[10px] font-bold uppercase tracking-widest pb-4">
-        AgriPresyo v1.0.0
+      <p className={`text-center text-[10px] font-bold uppercase tracking-widest pb-4 ${isDark ? 'text-gray-700' : 'text-gray-300'}`}>
+        AgriPresyo v2.0.0
       </p>
     </div>
   );

@@ -1,11 +1,22 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type { User, UserRole } from '../types';
+import type { User, UserRole, AuthMethod } from '../types';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string, role: UserRole) => Promise<void>;
+  socialLogin: (user: User) => void;
+  signup: (data: SignupData) => Promise<void>;
   logout: () => void;
+}
+
+export interface SignupData {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  shopName?: string;
+  marketLocation?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,6 +53,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email,
       name: name || 'User',
       role,
+      authMethod: 'email',
+    };
+
+    setUser(newUser);
+  }, []);
+
+  const socialLogin = useCallback((socialUser: User) => {
+    setUser(socialUser);
+  }, []);
+
+  const signup = useCallback(async (data: SignupData) => {
+    // Mock signup — accepts any data
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const newUser: User = {
+      email: data.email,
+      name: data.name,
+      role: data.role,
+      authMethod: 'email',
+      shopName: data.shopName,
+      marketLocation: data.marketLocation,
     };
 
     setUser(newUser);
@@ -52,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, socialLogin, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

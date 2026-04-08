@@ -1,4 +1,4 @@
-import { Commodity, Announcement, Vendor } from '../types';
+import { Commodity, Announcement, Vendor, ShopVendor } from '../types';
 
 function generatePriceHistory(basePrice: number, volatility: number = 0.08): number[] {
   const points: number[] = [];
@@ -13,6 +13,7 @@ function generatePriceHistory(basePrice: number, volatility: number = 0.08): num
   return points;
 }
 
+// Replace images in /public/images/commodities/ with your own JPEG/PNG files
 export const commodities: Commodity[] = [
   {
     id: '1',
@@ -26,7 +27,8 @@ export const commodities: Commodity[] = [
     sparklineData: [80, 82, 81, 84, 83, 85],
     emoji: '🍍',
     unitWeight: 1.5,
-    priceHistory: generatePriceHistory(85)
+    priceHistory: generatePriceHistory(85),
+    image: '/images/commodities/pineapple.jpg',
   },
   {
     id: '2',
@@ -40,7 +42,8 @@ export const commodities: Commodity[] = [
     sparklineData: [135, 130, 128, 125, 122, 120],
     emoji: '🍉',
     unitWeight: 4.0,
-    priceHistory: generatePriceHistory(120)
+    priceHistory: generatePriceHistory(120),
+    image: '/images/commodities/watermelon.jpg',
   },
   {
     id: '3',
@@ -54,7 +57,8 @@ export const commodities: Commodity[] = [
     sparklineData: [420, 430, 425, 440, 445, 450],
     emoji: '🍓',
     unitWeight: 0.25,
-    priceHistory: generatePriceHistory(450)
+    priceHistory: generatePriceHistory(450),
+    image: '/images/commodities/strawberries.jpg',
   },
   {
     id: '4',
@@ -68,7 +72,8 @@ export const commodities: Commodity[] = [
     sparklineData: [175, 178, 176, 179, 182, 180],
     emoji: '🥑',
     unitWeight: 0.3,
-    priceHistory: generatePriceHistory(180)
+    priceHistory: generatePriceHistory(180),
+    image: '/images/commodities/avocado.jpg',
   },
   {
     id: '5',
@@ -82,7 +87,8 @@ export const commodities: Commodity[] = [
     sparklineData: [155, 153, 154, 152, 151, 150],
     emoji: '🍊',
     unitWeight: 1.2,
-    priceHistory: generatePriceHistory(150)
+    priceHistory: generatePriceHistory(150),
+    image: '/images/commodities/pomelo.jpg',
   },
   {
     id: '6',
@@ -96,7 +102,8 @@ export const commodities: Commodity[] = [
     sparklineData: [200, 210, 205, 215, 218, 220],
     emoji: '🥭',
     unitWeight: 0.35,
-    priceHistory: generatePriceHistory(220)
+    priceHistory: generatePriceHistory(220),
+    image: '/images/commodities/mango.jpg',
   },
   {
     id: '7',
@@ -110,7 +117,8 @@ export const commodities: Commodity[] = [
     sparklineData: [550, 570, 560, 580, 590, 600],
     emoji: '🌶️',
     unitWeight: 0.1,
-    priceHistory: generatePriceHistory(600)
+    priceHistory: generatePriceHistory(600),
+    image: '/images/commodities/siling-labuyo.jpg',
   },
   {
     id: '8',
@@ -124,7 +132,8 @@ export const commodities: Commodity[] = [
     sparklineData: [190, 185, 188, 184, 182, 180],
     emoji: '🧅',
     unitWeight: 0.15,
-    priceHistory: generatePriceHistory(180)
+    priceHistory: generatePriceHistory(180),
+    image: '/images/commodities/red-onion.jpg',
   },
   {
     id: '9',
@@ -138,7 +147,8 @@ export const commodities: Commodity[] = [
     sparklineData: [115, 118, 116, 119, 121, 120],
     emoji: '🫚',
     unitWeight: 0.2,
-    priceHistory: generatePriceHistory(120)
+    priceHistory: generatePriceHistory(120),
+    image: '/images/commodities/ginger.jpg',
   },
   {
     id: '10',
@@ -152,7 +162,8 @@ export const commodities: Commodity[] = [
     sparklineData: [100, 98, 99, 97, 96, 95],
     emoji: '🥔',
     unitWeight: 0.3,
-    priceHistory: generatePriceHistory(95)
+    priceHistory: generatePriceHistory(95),
+    image: '/images/commodities/potato.jpg',
   },
   {
     id: '11',
@@ -166,7 +177,8 @@ export const commodities: Commodity[] = [
     sparklineData: [75, 78, 76, 79, 81, 80],
     emoji: '🥕',
     unitWeight: 0.25,
-    priceHistory: generatePriceHistory(80)
+    priceHistory: generatePriceHistory(80),
+    image: '/images/commodities/carrots.jpg',
   },
   {
     id: '12',
@@ -180,7 +192,8 @@ export const commodities: Commodity[] = [
     sparklineData: [65, 63, 64, 62, 61, 60],
     emoji: '🥬',
     unitWeight: 0.5,
-    priceHistory: generatePriceHistory(60)
+    priceHistory: generatePriceHistory(60),
+    image: '/images/commodities/pechay.jpg',
   },
   {
     id: '13',
@@ -194,7 +207,8 @@ export const commodities: Commodity[] = [
     sparklineData: [68, 70, 69, 71, 72, 70],
     emoji: '🫛',
     unitWeight: 0.3,
-    priceHistory: generatePriceHistory(70)
+    priceHistory: generatePriceHistory(70),
+    image: '/images/commodities/sitaw.jpg',
   },
   {
     id: '14',
@@ -208,7 +222,8 @@ export const commodities: Commodity[] = [
     sparklineData: [120, 115, 118, 114, 112, 110],
     emoji: '🍅',
     unitWeight: 0.2,
-    priceHistory: generatePriceHistory(110)
+    priceHistory: generatePriceHistory(110),
+    image: '/images/commodities/tomato.jpg',
   },
   {
     id: '15',
@@ -222,7 +237,8 @@ export const commodities: Commodity[] = [
     sparklineData: [45, 48, 46, 49, 51, 50],
     emoji: '🥒',
     unitWeight: 0.15,
-    priceHistory: generatePriceHistory(50)
+    priceHistory: generatePriceHistory(50),
+    image: '/images/commodities/okra.jpg',
   }
 ];
 
@@ -280,3 +296,103 @@ export function getVendorsForCommodity(commodity: Commodity): Vendor[] {
   // Sort by lowest price first
   return selectedVendors.sort((a, b) => a.price - b.price);
 }
+
+// Mock shop vendor data for the Shops tab
+export const shopVendors: ShopVendor[] = [
+  {
+    id: 'sv-1',
+    name: "Nanay Coring's Tropicals",
+    initial: 'N',
+    rating: 4.9,
+    reviewCount: 42,
+    location: 'Bankerohan',
+    category: 'Fruits',
+    isOpen: true,
+    isNew: true,
+    commodities: ['🥭', '🍍', '🍌', '🍊'],
+  },
+  {
+    id: 'sv-2',
+    name: "Tita Merly's Orchard",
+    initial: 'T',
+    rating: 4.7,
+    reviewCount: 64,
+    location: 'Agdao Market',
+    category: 'Fruits',
+    isOpen: true,
+    isNew: false,
+    commodities: ['🍓', '🥑', '🍇', '🍉'],
+  },
+  {
+    id: 'sv-3',
+    name: "Aling Nena's Prutas",
+    initial: 'A',
+    rating: 4.8,
+    reviewCount: 120,
+    location: 'Uyanguren',
+    category: 'Fruits',
+    isOpen: false,
+    isNew: false,
+    commodities: ['🍍', '🥭', '🍊', '🍋'],
+  },
+  {
+    id: 'sv-4',
+    name: 'Polomolok Fruit Stand',
+    initial: 'P',
+    rating: 4.8,
+    reviewCount: 110,
+    location: 'South Cotabato',
+    category: 'Fruits',
+    isOpen: true,
+    isNew: true,
+    commodities: ['🍌', '🍍', '🥥', '🥭'],
+  },
+  {
+    id: 'sv-5',
+    name: 'Alabel Farmers Market',
+    initial: 'A',
+    rating: 4.9,
+    reviewCount: 342,
+    location: 'Sarangani',
+    category: 'Vegetables',
+    isOpen: true,
+    isNew: false,
+    commodities: ['🥕', '🥬', '🍅', '🫛'],
+  },
+  {
+    id: 'sv-6',
+    name: 'GenSan Market Hub',
+    initial: 'G',
+    rating: 4.8,
+    reviewCount: 120,
+    location: 'General Santos City',
+    category: 'Vegetables',
+    isOpen: true,
+    isNew: true,
+    commodities: ['🧅', '🥔', '🌶️', '🥕'],
+  },
+  {
+    id: 'sv-7',
+    name: 'Cotabato Agri-Trading',
+    initial: 'C',
+    rating: 4.7,
+    reviewCount: 240,
+    location: 'Cotabato City',
+    category: 'Vegetables',
+    isOpen: false,
+    isNew: false,
+    commodities: ['🥬', '🫚', '🧄', '🍅'],
+  },
+  {
+    id: 'sv-8',
+    name: 'Koronadal Fresh Veggies',
+    initial: 'K',
+    rating: 4.6,
+    reviewCount: 85,
+    location: 'Koronadal City',
+    category: 'Vegetables',
+    isOpen: true,
+    isNew: false,
+    commodities: ['🫛', '🥒', '🥬', '🥕'],
+  },
+];

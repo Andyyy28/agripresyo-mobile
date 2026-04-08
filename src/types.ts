@@ -2,10 +2,15 @@ export type Category = 'Fruits' | 'Vegetables' | 'Spices' | 'Roots';
 
 export type UserRole = 'consumer' | 'vendor';
 
+export type AuthMethod = 'email' | 'google' | 'facebook';
+
 export interface User {
   email: string;
   name: string;
   role: UserRole;
+  authMethod: AuthMethod;
+  shopName?: string;
+  marketLocation?: string;
 }
 
 export interface Commodity {
@@ -21,6 +26,8 @@ export interface Commodity {
   emoji: string;
   unitWeight: number; // kg per unit
   priceHistory: number[];
+  // Replace images in /public/images/commodities/ with your own JPEG/PNG files
+  image: string;
 }
 
 export interface Vendor {
@@ -31,6 +38,19 @@ export interface Vendor {
   reviewCount: number;
   price: number;
   color: string;
+}
+
+export interface ShopVendor {
+  id: string;
+  name: string;
+  initial: string;
+  rating: number;
+  reviewCount: number;
+  location: string;
+  category: 'Fruits' | 'Vegetables' | 'Spices';
+  isOpen: boolean;
+  isNew: boolean;
+  commodities: string[]; // emoji list
 }
 
 export interface AssetItem {

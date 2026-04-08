@@ -3,16 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AssetProvider } from './context/AssetContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import Market from './pages/Market';
-import Budget from './pages/Budget';
+import Shops from './pages/Shops';
+import Analytics from './pages/Analytics';
 import ConsumerProfile from './pages/consumer/ConsumerProfile';
 import VendorInventory from './pages/vendor/VendorInventory';
-import VendorNotifications from './pages/vendor/VendorNotifications';
 import VendorProfile from './pages/vendor/VendorProfile';
 
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode; allowedRole?: 'consumer' | 'vendor' }) {
@@ -44,6 +47,16 @@ function AppRoutes() {
         }
       />
 
+      {/* Signup */}
+      <Route
+        path="/signup"
+        element={
+          isAuthenticated
+            ? <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/market'} replace />
+            : <Signup />
+        }
+      />
+
       {/* Consumer Routes */}
       <Route
         path="/market"
@@ -56,11 +69,21 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/budget"
+        path="/shops"
         element={
           <ProtectedRoute allowedRole="consumer">
             <Layout variant="consumer">
-              <Budget />
+              <Shops />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/analytics"
+        element={
+          <ProtectedRoute allowedRole="consumer">
+            <Layout variant="consumer">
+              <Analytics />
             </Layout>
           </ProtectedRoute>
         }
@@ -88,21 +111,21 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/vendor/inventory"
+        path="/vendor/shops"
         element={
           <ProtectedRoute allowedRole="vendor">
             <Layout variant="vendor">
-              <VendorInventory />
+              <Shops />
             </Layout>
           </ProtectedRoute>
         }
       />
       <Route
-        path="/vendor/notifications"
+        path="/vendor/inventory"
         element={
           <ProtectedRoute allowedRole="vendor">
             <Layout variant="vendor">
-              <VendorNotifications />
+              <VendorInventory />
             </Layout>
           </ProtectedRoute>
         }
@@ -127,11 +150,13 @@ function AppRoutes() {
 export default function App() {
   return (
     <Router>
-      <AuthProvider>
-        <AssetProvider>
-          <AppRoutes />
-        </AssetProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AssetProvider>
+            <AppRoutes />
+          </AssetProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }

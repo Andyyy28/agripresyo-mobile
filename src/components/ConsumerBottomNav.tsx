@@ -1,30 +1,39 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ShoppingCart, Wallet, User } from 'lucide-react';
+import { ShoppingCart, Store, BarChart3, User } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useTheme } from '../context/ThemeContext';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 const ConsumerBottomNav: React.FC = () => {
+  const { isDark } = useTheme();
+
   const navItems = [
     { to: '/market', icon: ShoppingCart, label: 'Market' },
-    { to: '/budget', icon: Wallet, label: 'Budget' },
+    { to: '/shops', icon: Store, label: 'Shops' },
+    { to: '/analytics', icon: BarChart3, label: 'Analytics' },
     { to: '/profile', icon: User, label: 'Profile' },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-[#111114]/95 backdrop-blur-xl border-t border-[#1f1f23] px-8 py-3 flex justify-around items-center z-50">
+    <nav className={cn(
+      "fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] backdrop-blur-xl px-6 py-3 flex justify-around items-center z-50 border-t",
+      isDark
+        ? "bg-[#0d0d0d]/95 border-[#1f1f23]"
+        : "bg-white/95 border-[#e5e7eb]"
+    )}>
       {navItems.map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
           className={({ isActive }) =>
             cn(
-              'flex flex-col items-center gap-1 transition-all duration-200 px-4 py-1',
-              isActive ? 'text-[#22c55e]' : 'text-[#71717a]'
+              'flex flex-col items-center gap-1 transition-all duration-200 px-3 py-1',
+              isActive ? 'text-[#22c55e]' : isDark ? 'text-[#71717a]' : 'text-gray-400'
             )
           }
         >
