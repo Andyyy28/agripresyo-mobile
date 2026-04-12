@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ShoppingCart, Store, Package, User } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, BarChart3, User } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useTheme } from '../context/ThemeContext';
@@ -13,9 +13,9 @@ const VendorBottomNav: React.FC = () => {
   const { isDark } = useTheme();
 
   const navItems = [
+    { to: '/vendor/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/vendor/market', icon: ShoppingCart, label: 'Market' },
-    { to: '/vendor/shops', icon: Store, label: 'Shops' },
-    { to: '/vendor/inventory', icon: Package, label: 'Inventory' },
+    { to: '/vendor/analytics', icon: BarChart3, label: 'Analytics' },
     { to: '/vendor/profile', icon: User, label: 'Profile' },
   ];
 

@@ -1,14 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { commodities } from '../data/mockData';
-import { Trophy, Award, BarChart3 } from 'lucide-react';
+import { Trophy, Award, BarChart3, Bell, Sun, Moon } from 'lucide-react';
 import { motion } from 'motion/react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTheme } from '../context/ThemeContext';
+import { useNotifications } from '../context/NotificationContext';
 
 const timeFilters = ['3M', '6M', '1Y', 'ALL'];
 
 const Analytics: React.FC = () => {
-  const { isDark } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
+  const { openPanel, unreadCount } = useNotifications();
   const [activeTimeFilter, setActiveTimeFilter] = useState('1Y');
 
   // Price rankings
@@ -76,9 +78,45 @@ const Analytics: React.FC = () => {
 
   return (
     <div className="px-5 py-6 flex flex-col gap-6">
-      {/* Header */}
+      {/* Header with logo, theme toggle, bell */}
       <header>
-        <h1 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Price Rankings</h1>
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2.5">
+            {/* Replace /public/images/logo.png to update logo globally */}
+            <img
+              src="/images/logo.png"
+              alt="AgriPresyo"
+              className="h-8 w-auto object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            {/* Fallback if logo image is missing */}
+            <div className="hidden">
+              <span className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Agri</span>
+              <span className="text-lg font-black text-[#22c55e]">Presyo</span>
+            </div>
+            <h1 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Price Rankings</h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className={`p-2.5 rounded-xl border transition-colors ${isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-white border-[#e5e7eb] text-gray-500 hover:text-gray-700'}`}
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <button
+              onClick={openPanel}
+              className={`relative p-2.5 rounded-xl border transition-colors ${isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-white border-[#e5e7eb] text-gray-500 hover:text-gray-700'}`}
+            >
+              <Bell size={18} />
+              {unreadCount > 0 && (
+                <span className="absolute top-2 right-2 w-2 h-2 bg-[#ef4444] rounded-full border-2" style={{ borderColor: isDark ? '#141418' : '#ffffff' }}></span>
+              )}
+            </button>
+          </div>
+        </div>
         <p className={`text-xs mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
           See which products are most and least expensive right now
         </p>

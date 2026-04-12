@@ -310,6 +310,7 @@ export const shopVendors: ShopVendor[] = [
     isOpen: true,
     isNew: true,
     commodities: ['🥭', '🍍', '🍌', '🍊'],
+    commodityIds: ['1', '3', '5', '6'], // Pineapple, Strawberries, Pomelo, Mango
   },
   {
     id: 'sv-2',
@@ -322,6 +323,7 @@ export const shopVendors: ShopVendor[] = [
     isOpen: true,
     isNew: false,
     commodities: ['🍓', '🥑', '🍇', '🍉'],
+    commodityIds: ['2', '3', '4', '6'], // Watermelon, Strawberries, Avocado, Mango
   },
   {
     id: 'sv-3',
@@ -334,6 +336,7 @@ export const shopVendors: ShopVendor[] = [
     isOpen: false,
     isNew: false,
     commodities: ['🍍', '🥭', '🍊', '🍋'],
+    commodityIds: ['1', '5', '6'], // Pineapple, Pomelo, Mango
   },
   {
     id: 'sv-4',
@@ -346,6 +349,7 @@ export const shopVendors: ShopVendor[] = [
     isOpen: true,
     isNew: true,
     commodities: ['🍌', '🍍', '🥥', '🥭'],
+    commodityIds: ['1', '4', '6'], // Pineapple, Avocado, Mango
   },
   {
     id: 'sv-5',
@@ -358,6 +362,7 @@ export const shopVendors: ShopVendor[] = [
     isOpen: true,
     isNew: false,
     commodities: ['🥕', '🥬', '🍅', '🫛'],
+    commodityIds: ['11', '12', '13', '14', '15'], // Carrots, Pechay, Sitaw, Tomato, Okra
   },
   {
     id: 'sv-6',
@@ -370,6 +375,7 @@ export const shopVendors: ShopVendor[] = [
     isOpen: true,
     isNew: true,
     commodities: ['🧅', '🥔', '🌶️', '🥕'],
+    commodityIds: ['7', '8', '9', '10', '11', '14'], // Siling, Onion, Ginger, Potato, Carrots, Tomato
   },
   {
     id: 'sv-7',
@@ -382,6 +388,7 @@ export const shopVendors: ShopVendor[] = [
     isOpen: false,
     isNew: false,
     commodities: ['🥬', '🫚', '🧄', '🍅'],
+    commodityIds: ['9', '12', '14', '15'], // Ginger, Pechay, Tomato, Okra
   },
   {
     id: 'sv-8',
@@ -394,5 +401,24 @@ export const shopVendors: ShopVendor[] = [
     isOpen: true,
     isNew: false,
     commodities: ['🫛', '🥒', '🥬', '🥕'],
+    commodityIds: ['11', '12', '13', '15'], // Carrots, Pechay, Sitaw, Okra
   },
 ];
+
+// Get shop vendors that carry a specific commodity, with dynamic pricing
+export function getShopVendorsForCommodity(commodity: Commodity) {
+  const matchingVendors = shopVendors.filter(
+    v => v.commodityIds?.includes(commodity.id)
+  );
+
+  return matchingVendors.map(v => {
+    // Generate a consistent price variation based on vendor + commodity id
+    const seed = parseInt(v.id.replace('sv-', '')) * parseInt(commodity.id);
+    const variation = 0.9 + ((seed * 7) % 20) / 100; // 90% to 110%
+    const price = Math.round(commodity.price * variation * 100) / 100;
+    return {
+      ...v,
+      dynamicPrice: price,
+    };
+  }).sort((a, b) => a.dynamicPrice - b.dynamicPrice);
+}

@@ -186,9 +186,9 @@ const Login: React.FC = () => {
   const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [showFacebookModal, setShowFacebookModal] = useState(false);
 
-  const roles: { value: UserRole; label: string; emoji: string }[] = [
-    { value: 'consumer', label: 'Consumer', emoji: '🛒' },
-    { value: 'vendor', label: 'Vendor', emoji: '🏪' },
+  const roles: { value: UserRole; label: string; emoji: string; description: string }[] = [
+    { value: 'consumer', label: 'Consumer', emoji: '🛒', description: 'See prices and plan what to buy' },
+    { value: 'vendor', label: 'Vendor', emoji: '🏪', description: 'Manage your shop and update prices' },
   ];
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -205,7 +205,7 @@ const Login: React.FC = () => {
       if (selectedRole === 'consumer') {
         navigate('/market', { replace: true });
       } else {
-        navigate('/vendor/market', { replace: true });
+        navigate('/vendor/dashboard', { replace: true });
       }
     } catch {
       setError('Login failed. Please try again.');
@@ -220,10 +220,13 @@ const Login: React.FC = () => {
       email: account.email,
       role: selectedRole,
       authMethod: 'google',
+      shopName: selectedRole === 'vendor' ? `${account.name}'s Shop` : undefined,
+      isVerified: false,
+      verificationStatus: 'none',
     };
     socialLogin(user);
     setShowGoogleModal(false);
-    navigate(selectedRole === 'consumer' ? '/market' : '/vendor/market', { replace: true });
+    navigate(selectedRole === 'consumer' ? '/market' : '/vendor/dashboard', { replace: true });
   };
 
   const handleFacebookConfirm = (profile: { name: string; email: string }) => {
@@ -232,10 +235,13 @@ const Login: React.FC = () => {
       email: profile.email,
       role: selectedRole,
       authMethod: 'facebook',
+      shopName: selectedRole === 'vendor' ? `${profile.name}'s Shop` : undefined,
+      isVerified: false,
+      verificationStatus: 'none',
     };
     socialLogin(user);
     setShowFacebookModal(false);
-    navigate(selectedRole === 'consumer' ? '/market' : '/vendor/market', { replace: true });
+    navigate(selectedRole === 'consumer' ? '/market' : '/vendor/dashboard', { replace: true });
   };
 
   const currentRole = roles.find(r => r.value === selectedRole)!;
@@ -273,25 +279,27 @@ const Login: React.FC = () => {
       </div>
 
       <div className="w-full max-w-[430px] relative flex flex-col min-h-screen px-6 py-10">
-        {/* Logo */}
-        {/* Replace logo.png in /public/images/ to update logo */}
+        {/* Logo — transparent PNG, no background box */}
+        {/* Replace /public/images/logo.png to update logo globally */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center mb-8 mt-4"
         >
-          <div className="w-14 h-14 bg-[#22c55e] rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-[#22c55e]/20">
-            <img
-              src="/images/logo.png"
-              alt="AgriPresyo"
-              className="w-8 h-8 object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-                (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-              }}
-            />
-            <TrendingUp size={28} className="text-black hidden" />
+          <img
+            src="/images/logo.png"
+            alt="AgriPresyo"
+            className="h-16 w-auto object-contain mb-4"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+              (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+          {/* Fallback if logo image is missing */}
+          <div className="hidden mb-4">
+            <span className={`text-3xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Agri</span>
+            <span className="text-3xl font-black text-[#22c55e]">Presyo</span>
           </div>
           <h1 className="text-3xl font-black tracking-tight">
             <span className={isDark ? 'text-white' : 'text-[#111827]'}>Agri</span>
@@ -303,15 +311,12 @@ const Login: React.FC = () => {
         </motion.div>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-5 flex-1">
-          {/* Role Dropdown */}
+          {/* Role Dropdown — no label text above */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.15 }}
           >
-            <p className={`text-[10px] uppercase tracking-widest font-bold px-1 mb-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-              Select Your Role
-            </p>
             <div className="relative">
               <button
                 type="button"
@@ -324,19 +329,23 @@ const Login: React.FC = () => {
               >
                 <span className="flex items-center gap-3">
                   <span className="text-lg">{currentRole.emoji}</span>
-                  <span className={isDark ? 'text-white' : 'text-[#111827]'}>{currentRole.label}</span>
+                  <span className="flex flex-col items-start">
+                    <span className={`font-bold ${isDark ? 'text-white' : 'text-[#111827]'}`}>{currentRole.label}</span>
+                    <span className={`text-[10px] font-normal ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{currentRole.description}</span>
+                  </span>
                 </span>
                 <ChevronDown size={18} className={`transition-transform duration-200 ${isRoleOpen ? 'rotate-180' : ''} ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
               </button>
               <AnimatePresence>
                 {isRoleOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.15 }}
+                    initial={{ opacity: 0, y: -8, scaleY: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                    exit={{ opacity: 0, y: -8, scaleY: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    style={{ transformOrigin: 'top' }}
                     className={`absolute top-full left-0 right-0 mt-1 rounded-xl border overflow-hidden z-20 ${
-                      isDark ? 'bg-[#141418] border-[#22c55e]' : 'bg-white border-[#22c55e]'
+                      isDark ? 'bg-[#141418] border-[#2a2a2e]' : 'bg-white border-[#e5e7eb]'
                     }`}
                   >
                     {roles.map((role) => (
@@ -347,14 +356,17 @@ const Login: React.FC = () => {
                           setSelectedRole(role.value);
                           setIsRoleOpen(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold transition-colors ${
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm transition-colors ${
                           selectedRole === role.value
-                            ? `${isDark ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#dcfce7] text-[#16a34a]'}`
-                            : `${isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'}`
+                            ? `${isDark ? 'bg-[#1a1a1e] border-l-[3px] border-l-[#22c55e]' : 'bg-[#dcfce7] border-l-[3px] border-l-[#22c55e]'}`
+                            : `border-l-[3px] border-l-transparent ${isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'}`
                         }`}
                       >
                         <span className="text-lg">{role.emoji}</span>
-                        <span>{role.label}</span>
+                        <span className="flex flex-col items-start">
+                          <span className={`font-bold ${selectedRole === role.value ? (isDark ? 'text-white' : 'text-[#111827]') : ''}`}>{role.label}</span>
+                          <span className={`text-[10px] font-normal ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{role.description}</span>
+                        </span>
                       </button>
                     ))}
                   </motion.div>

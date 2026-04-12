@@ -8,13 +8,18 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AssetProvider } from './context/AssetContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { WatchlistProvider } from './context/WatchlistContext';
+import { NotificationProvider } from './context/NotificationContext';
+import { InventoryProvider } from './context/InventoryContext';
 import Layout from './components/Layout';
+import NotificationPanel from './components/NotificationPanel';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Market from './pages/Market';
 import Shops from './pages/Shops';
 import Analytics from './pages/Analytics';
 import ConsumerProfile from './pages/consumer/ConsumerProfile';
+import VendorDashboard from './pages/vendor/VendorDashboard';
 import VendorInventory from './pages/vendor/VendorInventory';
 import VendorProfile from './pages/vendor/VendorProfile';
 
@@ -26,7 +31,7 @@ function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode; 
   }
 
   if (allowedRole && user?.role !== allowedRole) {
-    return <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/market'} replace />;
+    return <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/dashboard'} replace />;
   }
 
   return <>{children}</>;
@@ -42,7 +47,7 @@ function AppRoutes() {
         path="/"
         element={
           isAuthenticated
-            ? <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/market'} replace />
+            ? <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/dashboard'} replace />
             : <Login />
         }
       />
@@ -52,7 +57,7 @@ function AppRoutes() {
         path="/signup"
         element={
           isAuthenticated
-            ? <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/market'} replace />
+            ? <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/dashboard'} replace />
             : <Signup />
         }
       />
@@ -101,6 +106,16 @@ function AppRoutes() {
 
       {/* Vendor Routes */}
       <Route
+        path="/vendor/dashboard"
+        element={
+          <ProtectedRoute allowedRole="vendor">
+            <Layout variant="vendor">
+              <VendorDashboard />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/vendor/market"
         element={
           <ProtectedRoute allowedRole="vendor">
@@ -116,6 +131,16 @@ function AppRoutes() {
           <ProtectedRoute allowedRole="vendor">
             <Layout variant="vendor">
               <Shops />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/analytics"
+        element={
+          <ProtectedRoute allowedRole="vendor">
+            <Layout variant="vendor">
+              <Analytics />
             </Layout>
           </ProtectedRoute>
         }
@@ -153,7 +178,14 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <AssetProvider>
-            <AppRoutes />
+            <WatchlistProvider>
+              <NotificationProvider>
+                <InventoryProvider>
+                  <AppRoutes />
+                  <NotificationPanel />
+                </InventoryProvider>
+              </NotificationProvider>
+            </WatchlistProvider>
           </AssetProvider>
         </AuthProvider>
       </ThemeProvider>

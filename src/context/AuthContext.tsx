@@ -8,6 +8,7 @@ interface AuthContextType {
   socialLogin: (user: User) => void;
   signup: (data: SignupData) => Promise<void>;
   logout: () => void;
+  updateUser: (updates: Partial<User>) => void;
 }
 
 export interface SignupData {
@@ -54,13 +55,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       name: name || 'User',
       role,
       authMethod: 'email',
+      isVerified: false,
+      verificationStatus: 'none',
     };
 
     setUser(newUser);
   }, []);
 
   const socialLogin = useCallback((socialUser: User) => {
-    setUser(socialUser);
+    const userWithDefaults: User = {
+      ...socialUser,
+      isVerified: socialUser.isVerified ?? false,
+      verificationStatus: socialUser.verificationStatus ?? 'none',
+      shopName: socialUser.shopName || (socialUser.role === 'vendor' ? `${socialUser.name}'s Shop` : undefined),
+    };
+    setUser(userWithDefaults);
   }, []);
 
   const signup = useCallback(async (data: SignupData) => {
@@ -74,9 +83,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       authMethod: 'email',
       shopName: data.shopName,
       marketLocation: data.marketLocation,
+      isVerified: false,
+      verificationStatus: 'none',
     };
 
     setUser(newUser);
+  }, []);
+
+  const updateUser = useCallback((updates: Partial<User>) => {
+    setUser(prev => prev ? { ...prev, ...updates } : prev);
   }, []);
 
   const logout = useCallback(() => {
@@ -84,7 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, socialLogin, signup, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, socialLogin, signup, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

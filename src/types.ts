@@ -4,6 +4,17 @@ export type UserRole = 'consumer' | 'vendor';
 
 export type AuthMethod = 'email' | 'google' | 'facebook';
 
+export type VerificationStatus = 'none' | 'pending' | 'verified';
+
+export interface ShopProfile {
+  shopName: string;
+  specialty: string;
+  location: string;
+  description: string;
+  openTime: string;
+  closeTime: string;
+}
+
 export interface User {
   email: string;
   name: string;
@@ -11,6 +22,9 @@ export interface User {
   authMethod: AuthMethod;
   shopName?: string;
   marketLocation?: string;
+  isVerified?: boolean;
+  verificationStatus?: VerificationStatus;
+  shopProfile?: ShopProfile;
 }
 
 export interface Commodity {
@@ -51,6 +65,7 @@ export interface ShopVendor {
   isOpen: boolean;
   isNew: boolean;
   commodities: string[]; // emoji list
+  commodityIds?: string[]; // commodity ID mapping for dynamic filtering
 }
 
 export interface AssetItem {

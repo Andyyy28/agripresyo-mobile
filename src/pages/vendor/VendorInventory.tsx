@@ -2,26 +2,12 @@ import React, { useState } from 'react';
 import { Package, AlertCircle, Edit2, Trash2, Plus, Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../../context/ThemeContext';
-
-interface InventoryItem {
-  id: string;
-  name: string;
-  stock: number;
-  price: number;
-  emoji: string;
-}
+import { useInventory } from '../../context/InventoryContext';
+import type { InventoryItem } from '../../context/InventoryContext';
 
 const VendorInventory: React.FC = () => {
   const { isDark } = useTheme();
-
-  const [inventory, setInventory] = useState<InventoryItem[]>([
-    { id: '1', name: 'Carabao Mango', stock: 45, price: 220, emoji: '🥭' },
-    { id: '2', name: 'Pineapple', stock: 8, price: 85, emoji: '🍍' },
-    { id: '3', name: 'Red Onion', stock: 120, price: 180, emoji: '🧅' },
-    { id: '4', name: 'Siling Labuyo', stock: 5, price: 600, emoji: '🌶️' },
-    { id: '5', name: 'Highland Carrots', stock: 60, price: 80, emoji: '🥕' },
-    { id: '6', name: 'Native Tomato', stock: 3, price: 110, emoji: '🍅' },
-  ]);
+  const { inventory, addItem, updateItem, deleteItem, lowStockCount, totalValue } = useInventory();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
@@ -32,9 +18,6 @@ const VendorInventory: React.FC = () => {
   const [formStock, setFormStock] = useState('');
   const [formPrice, setFormPrice] = useState('');
   const [formEmoji, setFormEmoji] = useState('📦');
-
-  const lowStockCount = inventory.filter(item => item.stock < 10).length;
-  const totalValue = inventory.reduce((sum, item) => sum + (item.stock * item.price), 0);
 
   const filteredInventory = inventory.filter(item =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -62,26 +45,25 @@ const VendorInventory: React.FC = () => {
     if (!formName || !formStock || !formPrice) return;
 
     if (editingItem) {
-      setInventory(inventory.map(item =>
-        item.id === editingItem.id
-          ? { ...item, name: formName, stock: parseInt(formStock), price: parseInt(formPrice), emoji: formEmoji }
-          : item
-      ));
-    } else {
-      const newItem: InventoryItem = {
-        id: Math.random().toString(36).substr(2, 9),
+      updateItem(editingItem.id, {
         name: formName,
         stock: parseInt(formStock),
         price: parseInt(formPrice),
         emoji: formEmoji,
-      };
-      setInventory([...inventory, newItem]);
+      });
+    } else {
+      addItem({
+        name: formName,
+        stock: parseInt(formStock),
+        price: parseInt(formPrice),
+        emoji: formEmoji,
+      });
     }
     setIsModalOpen(false);
   };
 
   const handleDelete = (id: string) => {
-    setInventory(inventory.filter(item => item.id !== id));
+    deleteItem(id);
   };
 
   return (

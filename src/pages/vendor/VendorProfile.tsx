@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { Store, CheckCircle, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, MapPin, Package } from 'lucide-react';
+import { Store, CheckCircle, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, MapPin, Package, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const VendorProfile: React.FC = () => {
@@ -15,10 +15,11 @@ const VendorProfile: React.FC = () => {
     navigate('/', { replace: true });
   };
 
+  const verificationStatus = user?.verificationStatus || 'none';
+
   const stallInfo = {
-    name: user?.shopName || "Mang Juan's Fresh",
+    name: user?.shopName || `${user?.name || 'Vendor'}'s Shop`,
     location: user?.marketLocation ? `${user.marketLocation} Market` : 'Stall #42-B • Main Market',
-    verified: true,
   };
 
   const commoditiesSold = [
@@ -36,6 +37,21 @@ const VendorProfile: React.FC = () => {
     { icon: Globe, label: 'Language', value: 'English', color: '#3b82f6', onClick: () => {} },
     { icon: Shield, label: 'Privacy', value: '', color: '#f59e0b', onClick: () => {} },
   ];
+
+  // Verification badge renderer
+  const renderVerificationBadge = () => {
+    if (verificationStatus === 'verified') {
+      return <CheckCircle size={16} className="text-[#22c55e]" />;
+    }
+    if (verificationStatus === 'pending') {
+      return (
+        <span className="text-[8px] font-black uppercase tracking-wider text-[#f59e0b] bg-[#f59e0b]/10 px-2 py-0.5 rounded-full">
+          Pending
+        </span>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="px-5 py-6 flex flex-col gap-6">
@@ -59,7 +75,7 @@ const VendorProfile: React.FC = () => {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h2 className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{stallInfo.name}</h2>
-                {stallInfo.verified && (<CheckCircle size={16} className="text-[#22c55e]" />)}
+                {renderVerificationBadge()}
               </div>
               <div className={`flex items-center gap-1.5 text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
                 <MapPin size={12} />
@@ -73,10 +89,18 @@ const VendorProfile: React.FC = () => {
               <Store size={12} className="text-[#22c55e]" />
               <span className="text-[#22c55e] text-[10px] font-black uppercase tracking-wider">Vendor</span>
             </div>
-            <div className="bg-[#3b82f6]/10 px-3 py-1.5 rounded-full flex items-center gap-1.5">
-              <CheckCircle size={12} className="text-[#3b82f6]" />
-              <span className="text-[#3b82f6] text-[10px] font-black uppercase tracking-wider">Verified</span>
-            </div>
+            {verificationStatus === 'verified' && (
+              <div className="bg-[#3b82f6]/10 px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                <CheckCircle size={12} className="text-[#3b82f6]" />
+                <span className="text-[#3b82f6] text-[10px] font-black uppercase tracking-wider">Verified</span>
+              </div>
+            )}
+            {verificationStatus === 'pending' && (
+              <div className="bg-[#f59e0b]/10 px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                <Clock size={12} className="text-[#f59e0b]" />
+                <span className="text-[#f59e0b] text-[10px] font-black uppercase tracking-wider">Pending</span>
+              </div>
+            )}
           </div>
         </motion.div>
       </header>
@@ -87,6 +111,7 @@ const VendorProfile: React.FC = () => {
         <div className="flex flex-col gap-2">
           {[
             { label: 'Name', value: user?.name || 'Vendor' },
+            { label: 'Shop Name', value: user?.shopName || `${user?.name || 'Vendor'}'s Shop` },
             { label: 'Email', value: user?.email || 'vendor@email.com' },
             { label: 'Member Since', value: 'Jan 2026' },
           ].map(item => (

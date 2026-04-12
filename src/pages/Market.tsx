@@ -1,12 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { commodities } from '../data/mockData';
-import { Bell, User, Bookmark, TrendingUp, ArrowUp, ArrowDown, Search, ShoppingCart, Sun, Moon, BarChart3, Calculator, Trash2, Minus, Plus, AlertTriangle, Package } from 'lucide-react';
+import { Bell, Heart, TrendingUp, ArrowUp, ArrowDown, Search, ShoppingCart, Sun, Moon, BarChart3, Calculator, Trash2, Minus, Plus, AlertTriangle, Package } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useAssets } from '../context/AssetContext';
+import { useWatchlist } from '../context/WatchlistContext';
+import { useNotifications } from '../context/NotificationContext';
 import CommodityDetailModal from '../components/CommodityDetailModal';
 import type { Commodity } from '../types';
 
@@ -21,6 +23,8 @@ const Market: React.FC = () => {
   const { user } = useAuth();
   const { isDark, toggleTheme, colors } = useTheme();
   const { assets, liquidity, removeAsset, updateQuantity, setLiquidity, addAsset } = useAssets();
+  const { savedIds, toggleSaved, isSaved } = useWatchlist();
+  const { openPanel, unreadCount } = useNotifications();
 
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeSubFilter, setActiveSubFilter] = useState('ALL');
@@ -51,6 +55,12 @@ const Market: React.FC = () => {
     }
     return list;
   }, [activeCategory, activeSubFilter, searchQuery]);
+
+  // Watchlist commodities
+  const watchlistCommodities = useMemo(() =>
+    commodities.filter(c => savedIds.includes(c.id)),
+    [savedIds]
+  );
 
   const tickerItems = commodities.slice(0, 8);
   const suggestedBasket = commodities.filter(c => c.price <= 150).slice(0, 6);
@@ -93,28 +103,24 @@ const Market: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-0">
-      {/* Price Ticker */}
-      <div className={`w-full py-2.5 overflow-hidden whitespace-nowrap border-b ${isDark ? 'bg-[#111114] border-[#1f1f23]' : 'bg-[#f0f9f0] border-[#e5e7eb]'}`}>
-        <div className="inline-flex gap-8 px-4 animate-ticker">
-          {[...tickerItems, ...tickerItems].map((item, idx) => (
-            <div key={`${item.id}-${idx}`} className="flex items-center gap-2">
-              <span className={`text-xs font-medium uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{item.name}</span>
-              <span className={`font-bold text-sm ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{item.price}</span>
-              <div className={`flex items-center gap-0.5 text-[10px] font-bold ${item.percentChange >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
-                {item.percentChange >= 0 ? <ArrowUp size={10} /> : <ArrowDown size={10} />}
-                {Math.abs(item.percentChange).toFixed(1)}%
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className="px-5 py-6 flex flex-col gap-6">
-        {/* Header */}
+        {/* Header — only theme toggle + bell, no profile icon */}
         <header className="flex justify-between items-center">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-[#22c55e] rounded-xl flex items-center justify-center shadow-lg shadow-[#22c55e]/15">
-              <TrendingUp size={20} className="text-black" />
+            {/* Replace /public/images/logo.png to update logo globally */}
+            <img
+              src="/images/logo.png"
+              alt="AgriPresyo"
+              className="h-8 w-auto object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            {/* Fallback if logo image is missing */}
+            <div className="hidden">
+              <span className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Agri</span>
+              <span className="text-lg font-black text-[#22c55e]">Presyo</span>
             </div>
             <div>
               <h1 className="text-lg font-black tracking-tight">
@@ -130,13 +136,15 @@ const Market: React.FC = () => {
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-            <button className={`relative p-2.5 rounded-xl border transition-colors ${isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-white border-[#e5e7eb] text-gray-500 hover:text-gray-700'}`}>
+            <button
+              onClick={openPanel}
+              className={`relative p-2.5 rounded-xl border transition-colors ${isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-white border-[#e5e7eb] text-gray-500 hover:text-gray-700'}`}
+            >
               <Bell size={18} />
-              <span className={`absolute top-2 right-2 w-2 h-2 bg-[#22c55e] rounded-full border-2 ${isDark ? 'border-[#141418]' : 'border-white'}`}></span>
+              {unreadCount > 0 && (
+                <span className="absolute top-2 right-2 w-2 h-2 bg-[#ef4444] rounded-full border-2" style={{ borderColor: isDark ? '#141418' : '#ffffff' }}></span>
+              )}
             </button>
-            <div className={`w-9 h-9 rounded-xl border flex items-center justify-center overflow-hidden ${isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400' : 'bg-white border-[#e5e7eb] text-gray-500'}`}>
-              <User size={20} />
-            </div>
           </div>
         </header>
 
@@ -207,6 +215,60 @@ const Market: React.FC = () => {
           </div>
         </section>
 
+        {/* MY WATCHLIST — only shows if user has saved at least 1 commodity */}
+        {watchlistCommodities.length > 0 && (
+          <section>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-sm">❤️</span>
+              <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>My Watchlist</h2>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-100 text-gray-400'}`}>
+                {watchlistCommodities.length} {watchlistCommodities.length === 1 ? 'ITEM' : 'ITEMS'}
+              </span>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-3 no-scrollbar">
+              {watchlistCommodities.map((item) => (
+                <div
+                  key={item.id}
+                  className={`min-w-[120px] rounded-xl border p-3 flex flex-col gap-2 cursor-pointer active:scale-[0.97] transition-transform ${
+                    isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+                  }`}
+                  onClick={() => handleCommodityClick(item)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-xl">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-8 h-8 rounded-lg object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                          (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                      <span className="hidden text-xl">{item.emoji}</span>
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleSaved(item.id); }}
+                      className="text-[#ef4444]"
+                    >
+                      <Heart size={14} fill="#ef4444" />
+                    </button>
+                  </div>
+                  <p className={`font-bold text-[11px] truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.name}</p>
+                  <p className={`text-sm font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{item.price.toFixed(2)}</p>
+                  <div className={cn(
+                    "text-[9px] font-bold flex items-center gap-0.5",
+                    item.percentChange >= 0 ? "text-[#22c55e]" : "text-[#ef4444]"
+                  )}>
+                    {item.percentChange >= 0 ? <ArrowUp size={8} /> : <ArrowDown size={8} />}
+                    {Math.abs(item.percentChange).toFixed(1)}%
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Price Insights Header */}
         <section className="flex items-center gap-2">
           <BarChart3 size={16} className="text-[#22c55e]" />
@@ -242,11 +304,12 @@ const Market: React.FC = () => {
                     />
                     <span className="hidden text-xl">{item.emoji}</span>
                   </div>
+                  {/* Heart icon — filled red when saved, outline when not */}
                   <button
-                    className={`transition-colors ${isDark ? 'text-gray-700 hover:text-[#22c55e]' : 'text-gray-300 hover:text-[#22c55e]'}`}
-                    onClick={(e) => e.stopPropagation()}
+                    className={`transition-colors ${isSaved(item.id) ? 'text-[#ef4444]' : isDark ? 'text-gray-700 hover:text-[#ef4444]' : 'text-gray-300 hover:text-[#ef4444]'}`}
+                    onClick={(e) => { e.stopPropagation(); toggleSaved(item.id); }}
                   >
-                    <Bookmark size={12} />
+                    <Heart size={12} fill={isSaved(item.id) ? '#ef4444' : 'none'} />
                   </button>
                 </div>
 

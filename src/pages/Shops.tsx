@@ -1,13 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { shopVendors } from '../data/mockData';
-import { Star, ShoppingBag, Leaf, ArrowRight } from 'lucide-react';
+import { Star, ShoppingBag, Leaf, ArrowRight, Bell, Sun, Moon } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext';
+import { useNotifications } from '../context/NotificationContext';
 
 const filterOptions = ['ALL', 'FRUITS', 'VEGETABLES'];
 
 const Shops: React.FC = () => {
-  const { isDark } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
+  const { openPanel, unreadCount } = useNotifications();
   const [activeFilter, setActiveFilter] = useState('ALL');
 
   const filteredVendors = useMemo(() => {
@@ -100,30 +102,62 @@ const Shops: React.FC = () => {
 
   return (
     <div className="px-5 py-6 flex flex-col gap-6">
-      {/* Header */}
+      {/* Header with logo, theme toggle, bell */}
       <header>
-        <div className="flex items-center justify-between mb-1">
-          <div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2.5">
+            {/* Replace /public/images/logo.png to update logo globally */}
+            <img
+              src="/images/logo.png"
+              alt="AgriPresyo"
+              className="h-8 w-auto object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            {/* Fallback if logo image is missing */}
+            <div className="hidden">
+              <span className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Agri</span>
+              <span className="text-lg font-black text-[#22c55e]">Presyo</span>
+            </div>
             <h1 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Shops</h1>
-            <p className={`text-xs mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Browse shops and find the best prices</p>
           </div>
-          <div className="flex gap-2">
-            {filterOptions.map((f) => (
-              <button
-                key={f}
-                onClick={() => setActiveFilter(f)}
-                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${
-                  activeFilter === f
-                    ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
-                    : isDark
-                      ? 'bg-[#1a1a1e] text-gray-500 border border-[#1f1f23]'
-                      : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
-                }`}
-              >
-                {f}
-              </button>
-            ))}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className={`p-2.5 rounded-xl border transition-colors ${isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-white border-[#e5e7eb] text-gray-500 hover:text-gray-700'}`}
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <button
+              onClick={openPanel}
+              className={`relative p-2.5 rounded-xl border transition-colors ${isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-white border-[#e5e7eb] text-gray-500 hover:text-gray-700'}`}
+            >
+              <Bell size={18} />
+              {unreadCount > 0 && (
+                <span className="absolute top-2 right-2 w-2 h-2 bg-[#ef4444] rounded-full border-2" style={{ borderColor: isDark ? '#141418' : '#ffffff' }}></span>
+              )}
+            </button>
           </div>
+        </div>
+        <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Browse shops and find the best prices</p>
+        <div className="flex gap-2 mt-3">
+          {filterOptions.map((f) => (
+            <button
+              key={f}
+              onClick={() => setActiveFilter(f)}
+              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${
+                activeFilter === f
+                  ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
+                  : isDark
+                    ? 'bg-[#1a1a1e] text-gray-500 border border-[#1f1f23]'
+                    : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
+              }`}
+            >
+              {f}
+            </button>
+          ))}
         </div>
       </header>
 
