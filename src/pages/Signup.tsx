@@ -98,13 +98,12 @@ const Signup: React.FC = () => {
     setShowFacebookModal(true);
   };
 
-  const inputClass = (field: string) => `w-full rounded-xl py-3.5 text-sm focus:outline-none transition-colors ${
-    hasError(field)
+  const inputClass = (field: string) => `w-full rounded-xl py-3.5 text-sm focus:outline-none transition-colors ${hasError(field)
       ? 'border-[#ef4444] focus:border-[#ef4444]'
       : isValid(field)
         ? 'border-[#22c55e] focus:border-[#22c55e]'
         : `focus:border-[#22c55e]/50 ${isDark ? 'border-[#1f1f23]' : 'border-[#e5e7eb]'}`
-  } ${isDark ? 'bg-[#141418] text-white placeholder-gray-600 border' : 'bg-[#f3f4f6] text-[#111827] placeholder-gray-400 border'}`;
+    } ${isDark ? 'bg-[#141418] text-white placeholder-gray-600 border' : 'bg-[#f3f4f6] text-[#111827] placeholder-gray-400 border'}`;
 
   return (
     <div className={`min-h-screen font-sans flex justify-center relative overflow-hidden ${isDark ? 'bg-[#0a0a0a] text-white' : 'bg-[#f0fdf4] text-[#111827]'}`}>
@@ -130,9 +129,8 @@ const Signup: React.FC = () => {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate('/')}
-          className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${
-            isDark ? 'bg-[#141418] border border-[#1f1f23] text-gray-400' : 'bg-white border border-[#e5e7eb] text-gray-500'
-          }`}
+          className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${isDark ? 'bg-[#141418] border border-[#1f1f23] text-gray-400' : 'bg-white border border-[#e5e7eb] text-gray-500'
+            }`}
         >
           <ArrowLeft size={20} />
         </motion.button>
@@ -146,7 +144,7 @@ const Signup: React.FC = () => {
           className="flex flex-col items-center mb-6"
         >
           <img
-            src="/images/logo.png"
+            src="/images/AgriPresyo_logoFinal.webp"
             alt="AgriPresyo"
             className="h-12 w-auto object-contain mb-3"
             onError={(e) => {
@@ -178,11 +176,10 @@ const Signup: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsRoleOpen(!isRoleOpen)}
-                className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-200 border ${
-                  isRoleOpen
+                className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-200 border ${isRoleOpen
                     ? `border-[#22c55e] ${isDark ? 'bg-[#141418]' : 'bg-white'}`
                     : `${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`
-                }`}
+                  }`}
               >
                 <span className="flex items-center gap-3">
                   <span className="text-lg">{currentRole.emoji}</span>
@@ -201,20 +198,18 @@ const Signup: React.FC = () => {
                     exit={{ opacity: 0, y: -8, scaleY: 0.95 }}
                     transition={{ duration: 0.2 }}
                     style={{ transformOrigin: 'top' }}
-                    className={`absolute top-full left-0 right-0 mt-1 rounded-xl border overflow-hidden z-20 ${
-                      isDark ? 'bg-[#141418] border-[#2a2a2e]' : 'bg-white border-[#e5e7eb]'
-                    }`}
+                    className={`absolute top-full left-0 right-0 mt-1 rounded-xl border overflow-hidden z-20 ${isDark ? 'bg-[#141418] border-[#2a2a2e]' : 'bg-white border-[#e5e7eb]'
+                      }`}
                   >
                     {roles.map((role) => (
                       <button
                         key={role.value}
                         type="button"
                         onClick={() => { setSelectedRole(role.value); setIsRoleOpen(false); }}
-                        className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm transition-colors ${
-                          selectedRole === role.value
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm transition-colors ${selectedRole === role.value
                             ? `${isDark ? 'bg-[#1a1a1e] border-l-[3px] border-l-[#22c55e]' : 'bg-[#dcfce7] border-l-[3px] border-l-[#22c55e]'}`
                             : `border-l-[3px] border-l-transparent ${isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'}`
-                        }`}
+                          }`}
                       >
                         <span className="text-lg">{role.emoji}</span>
                         <span className="flex flex-col items-start">
@@ -316,20 +311,18 @@ const Signup: React.FC = () => {
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -5 }}
-                            className={`absolute top-full left-0 right-0 mt-1 rounded-xl border overflow-hidden z-20 ${
-                              isDark ? 'bg-[#141418] border-[#22c55e]' : 'bg-white border-[#22c55e]'
-                            }`}
+                            className={`absolute top-full left-0 right-0 mt-1 rounded-xl border overflow-hidden z-20 ${isDark ? 'bg-[#141418] border-[#22c55e]' : 'bg-white border-[#22c55e]'
+                              }`}
                           >
                             {marketLocations.map((loc) => (
                               <button
                                 key={loc}
                                 type="button"
                                 onClick={() => { setMarketLocation(loc); setIsLocationOpen(false); }}
-                                className={`w-full text-left px-4 py-3 text-sm font-bold transition-colors ${
-                                  marketLocation === loc
+                                className={`w-full text-left px-4 py-3 text-sm font-bold transition-colors ${marketLocation === loc
                                     ? `${isDark ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#dcfce7] text-[#16a34a]'}`
                                     : `${isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'}`
-                                }`}
+                                  }`}
                               >
                                 {loc}
                               </button>
@@ -393,11 +386,10 @@ const Signup: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full rounded-xl py-4 font-black text-sm uppercase tracking-widest transition-all duration-300 disabled:opacity-50 border ${
-                isDark
+              className={`w-full rounded-xl py-4 font-black text-sm uppercase tracking-widest transition-all duration-300 disabled:opacity-50 border ${isDark
                   ? 'bg-[#141418] border-[#1f1f23] text-[#22c55e] hover:border-[#22c55e]/30'
                   : 'bg-[#15803d] border-[#15803d] text-white hover:bg-[#166534]'
-              }`}
+                }`}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -422,11 +414,10 @@ const Signup: React.FC = () => {
             <button
               type="button"
               onClick={handleGoogleSignup}
-              className={`w-full rounded-xl py-3.5 flex items-center justify-center gap-3 text-sm font-semibold transition-colors border ${
-                isDark
+              className={`w-full rounded-xl py-3.5 flex items-center justify-center gap-3 text-sm font-semibold transition-colors border ${isDark
                   ? 'bg-[#141418] border-[#1f1f23] text-white hover:bg-[#1a1a1e]'
                   : 'bg-white border-[#e5e7eb] text-[#111827] hover:bg-gray-50'
-              }`}
+                }`}
             >
               <svg width="18" height="18" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />

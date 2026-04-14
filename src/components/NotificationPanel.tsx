@@ -67,7 +67,7 @@ const NotificationPanel: React.FC = () => {
                 <div className="flex items-center gap-3">
                   {/* Replace /public/images/logo.png to update logo globally */}
                   <img
-                    src="/images/logo.png"
+                    src="/images/AgriPresyo_logoFinal.webp"
                     alt="AgriPresyo"
                     className="h-6 w-auto object-contain"
                     onError={(e) => {

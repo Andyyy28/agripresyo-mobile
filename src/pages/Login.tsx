@@ -288,7 +288,7 @@ const Login: React.FC = () => {
           className="flex flex-col items-center mb-8 mt-4"
         >
           <img
-            src="/images/logo.png"
+            src="/images/AgriPresyo_logoFinal.webp"
             alt="AgriPresyo"
             className="h-16 w-auto object-contain mb-4"
             onError={(e) => {

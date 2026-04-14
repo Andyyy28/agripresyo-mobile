@@ -113,9 +113,8 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
               className="fixed bottom-0 left-0 right-0 z-50 flex justify-center"
             >
-              <div className={`w-full max-w-[430px] rounded-t-3xl border-t border-x max-h-[90vh] overflow-y-auto no-scrollbar ${
-                isDark ? 'bg-[#0a0a0a] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
-              }`}>
+              <div className={`w-full max-w-[430px] rounded-t-3xl border-t border-x max-h-[90vh] overflow-y-auto no-scrollbar ${isDark ? 'bg-[#0a0a0a] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+                }`}>
                 {/* Drag Handle */}
                 <div className="flex justify-center pt-3 pb-2">
                   <div className={`w-10 h-1 rounded-full ${isDark ? 'bg-[#2a2a2e]' : 'bg-gray-300'}`} />
@@ -125,9 +124,8 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                   {/* Modal Header */}
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-4xl border ${
-                        isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-gray-50 border-[#e5e7eb]'
-                      }`}>
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-4xl border ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-gray-50 border-[#e5e7eb]'
+                        }`}>
                         {commodity.emoji}
                       </div>
                       <div>
@@ -137,9 +135,8 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                     </div>
                     <button
                       onClick={onClose}
-                      className={`w-9 h-9 rounded-full flex items-center justify-center border transition-colors mt-1 ${
-                        isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-gray-50 border-[#e5e7eb] text-gray-400 hover:text-gray-600'
-                      }`}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center border transition-colors mt-1 ${isDark ? 'bg-[#141418] border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-gray-50 border-[#e5e7eb] text-gray-400 hover:text-gray-600'
+                        }`}
                     >
                       <X size={18} />
                     </button>
@@ -149,11 +146,10 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                   <div className={`rounded-xl border p-4 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-gray-50 border-[#e5e7eb]'}`}>
                     <div className="flex justify-between items-start mb-3">
                       <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Local Market Index</p>
-                      <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${
-                        commodity.percentChange >= 0
+                      <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${commodity.percentChange >= 0
                           ? 'text-[#22c55e] bg-[#22c55e]/10'
                           : 'text-[#ef4444] bg-[#ef4444]/10'
-                      }`}>
+                        }`}>
                         <ArrowUpRight size={12} className={commodity.percentChange < 0 ? 'rotate-90' : ''} />
                         {Math.abs(commodity.percentChange).toFixed(1)}%
                       </div>
@@ -239,19 +235,17 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                       {recentDataPoints.map((point, i) => (
                         <div
                           key={i}
-                          className={`flex items-center gap-3 px-4 py-3 ${
-                            i < recentDataPoints.length - 1
+                          className={`flex items-center gap-3 px-4 py-3 ${i < recentDataPoints.length - 1
                               ? isDark ? 'border-b border-[#1f1f23]' : 'border-b border-[#e5e7eb]'
                               : ''
-                          }`}
+                            }`}
                         >
                           <Clock size={12} className={isDark ? 'text-gray-600' : 'text-gray-400'} />
                           <span className={`text-xs font-bold flex-1 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{point.date}</span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            point.change >= 0
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${point.change >= 0
                               ? 'text-[#22c55e] bg-[#22c55e]/10'
                               : 'text-[#ef4444] bg-[#ef4444]/10'
-                          }`}>
+                            }`}>
                             {point.change >= 0 ? '▲' : '▼'}{Math.abs(point.change).toFixed(1)}%
                           </span>
                           <span className={`text-sm font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{point.price.toFixed(2)}</span>
@@ -295,11 +289,10 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                             </div>
                             {/* Open/Closed badge */}
                             <div className="flex flex-col items-end gap-1.5 shrink-0">
-                              <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 ${
-                                vendor.isOpen
+                              <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 ${vendor.isOpen
                                   ? 'bg-[#22c55e]/15 text-[#22c55e]'
                                   : 'bg-[#ef4444]/15 text-[#ef4444]'
-                              }`}>
+                                }`}>
                                 {vendor.isOpen ? '+ OPEN' : '● CLOSED'}
                               </span>
                               <p className="text-sm font-black text-[#22c55e]">₱{vendor.dynamicPrice.toFixed(2)}</p>
@@ -324,9 +317,8 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                     </button>
                     <button
                       onClick={onClose}
-                      className={`flex-1 font-black text-sm uppercase tracking-wider py-4 rounded-full transition-colors active:scale-[0.98] ${
-                        isDark ? 'bg-[#2a2a2e] text-white hover:bg-[#333338]' : 'bg-gray-200 text-[#111827] hover:bg-gray-300'
-                      }`}
+                      className={`flex-1 font-black text-sm uppercase tracking-wider py-4 rounded-full transition-colors active:scale-[0.98] ${isDark ? 'bg-[#2a2a2e] text-white hover:bg-[#333338]' : 'bg-gray-200 text-[#111827] hover:bg-gray-300'
+                        }`}
                     >
                       Close View
                     </button>

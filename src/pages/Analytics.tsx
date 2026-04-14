@@ -84,7 +84,7 @@ const Analytics: React.FC = () => {
           <div className="flex items-center gap-2.5">
             {/* Replace /public/images/logo.png to update logo globally */}
             <img
-              src="/images/logo.png"
+              src="/images/AgriPresyo_logoFinal.webp"
               alt="AgriPresyo"
               className="h-8 w-auto object-contain"
               onError={(e) => {

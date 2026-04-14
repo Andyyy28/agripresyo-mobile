@@ -109,7 +109,7 @@ const Market: React.FC = () => {
           <div className="flex items-center gap-2.5">
             {/* Replace /public/images/logo.png to update logo globally */}
             <img
-              src="/images/logo.png"
+              src="/images/AgriPresyo_logoFinal.webp"
               alt="AgriPresyo"
               className="h-8 w-auto object-contain"
               onError={(e) => {
@@ -164,9 +164,8 @@ const Market: React.FC = () => {
               placeholder="Search commodities..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full rounded-xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:border-[#22c55e]/50 transition-colors ${
-                isDark ? 'bg-[#141418] border border-[#1f1f23] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400'
-              }`}
+              className={`w-full rounded-xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:border-[#22c55e]/50 transition-colors ${isDark ? 'bg-[#141418] border border-[#1f1f23] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400'
+                }`}
             />
           </div>
         </section>
@@ -229,9 +228,8 @@ const Market: React.FC = () => {
               {watchlistCommodities.map((item) => (
                 <div
                   key={item.id}
-                  className={`min-w-[120px] rounded-xl border p-3 flex flex-col gap-2 cursor-pointer active:scale-[0.97] transition-transform ${
-                    isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
-                  }`}
+                  className={`min-w-[120px] rounded-xl border p-3 flex flex-col gap-2 cursor-pointer active:scale-[0.97] transition-transform ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+                    }`}
                   onClick={() => handleCommodityClick(item)}
                 >
                   <div className="flex items-center justify-between">
@@ -285,9 +283,8 @@ const Market: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 key={item.id}
-                className={`rounded-2xl border p-3 flex flex-col gap-1.5 relative group cursor-pointer active:scale-[0.97] transition-all ${
-                  isDark ? 'bg-[#141418] border-[#1f1f23] hover:border-[#2a2a2e]' : 'bg-white border-[#e5e7eb] hover:border-[#d1d5db]'
-                }`}
+                className={`rounded-2xl border p-3 flex flex-col gap-1.5 relative group cursor-pointer active:scale-[0.97] transition-all ${isDark ? 'bg-[#141418] border-[#1f1f23] hover:border-[#2a2a2e]' : 'bg-white border-[#e5e7eb] hover:border-[#d1d5db]'
+                  }`}
                 onClick={() => handleCommodityClick(item)}
               >
                 <div className="flex justify-between items-start">
@@ -373,9 +370,8 @@ const Market: React.FC = () => {
             {suggestedBasket.map((item) => (
               <div
                 key={item.id}
-                className={`min-w-[130px] rounded-xl border p-3 flex flex-col gap-2 cursor-pointer active:scale-[0.97] transition-transform ${
-                  isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
-                }`}
+                className={`min-w-[130px] rounded-xl border p-3 flex flex-col gap-2 cursor-pointer active:scale-[0.97] transition-transform ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+                  }`}
                 onClick={() => addAsset(item.id)}
               >
                 <div className="flex items-center gap-2">

@@ -28,7 +28,7 @@ export const commodities: Commodity[] = [
     emoji: '🍍',
     unitWeight: 1.5,
     priceHistory: generatePriceHistory(85),
-    image: '/images/commodities/pineapple.jpg',
+    image: '/images/commodities/pineapple.webp',
   },
   {
     id: '2',
@@ -43,7 +43,7 @@ export const commodities: Commodity[] = [
     emoji: '🍉',
     unitWeight: 4.0,
     priceHistory: generatePriceHistory(120),
-    image: '/images/commodities/watermelon.jpg',
+    image: '/images/commodities/watermelon.webp',
   },
   {
     id: '3',
@@ -58,7 +58,7 @@ export const commodities: Commodity[] = [
     emoji: '🍓',
     unitWeight: 0.25,
     priceHistory: generatePriceHistory(450),
-    image: '/images/commodities/strawberries.jpg',
+    image: '/images/commodities/strawberry.webp',
   },
   {
     id: '4',
@@ -73,7 +73,7 @@ export const commodities: Commodity[] = [
     emoji: '🥑',
     unitWeight: 0.3,
     priceHistory: generatePriceHistory(180),
-    image: '/images/commodities/avocado.jpg',
+    image: '/images/commodities/avocado.webp',
   },
   {
     id: '5',
@@ -88,7 +88,7 @@ export const commodities: Commodity[] = [
     emoji: '🍊',
     unitWeight: 1.2,
     priceHistory: generatePriceHistory(150),
-    image: '/images/commodities/pomelo.jpg',
+    image: '/images/commodities/pomelo.webp',
   },
   {
     id: '6',
@@ -103,7 +103,7 @@ export const commodities: Commodity[] = [
     emoji: '🥭',
     unitWeight: 0.35,
     priceHistory: generatePriceHistory(220),
-    image: '/images/commodities/mango.jpg',
+    image: '/images/commodities/mango.webp',
   },
   {
     id: '7',
@@ -118,7 +118,7 @@ export const commodities: Commodity[] = [
     emoji: '🌶️',
     unitWeight: 0.1,
     priceHistory: generatePriceHistory(600),
-    image: '/images/commodities/siling-labuyo.jpg',
+    image: '/images/commodities/chili.webp',
   },
   {
     id: '8',
@@ -133,7 +133,7 @@ export const commodities: Commodity[] = [
     emoji: '🧅',
     unitWeight: 0.15,
     priceHistory: generatePriceHistory(180),
-    image: '/images/commodities/red-onion.jpg',
+    image: '/images/commodities/onion.webp',
   },
   {
     id: '9',
@@ -148,7 +148,7 @@ export const commodities: Commodity[] = [
     emoji: '🫚',
     unitWeight: 0.2,
     priceHistory: generatePriceHistory(120),
-    image: '/images/commodities/ginger.jpg',
+    image: '/images/commodities/ginger.webp',
   },
   {
     id: '10',
@@ -163,7 +163,7 @@ export const commodities: Commodity[] = [
     emoji: '🥔',
     unitWeight: 0.3,
     priceHistory: generatePriceHistory(95),
-    image: '/images/commodities/potato.jpg',
+    image: '/images/commodities/potato.webp',
   },
   {
     id: '11',
@@ -178,7 +178,7 @@ export const commodities: Commodity[] = [
     emoji: '🥕',
     unitWeight: 0.25,
     priceHistory: generatePriceHistory(80),
-    image: '/images/commodities/carrots.jpg',
+    image: '/images/commodities/carrot.webp',
   },
   {
     id: '12',
@@ -193,7 +193,7 @@ export const commodities: Commodity[] = [
     emoji: '🥬',
     unitWeight: 0.5,
     priceHistory: generatePriceHistory(60),
-    image: '/images/commodities/pechay.jpg',
+    image: '/images/commodities/pechay.webp',
   },
   {
     id: '13',
@@ -208,7 +208,7 @@ export const commodities: Commodity[] = [
     emoji: '🫛',
     unitWeight: 0.3,
     priceHistory: generatePriceHistory(70),
-    image: '/images/commodities/sitaw.jpg',
+    image: '/images/commodities/sitaw.webp',
   },
   {
     id: '14',
@@ -223,7 +223,7 @@ export const commodities: Commodity[] = [
     emoji: '🍅',
     unitWeight: 0.2,
     priceHistory: generatePriceHistory(110),
-    image: '/images/commodities/tomato.jpg',
+    image: '/images/commodities/tomato.webp',
   },
   {
     id: '15',
@@ -238,7 +238,7 @@ export const commodities: Commodity[] = [
     emoji: '🥒',
     unitWeight: 0.15,
     priceHistory: generatePriceHistory(50),
-    image: '/images/commodities/okra.jpg',
+    image: '/images/commodities/okra.webp',
   }
 ];
 
