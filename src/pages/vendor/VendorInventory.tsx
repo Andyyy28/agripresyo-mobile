@@ -130,7 +130,9 @@ const VendorInventory: React.FC = () => {
               exit={{ opacity: 0, scale: 0.95 }}
               className={`rounded-xl border p-4 flex items-center gap-4 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}
             >
-              <span className="text-2xl">{item.emoji}</span>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${isDark ? 'bg-[#1a1a1e]' : 'bg-gray-50'}`}>
+                {item.emoji}
+              </div>
               <div className="flex-1 min-w-0">
                 <h4 className={`font-bold text-sm truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.name}</h4>
                 <div className="flex items-center gap-2 mt-1">

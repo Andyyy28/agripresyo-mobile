@@ -124,9 +124,15 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                   {/* Modal Header */}
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-4xl border ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-gray-50 border-[#e5e7eb]'
-                        }`}>
-                        {commodity.emoji}
+                      <div className={`w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden ${isDark ? commodity.darkBgColor : commodity.lightBgColor}`}>
+                        <img
+                          src={`/images/commodities/${commodity.slug}.webp`}
+                          alt={commodity.name}
+                          className="w-full h-full object-contain p-2"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
                       </div>
                       <div>
                         <h2 className={`text-xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{commodity.name}</h2>

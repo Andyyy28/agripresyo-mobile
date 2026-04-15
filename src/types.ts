@@ -30,6 +30,7 @@ export interface User {
 export interface Commodity {
   id: string;
   name: string;
+  slug: string;
   category: Category;
   price: number;
   previousPrice: number;
@@ -42,6 +43,8 @@ export interface Commodity {
   priceHistory: number[];
   // Replace images in /public/images/commodities/ with your own JPEG/PNG files
   image: string;
+  lightBgColor: string;
+  darkBgColor: string;
 }
 
 export interface Vendor {

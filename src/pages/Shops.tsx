@@ -81,9 +81,9 @@ const Shops: React.FC = () => {
         {/* Commodity Emojis */}
         <div className="flex gap-1.5">
           {vendor.commodities.map((emoji, i) => (
-            <span key={i} className={`text-sm p-1.5 rounded-lg ${isDark ? 'bg-[#1a1a1e]' : 'bg-gray-50'}`}>
-              {emoji}
-            </span>
+            <div key={i} className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDark ? 'bg-[#1a1a1e]' : 'bg-gray-50'}`}>
+              <span className="text-sm">{emoji}</span>
+            </div>
           ))}
         </div>
 

@@ -18,6 +18,7 @@ export const commodities: Commodity[] = [
   {
     id: '1',
     name: 'Pineapple',
+    slug: 'pineapple',
     category: 'Fruits',
     price: 85,
     previousPrice: 80,
@@ -29,10 +30,13 @@ export const commodities: Commodity[] = [
     unitWeight: 1.5,
     priceHistory: generatePriceHistory(85),
     image: '/images/commodities/pineapple.webp',
+    lightBgColor: 'bg-[#fef9c3]', // yellow
+    darkBgColor: 'bg-[#2a2518]', // dark yellow
   },
   {
     id: '2',
     name: 'Seedless Watermelon',
+    slug: 'watermelon',
     category: 'Fruits',
     price: 120,
     previousPrice: 135,
@@ -44,10 +48,13 @@ export const commodities: Commodity[] = [
     unitWeight: 4.0,
     priceHistory: generatePriceHistory(120),
     image: '/images/commodities/watermelon.webp',
+    lightBgColor: 'bg-[#fce7f3]', // pink
+    darkBgColor: 'bg-[#2a1520]', // dark pink
   },
   {
     id: '3',
     name: 'Baguio Strawberries',
+    slug: 'strawberry',
     category: 'Fruits',
     price: 450,
     previousPrice: 420,
@@ -59,10 +66,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.25,
     priceHistory: generatePriceHistory(450),
     image: '/images/commodities/strawberry.webp',
+    lightBgColor: 'bg-[#fee2e2]', // red
+    darkBgColor: 'bg-[#2a1515]', // dark red
   },
   {
     id: '4',
     name: 'Hass Avocado',
+    slug: 'avocado',
     category: 'Fruits',
     price: 180,
     previousPrice: 175,
@@ -74,10 +84,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.3,
     priceHistory: generatePriceHistory(180),
     image: '/images/commodities/avocado.webp',
+    lightBgColor: 'bg-[#dcfce7]', // green
+    darkBgColor: 'bg-[#152a18]', // dark green
   },
   {
     id: '5',
     name: 'Davao Pomelo',
+    slug: 'pomelo',
     category: 'Fruits',
     price: 150,
     previousPrice: 155,
@@ -89,10 +102,13 @@ export const commodities: Commodity[] = [
     unitWeight: 1.2,
     priceHistory: generatePriceHistory(150),
     image: '/images/commodities/pomelo.webp',
+    lightBgColor: 'bg-[#ffedd5]', // orange/pink
+    darkBgColor: 'bg-[#2a1f15]', // dark orange
   },
   {
     id: '6',
     name: 'Carabao Mango',
+    slug: 'mango',
     category: 'Fruits',
     price: 220,
     previousPrice: 200,
@@ -104,10 +120,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.35,
     priceHistory: generatePriceHistory(220),
     image: '/images/commodities/mango.webp',
+    lightBgColor: 'bg-[#fef3c7]', // amber
+    darkBgColor: 'bg-[#2a2415]', // dark amber
   },
   {
     id: '7',
     name: 'Siling Labuyo',
+    slug: 'chili',
     category: 'Spices',
     price: 600,
     previousPrice: 550,
@@ -119,10 +138,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.1,
     priceHistory: generatePriceHistory(600),
     image: '/images/commodities/chili.webp',
+    lightBgColor: 'bg-[#fee2e2]', // red
+    darkBgColor: 'bg-[#2a1515]', // dark red
   },
   {
     id: '8',
     name: 'Red Onion',
+    slug: 'onion',
     category: 'Spices',
     price: 180,
     previousPrice: 190,
@@ -134,10 +156,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.15,
     priceHistory: generatePriceHistory(180),
     image: '/images/commodities/onion.webp',
+    lightBgColor: 'bg-[#f3e8ff]', // purple
+    darkBgColor: 'bg-[#1f152a]', // dark purple
   },
   {
     id: '9',
     name: 'Yellow Ginger',
+    slug: 'ginger',
     category: 'Spices',
     price: 120,
     previousPrice: 115,
@@ -149,10 +174,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.2,
     priceHistory: generatePriceHistory(120),
     image: '/images/commodities/ginger.webp',
+    lightBgColor: 'bg-[#fef3c7]', // amber
+    darkBgColor: 'bg-[#2a2415]', // dark amber
   },
   {
     id: '10',
     name: 'Granola Potato',
+    slug: 'potato',
     category: 'Roots',
     price: 95,
     previousPrice: 100,
@@ -164,10 +192,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.3,
     priceHistory: generatePriceHistory(95),
     image: '/images/commodities/potato.webp',
+    lightBgColor: 'bg-[#fef3c7]', // amber
+    darkBgColor: 'bg-[#2a2415]', // dark amber
   },
   {
     id: '11',
     name: 'Highland Carrots',
+    slug: 'carrot',
     category: 'Vegetables',
     price: 80,
     previousPrice: 75,
@@ -179,10 +210,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.25,
     priceHistory: generatePriceHistory(80),
     image: '/images/commodities/carrot.webp',
+    lightBgColor: 'bg-[#ffedd5]', // orange
+    darkBgColor: 'bg-[#2a1f15]', // dark orange
   },
   {
     id: '12',
     name: 'Pechay',
+    slug: 'pechay',
     category: 'Vegetables',
     price: 60,
     previousPrice: 65,
@@ -194,10 +228,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.5,
     priceHistory: generatePriceHistory(60),
     image: '/images/commodities/pechay.webp',
+    lightBgColor: 'bg-[#dcfce7]', // green
+    darkBgColor: 'bg-[#152a18]', // dark green
   },
   {
     id: '13',
     name: 'Sitaw',
+    slug: 'sitaw',
     category: 'Vegetables',
     price: 70,
     previousPrice: 68,
@@ -209,10 +246,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.3,
     priceHistory: generatePriceHistory(70),
     image: '/images/commodities/sitaw.webp',
+    lightBgColor: 'bg-[#dcfce7]', // green
+    darkBgColor: 'bg-[#152a18]', // dark green
   },
   {
     id: '14',
     name: 'Native Tomato',
+    slug: 'tomato',
     category: 'Vegetables',
     price: 110,
     previousPrice: 120,
@@ -224,10 +264,13 @@ export const commodities: Commodity[] = [
     unitWeight: 0.2,
     priceHistory: generatePriceHistory(110),
     image: '/images/commodities/tomato.webp',
+    lightBgColor: 'bg-[#fee2e2]', // red
+    darkBgColor: 'bg-[#2a1515]', // dark red
   },
   {
     id: '15',
     name: 'Okra',
+    slug: 'okra',
     category: 'Vegetables',
     price: 50,
     previousPrice: 45,
@@ -239,6 +282,8 @@ export const commodities: Commodity[] = [
     unitWeight: 0.15,
     priceHistory: generatePriceHistory(50),
     image: '/images/commodities/okra.webp',
+    lightBgColor: 'bg-[#dcfce7]', // green
+    darkBgColor: 'bg-[#152a18]', // dark green
   }
 ];
 

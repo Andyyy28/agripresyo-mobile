@@ -6,7 +6,6 @@ import { ArrowLeft, User, Mail, Lock, Eye, EyeOff, Store, MapPin, TrendingUp, Ch
 import { motion, AnimatePresence } from 'motion/react';
 import type { UserRole, User as UserType } from '../types';
 
-const marketLocations = ['Bankerohan', 'Agdao', 'Uyanguren', 'Tiangge', 'Other'];
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +14,6 @@ const Signup: React.FC = () => {
 
   const [selectedRole, setSelectedRole] = useState<UserRole>('consumer');
   const [isRoleOpen, setIsRoleOpen] = useState(false);
-  const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [shopName, setShopName] = useState('');
@@ -291,45 +289,19 @@ const Signup: React.FC = () => {
                     {hasError('shopName') && <p className="text-[#ef4444] text-[10px] font-semibold mt-1 px-1">{errors.shopName}</p>}
                   </div>
 
-                  {/* Market Location Dropdown */}
+                  {/* Market Location */}
                   <div>
                     <div className="relative">
                       <MapPin size={18} className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} />
-                      <button
-                        type="button"
-                        onClick={() => { setIsLocationOpen(!isLocationOpen); handleBlur('marketLocation'); }}
-                        className={`${inputClass('marketLocation')} pl-12 pr-10 text-left w-full flex items-center justify-between`}
-                      >
-                        <span className={marketLocation ? (isDark ? 'text-white' : 'text-[#111827]') : (isDark ? 'text-gray-600' : 'text-gray-400')}>
-                          {marketLocation || 'Market Location'}
-                        </span>
-                        <ChevronDown size={16} className={`transition-transform ${isLocationOpen ? 'rotate-180' : ''} ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
-                      </button>
-                      <AnimatePresence>
-                        {isLocationOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            className={`absolute top-full left-0 right-0 mt-1 rounded-xl border overflow-hidden z-20 ${isDark ? 'bg-[#141418] border-[#22c55e]' : 'bg-white border-[#22c55e]'
-                              }`}
-                          >
-                            {marketLocations.map((loc) => (
-                              <button
-                                key={loc}
-                                type="button"
-                                onClick={() => { setMarketLocation(loc); setIsLocationOpen(false); }}
-                                className={`w-full text-left px-4 py-3 text-sm font-bold transition-colors ${marketLocation === loc
-                                    ? `${isDark ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#dcfce7] text-[#16a34a]'}`
-                                    : `${isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'}`
-                                  }`}
-                              >
-                                {loc}
-                              </button>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      <input
+                        type="text"
+                        placeholder="e.g. Kabacan, North Cotabato"
+                        value={marketLocation}
+                        onChange={(e) => setMarketLocation(e.target.value)}
+                        onBlur={() => handleBlur('marketLocation')}
+                        className={`${inputClass('marketLocation')} pl-12 pr-10`}
+                      />
+                      {isValid('marketLocation') && <CheckCircle size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#22c55e]" />}
                     </div>
                     {hasError('marketLocation') && <p className="text-[#ef4444] text-[10px] font-semibold mt-1 px-1">{errors.marketLocation}</p>}
                   </div>

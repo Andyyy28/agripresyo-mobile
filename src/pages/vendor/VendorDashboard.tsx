@@ -9,7 +9,7 @@ import type { ShopProfile } from '../../types';
 const SHOP_PROFILE_KEY = 'agripresyo_shop_profile';
 
 const specialtyOptions = ['Fruit Seller', 'Veggie Seller', 'Mixed', 'Spices', 'Roots'];
-const locationOptions = ['Bankerohan', 'Agdao', 'Uyanguren', 'Tiangge', 'Other'];
+
 
 const commodityOptions = [
   { name: 'Carabao Mango', emoji: '🥭', category: 'Fruits' },
@@ -57,7 +57,7 @@ const VendorDashboard: React.FC = () => {
   const [editProfile, setEditProfile] = useState<ShopProfile>(shopProfile);
   const [showSaveToast, setShowSaveToast] = useState(false);
   const [specialtyDropdownOpen, setSpecialtyDropdownOpen] = useState(false);
-  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
 
   // ===== VERIFICATION STATE =====
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -353,33 +353,13 @@ const VendorDashboard: React.FC = () => {
             <div className="flex-1 min-w-0">
               <p className={`text-[9px] font-black uppercase tracking-wider ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Location</p>
               {isEditing ? (
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setLocationDropdownOpen(!locationDropdownOpen)}
-                    className={`w-full text-sm font-bold text-left bg-transparent border-b-2 border-[#22c55e] focus:outline-none py-0.5 flex items-center justify-between ${isDark ? 'text-white' : 'text-[#111827]'}`}
-                  >
-                    {editProfile.location}
-                    <ChevronDown size={14} className={`transition-transform ${locationDropdownOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  {locationDropdownOpen && (
-                    <div className={`absolute top-full left-0 right-0 mt-1 rounded-xl border overflow-hidden z-20 ${isDark ? 'bg-[#141418] border-[#22c55e]' : 'bg-white border-[#22c55e]'}`}>
-                      {locationOptions.map((loc) => (
-                        <button
-                          key={loc}
-                          onClick={() => { setEditProfile({ ...editProfile, location: loc }); setLocationDropdownOpen(false); }}
-                          className={`w-full text-left px-3 py-2.5 text-sm font-bold transition-colors ${
-                            editProfile.location === loc
-                              ? isDark ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#dcfce7] text-[#16a34a]'
-                              : isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'
-                          }`}
-                        >
-                          {loc}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <input
+                  type="text"
+                  placeholder="e.g. Kabacan, North Cotabato"
+                  value={editProfile.location}
+                  onChange={(e) => setEditProfile({ ...editProfile, location: e.target.value })}
+                  className={`w-full text-sm font-bold bg-transparent border-b-2 border-[#22c55e] focus:outline-none py-0.5 ${isDark ? 'text-white placeholder-gray-500' : 'text-[#111827] placeholder-gray-400'}`}
+                />
               ) : (
                 <p className={`text-sm font-bold truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{shopProfile.location}</p>
               )}
@@ -584,7 +564,9 @@ const VendorDashboard: React.FC = () => {
                 key={item.id}
                 className={`rounded-xl border p-3.5 flex items-center gap-3 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb]'}`}
               >
-                <span className="text-xl">{item.emoji}</span>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${isDark ? 'bg-[#1a1a1e]' : 'bg-gray-50'}`}>
+                  {item.emoji}
+                </div>
                 <div className="flex-1 min-w-0">
                   <h4 className={`font-bold text-sm truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.name}</h4>
                   <p className={`text-[9px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>{item.category || 'General'}</p>

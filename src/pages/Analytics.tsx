@@ -67,7 +67,14 @@ const Analytics: React.FC = () => {
             className={`flex items-center gap-2 px-2.5 py-2 rounded-lg ${isDark ? 'bg-[#1a1a1e]' : 'bg-gray-50'}`}
           >
             <span className={`text-[10px] font-black ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>#{i + 1}</span>
-            <span className="text-sm">{item.emoji}</span>
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden shrink-0 ${isDark ? item.darkBgColor : item.lightBgColor}`}>
+              <img
+                src={`/images/commodities/${item.slug}.webp`}
+                alt={item.name}
+                className="w-full h-full object-contain p-0.5"
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+            </div>
             <span className={`text-xs font-bold flex-1 truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.name}</span>
             <span className="text-xs font-black text-[#22c55e]">₱{item.price}</span>
           </div>

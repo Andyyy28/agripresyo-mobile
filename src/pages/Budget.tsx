@@ -3,9 +3,11 @@ import { commodities } from '../data/mockData';
 import { Calculator, Trash2, Minus, Plus, AlertTriangle, ShoppingBasket } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAssets } from '../context/AssetContext';
+import { useTheme } from '../context/ThemeContext';
 
 const Budget: React.FC = () => {
   const { assets, liquidity, removeAsset, updateQuantity, setLiquidity } = useAssets();
+  const { isDark } = useTheme();
 
   const assetDetails = useMemo(() =>
     assets.map(asset => {
@@ -97,9 +99,14 @@ const Budget: React.FC = () => {
                 className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4"
               >
                 <div className="flex items-center gap-3">
-                  {/* Emoji */}
-                  <div className="w-11 h-11 bg-[#1a1a1e] rounded-xl flex items-center justify-center text-2xl border border-[#2a2a2e] shrink-0">
-                    {asset.commodity.emoji}
+                  {/* Commodity Image */}
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${isDark ? asset.commodity.darkBgColor : asset.commodity.lightBgColor}`}>
+                    <img
+                      src={`/images/commodities/${asset.commodity.slug}.webp`}
+                      alt={asset.commodity.name}
+                      className="w-full h-full object-contain p-1"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
                   </div>
 
                   {/* Name & Weight */}
@@ -131,20 +138,15 @@ const Budget: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Price Row */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#1f1f23]">
-                  <p className="text-[9px] font-bold text-gray-600 uppercase tracking-wider">
-                    {asset.totalKg.toFixed(2)}kg × ₱{asset.commodity.price.toFixed(2)}/kg
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <p className="text-base font-black text-white">₱{asset.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                    <button
-                      onClick={() => removeAsset(asset.commodityId)}
-                      className="text-gray-600 hover:text-[#ef4444] transition-colors p-1"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+                {/* Price + Delete */}
+                <div className="flex items-center justify-end mt-2 gap-3">
+                  <p className="text-base font-black text-white">₱{asset.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  <button
+                    onClick={() => removeAsset(asset.commodityId)}
+                    className="text-gray-600 hover:text-[#ef4444] transition-colors p-1"
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </div>
               </motion.div>
             ))

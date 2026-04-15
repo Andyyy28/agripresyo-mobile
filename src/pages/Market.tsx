@@ -150,8 +150,7 @@ const Market: React.FC = () => {
 
         {/* Greeting */}
         <div>
-          <p className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Welcome back</p>
-          <p className={`text-lg font-bold mt-0.5 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{user?.name || 'User'} 👋</p>
+          <p className={`text-lg font-bold mt-0.5 ${isDark ? 'text-white' : 'text-[#111827]'}`}>Hello, {user?.name || 'User'} 👋</p>
         </div>
 
         {/* Search Bar */}
@@ -233,17 +232,15 @@ const Market: React.FC = () => {
                   onClick={() => handleCommodityClick(item)}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="text-xl">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden ${isDark ? item.darkBgColor : item.lightBgColor}`}>
                       <img
-                        src={item.image}
+                        src={`/images/commodities/${item.slug}.webp`}
                         alt={item.name}
-                        className="w-8 h-8 rounded-lg object-cover"
+                        className="w-full h-full object-contain p-1"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                          (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                          e.currentTarget.style.display = 'none';
                         }}
                       />
-                      <span className="hidden text-xl">{item.emoji}</span>
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleSaved(item.id); }}
@@ -289,17 +286,15 @@ const Market: React.FC = () => {
               >
                 <div className="flex justify-between items-start">
                   {/* Commodity image with emoji fallback */}
-                  <div className="text-xl">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden ${isDark ? item.darkBgColor : item.lightBgColor}`}>
                     <img
-                      src={item.image}
+                      src={`/images/commodities/${item.slug}.webp`}
                       alt={item.name}
-                      className="w-8 h-8 rounded-lg object-cover"
+                      className="w-full h-full object-contain p-1"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                        (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                        e.currentTarget.style.display = 'none';
                       }}
                     />
-                    <span className="hidden text-xl">{item.emoji}</span>
                   </div>
                   {/* Heart icon — filled red when saved, outline when not */}
                   <button
@@ -375,7 +370,14 @@ const Market: React.FC = () => {
                 onClick={() => addAsset(item.id)}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">{item.emoji}</span>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden shrink-0 ${isDark ? item.darkBgColor : item.lightBgColor}`}>
+                    <img
+                      src={`/images/commodities/${item.slug}.webp`}
+                      alt={item.name}
+                      className="w-full h-full object-contain p-0.5"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  </div>
                   <p className={`font-bold text-xs truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.name}</p>
                 </div>
                 <p className={`text-base font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{item.price}</p>
@@ -442,8 +444,13 @@ const Market: React.FC = () => {
                     className={`rounded-xl border p-3 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl border shrink-0 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-[#f3f4f6] border-[#e5e7eb]'}`}>
-                        {asset.commodity.emoji}
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${isDark ? asset.commodity.darkBgColor : asset.commodity.lightBgColor}`}>
+                        <img
+                          src={`/images/commodities/${asset.commodity.slug}.webp`}
+                          alt={asset.commodity.name}
+                          className="w-full h-full object-contain p-1"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className={`text-sm font-bold truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{asset.commodity.name}</p>
@@ -470,16 +477,11 @@ const Market: React.FC = () => {
                         </button>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-dashed" style={{ borderColor: isDark ? '#1f1f23' : '#e5e7eb' }}>
-                      <p className={`text-[9px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
-                        {asset.totalKg.toFixed(2)}kg × ₱{asset.commodity.price.toFixed(2)}/kg
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <p className={`text-base font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{asset.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                        <button onClick={() => removeAsset(asset.commodityId)} className="text-gray-600 hover:text-[#ef4444] transition-colors p-1">
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
+                    <div className="flex items-center justify-end mt-2 gap-3">
+                      <p className={`text-base font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{asset.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                      <button onClick={() => removeAsset(asset.commodityId)} className="text-gray-600 hover:text-[#ef4444] transition-colors p-1">
+                        <Trash2 size={14} />
+                      </button>
                     </div>
                   </motion.div>
                 ))
