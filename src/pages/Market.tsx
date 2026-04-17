@@ -17,7 +17,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const categories = ['All', 'Fruits', 'Vegetables', 'Spices', 'Roots'];
-const subFilters = ['ALL', '₱+', '₱-', 'HOT', 'TOP'];
+const subFilters = ['ALL', '₱+', '₱-', 'HIGH DEMAND', 'TOP GAINER'];
 
 const Market: React.FC = () => {
   const { user } = useAuth();
@@ -44,10 +44,10 @@ const Market: React.FC = () => {
       case '₱-':
         list = [...list].sort((a, b) => a.price - b.price);
         break;
-      case 'HOT':
+      case 'HIGH DEMAND':
         list = [...list].sort((a, b) => Math.abs(b.percentChange) - Math.abs(a.percentChange));
         break;
-      case 'TOP':
+      case 'TOP GAINER':
         list = [...list].filter(c => c.isInSeason);
         break;
       default:

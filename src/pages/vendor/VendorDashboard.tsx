@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useInventory } from '../../context/InventoryContext';
+import { getCommodityBg } from '../../data/commodityColors';
 import type { ShopProfile } from '../../types';
 
 const SHOP_PROFILE_KEY = 'agripresyo_shop_profile';
@@ -12,21 +13,21 @@ const specialtyOptions = ['Fruit Seller', 'Veggie Seller', 'Mixed', 'Spices', 'R
 
 
 const commodityOptions = [
-  { name: 'Carabao Mango', emoji: '🥭', category: 'Fruits' },
-  { name: 'Pineapple', emoji: '🍍', category: 'Fruits' },
-  { name: 'Baguio Strawberries', emoji: '🍓', category: 'Fruits' },
-  { name: 'Hass Avocado', emoji: '🥑', category: 'Fruits' },
-  { name: 'Seedless Watermelon', emoji: '🍉', category: 'Fruits' },
-  { name: 'Davao Pomelo', emoji: '🍊', category: 'Fruits' },
-  { name: 'Red Onion', emoji: '🧅', category: 'Spices' },
-  { name: 'Siling Labuyo', emoji: '🌶️', category: 'Spices' },
-  { name: 'Yellow Ginger', emoji: '🫚', category: 'Spices' },
-  { name: 'Highland Carrots', emoji: '🥕', category: 'Vegetables' },
-  { name: 'Pechay', emoji: '🥬', category: 'Vegetables' },
-  { name: 'Native Tomato', emoji: '🍅', category: 'Vegetables' },
-  { name: 'Sitaw', emoji: '🫛', category: 'Vegetables' },
-  { name: 'Okra', emoji: '🥒', category: 'Vegetables' },
-  { name: 'Granola Potato', emoji: '🥔', category: 'Roots' },
+  { name: 'Carabao Mango', emoji: '🥭', slug: 'mango', category: 'Fruits' },
+  { name: 'Pineapple', emoji: '🍍', slug: 'pineapple', category: 'Fruits' },
+  { name: 'Baguio Strawberries', emoji: '🍓', slug: 'strawberry', category: 'Fruits' },
+  { name: 'Hass Avocado', emoji: '🥑', slug: 'avocado', category: 'Fruits' },
+  { name: 'Seedless Watermelon', emoji: '🍉', slug: 'watermelon', category: 'Fruits' },
+  { name: 'Davao Pomelo', emoji: '🍊', slug: 'pomelo', category: 'Fruits' },
+  { name: 'Red Onion', emoji: '🧅', slug: 'onion', category: 'Spices' },
+  { name: 'Siling Labuyo', emoji: '🌶️', slug: 'chili', category: 'Spices' },
+  { name: 'Yellow Ginger', emoji: '🫚', slug: 'ginger', category: 'Spices' },
+  { name: 'Highland Carrots', emoji: '🥕', slug: 'carrot', category: 'Vegetables' },
+  { name: 'Pechay', emoji: '🥬', slug: 'pechay', category: 'Vegetables' },
+  { name: 'Native Tomato', emoji: '🍅', slug: 'tomato', category: 'Vegetables' },
+  { name: 'Sitaw', emoji: '🫛', slug: 'sitaw', category: 'Vegetables' },
+  { name: 'Okra', emoji: '🥒', slug: 'okra', category: 'Vegetables' },
+  { name: 'Granola Potato', emoji: '🥔', slug: 'potato', category: 'Roots' },
 ];
 
 const VendorDashboard: React.FC = () => {
@@ -564,8 +565,13 @@ const VendorDashboard: React.FC = () => {
                 key={item.id}
                 className={`rounded-xl border p-3.5 flex items-center gap-3 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb]'}`}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${isDark ? 'bg-[#1a1a1e]' : 'bg-gray-50'}`}>
-                  {item.emoji}
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${getCommodityBg((commodityOptions.find(c => c.name === item.name)?.slug) || '', isDark)}`}>
+                  <img
+                    src={`/images/commodities/${(commodityOptions.find(c => c.name === item.name)?.slug) || item.name.toLowerCase().replace(/\s+/g, '-')}.webp`}
+                    alt={item.name}
+                    className="w-full h-full object-contain p-1"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className={`font-bold text-sm truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.name}</h4>
@@ -642,7 +648,14 @@ const VendorDashboard: React.FC = () => {
                       className={`w-full flex items-center justify-between rounded-xl py-3 px-4 text-sm font-bold border ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e] text-white' : 'bg-[#f3f4f6] border-[#e5e7eb] text-[#111827]'}`}
                     >
                       <span className="flex items-center gap-2">
-                        <span>{listingCommodity.emoji}</span>
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden shrink-0 ${getCommodityBg(listingCommodity.slug, isDark)}`}>
+                          <img
+                            src={`/images/commodities/${listingCommodity.slug}.webp`}
+                            alt={listingCommodity.name}
+                            className="w-full h-full object-contain p-0.5"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        </div>
                         {listingCommodity.name}
                       </span>
                       <ChevronDown size={16} className={`transition-transform ${commodityDropdownOpen ? 'rotate-180' : ''}`} />
@@ -659,9 +672,15 @@ const VendorDashboard: React.FC = () => {
                                 : isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'
                             }`}
                           >
-                            <span>{opt.emoji}</span>
-                            {opt.name}
-                            <span className={`text-[9px] ml-auto ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>{opt.category}</span>
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden shrink-0 ${getCommodityBg(opt.slug, isDark)}`}>
+                            <img
+                              src={`/images/commodities/${opt.slug}.webp`}
+                              alt={opt.name}
+                              className="w-full h-full object-contain p-0.5"
+                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                            />
+                          </div>
+                          {opt.name}
                           </button>
                         ))}
                       </div>

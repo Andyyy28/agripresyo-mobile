@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { Store, CheckCircle, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, MapPin, Package, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
+import { getCommodityBg } from '../../data/commodityColors';
 
 const VendorProfile: React.FC = () => {
   const { user, logout } = useAuth();
@@ -23,12 +24,12 @@ const VendorProfile: React.FC = () => {
   };
 
   const commoditiesSold = [
-    { name: 'Carabao Mango', emoji: '🥭' },
-    { name: 'Pineapple', emoji: '🍍' },
-    { name: 'Red Onion', emoji: '🧅' },
-    { name: 'Siling Labuyo', emoji: '🌶️' },
-    { name: 'Highland Carrots', emoji: '🥕' },
-    { name: 'Native Tomato', emoji: '🍅' },
+    { name: 'Carabao Mango', slug: 'mango' },
+    { name: 'Pineapple', slug: 'pineapple' },
+    { name: 'Red Onion', slug: 'onion' },
+    { name: 'Siling Labuyo', slug: 'chili' },
+    { name: 'Highland Carrots', slug: 'carrot' },
+    { name: 'Native Tomato', slug: 'tomato' },
   ];
 
   const settingsItems = [
@@ -132,8 +133,15 @@ const VendorProfile: React.FC = () => {
         <div className={`rounded-2xl border p-4 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
           <div className="flex flex-wrap gap-2">
             {commoditiesSold.map((item) => (
-              <div key={item.name} className={`border rounded-lg px-3 py-2 flex items-center gap-2 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb]'}`}>
-                <span className="text-sm">{item.emoji}</span>
+              <div key={item.name} className={`border rounded-full px-3 py-2 flex items-center gap-2 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-white border-gray-200'}`}>
+                <div className={`w-6 h-6 rounded-md flex items-center justify-center overflow-hidden ${getCommodityBg(item.slug, isDark)}`}>
+                  <img
+                    src={`/images/commodities/${item.slug}.webp`}
+                    alt={item.name}
+                    className="w-full h-full object-contain p-0.5"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                </div>
                 <span className={`text-xs font-bold ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{item.name}</span>
               </div>
             ))}

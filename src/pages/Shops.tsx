@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { shopVendors } from '../data/mockData';
+import { shopVendors, commodities } from '../data/mockData';
 import { Star, ShoppingBag, Leaf, ArrowRight, Bell, Sun, Moon } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext';
 import { useNotifications } from '../context/NotificationContext';
+import { getCommodityBg } from '../data/commodityColors';
 
 const filterOptions = ['ALL', 'FRUITS', 'VEGETABLES'];
 
@@ -78,13 +79,22 @@ const Shops: React.FC = () => {
           </div>
         </div>
 
-        {/* Commodity Emojis */}
+        {/* Commodity Images */}
         <div className="flex gap-1.5">
-          {vendor.commodities.map((emoji, i) => (
-            <div key={i} className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDark ? 'bg-[#1a1a1e]' : 'bg-gray-50'}`}>
-              <span className="text-sm">{emoji}</span>
-            </div>
-          ))}
+          {(vendor.commodityIds || []).slice(0, 4).map((cId, i) => {
+            const commodity = commodities.find(c => c.id === cId);
+            if (!commodity) return null;
+            return (
+              <div key={i} className={`w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden ${getCommodityBg(commodity.slug, isDark)}`}>
+                <img
+                  src={`/images/commodities/${commodity.slug}.webp`}
+                  alt={commodity.name}
+                  className="w-full h-full object-contain p-0.5"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Bottom Actions */}
