@@ -119,7 +119,7 @@ const Signup: React.FC = () => {
         <motion.button
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/login')}
           className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${isDark ? 'bg-[#141418] border border-[#1f1f23] text-gray-400' : 'bg-white border border-[#e5e7eb] text-gray-500'
             }`}
         >
@@ -375,7 +375,7 @@ const Signup: React.FC = () => {
               Already have an account?{' '}
               <button
                 type="button"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/login')}
                 className="text-[#22c55e] font-bold uppercase text-xs tracking-wider"
               >
                 Login

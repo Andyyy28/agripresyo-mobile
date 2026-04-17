@@ -13,7 +13,7 @@ const VendorProfile: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/', { replace: true });
+    navigate('/login', { replace: true });
   };
 
   const verificationStatus = user?.verificationStatus || 'none';

@@ -15,6 +15,7 @@ import Layout from './components/Layout';
 import NotificationPanel from './components/NotificationPanel';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Onboarding from './pages/Onboarding';
 import Market from './pages/Market';
 import Shops from './pages/Shops';
 import Analytics from './pages/Analytics';
@@ -27,7 +28,7 @@ function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode; 
   const { isAuthenticated, user } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (allowedRole && user?.role !== allowedRole) {
@@ -42,9 +43,19 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {/* Login */}
+      {/* Root — Always show onboarding (prototype mode) */}
       <Route
         path="/"
+        element={
+          isAuthenticated
+            ? <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/dashboard'} replace />
+            : <Onboarding />
+        }
+      />
+
+      {/* Login */}
+      <Route
+        path="/login"
         element={
           isAuthenticated
             ? <Navigate to={user?.role === 'consumer' ? '/market' : '/vendor/dashboard'} replace />

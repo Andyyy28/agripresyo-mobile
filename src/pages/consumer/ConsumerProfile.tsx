@@ -12,7 +12,7 @@ const ConsumerProfile: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/', { replace: true });
+    navigate('/login', { replace: true });
   };
 
   const settingsItems = [
