@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Zap, Package, Edit2, Shield, AlertTriangle, Plus, Store, Clock, MapPin, ChevronDown, X, AlertCircle, Trash2, Check } from 'lucide-react';
+import { ShoppingBag, Zap, Package, Edit2, Shield, AlertTriangle, Plus, Store, Clock, MapPin, ChevronDown, X, AlertCircle, Trash2, Check, Send, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -65,6 +65,15 @@ const VendorDashboard: React.FC = () => {
   const [isSubmittingVerification, setIsSubmittingVerification] = useState(false);
   const verificationStatus = user?.verificationStatus || 'none';
 
+  // ===== REPORT ISSUE STATE =====
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [reportSubject, setReportSubject] = useState('');
+  const [reportMessage, setReportMessage] = useState('');
+  const [showReportConfirm, setShowReportConfirm] = useState(false);
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
+  const [showReportSuccess, setShowReportSuccess] = useState(false);
+  const [reportErrors, setReportErrors] = useState<{ subject?: string; message?: string }>({});
+
   // ===== NEW LISTING MODAL STATE =====
   const [isListingModalOpen, setIsListingModalOpen] = useState(false);
   const [editingInventoryItem, setEditingInventoryItem] = useState<string | null>(null);
@@ -121,6 +130,64 @@ const VendorDashboard: React.FC = () => {
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
+  };
+
+  // ===== REPORT ISSUE HANDLERS =====
+  const handleOpenReport = () => {
+    setReportSubject('');
+    setReportMessage('');
+    setReportErrors({});
+    setShowReportConfirm(false);
+    setIsReportOpen(true);
+  };
+
+  const validateReport = (): boolean => {
+    const errors: { subject?: string; message?: string } = {};
+    if (!reportSubject.trim()) errors.subject = 'Subject is required';
+    if (!reportMessage.trim()) errors.message = 'Message is required';
+    setReportErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleReportSubmitClick = () => {
+    if (!validateReport()) return;
+    setShowReportConfirm(true);
+  };
+
+  const handleReportGoBack = () => {
+    setShowReportConfirm(false);
+  };
+
+  const handleReportConfirm = () => {
+    setIsSubmittingReport(true);
+    // Store in localStorage (no backend)
+    const complaint = {
+      id: Date.now().toString(),
+      subject: reportSubject.trim(),
+      message: reportMessage.trim(),
+      vendorId: user?.email || 'unknown',
+      vendorName: user?.name || 'Unknown Vendor',
+      createdAt: new Date().toISOString(),
+    };
+    try {
+      const existing = JSON.parse(localStorage.getItem('agripresyo_complaints') || '[]');
+      existing.push(complaint);
+      localStorage.setItem('agripresyo_complaints', JSON.stringify(existing));
+    } catch {
+      // fallback: just set
+      localStorage.setItem('agripresyo_complaints', JSON.stringify([complaint]));
+    }
+    // Simulate short delay for UX
+    setTimeout(() => {
+      setIsSubmittingReport(false);
+      setShowReportConfirm(false);
+      setIsReportOpen(false);
+      setReportSubject('');
+      setReportMessage('');
+      setReportErrors({});
+      setShowReportSuccess(true);
+      setTimeout(() => setShowReportSuccess(false), 3000);
+    }, 800);
   };
 
   // ===== NEW LISTING HANDLERS =====
@@ -198,6 +265,21 @@ const VendorDashboard: React.FC = () => {
           >
             <Check size={16} />
             Shop profile saved
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Report Success Toast */}
+      <AnimatePresence>
+        {showReportSuccess && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-[#22c55e] text-black px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-2xl shadow-[#22c55e]/30"
+          >
+            <Check size={16} />
+            Complaint submitted successfully
           </motion.div>
         )}
       </AnimatePresence>
@@ -512,7 +594,10 @@ const VendorDashboard: React.FC = () => {
           <p className={`text-[9px] font-black uppercase tracking-wider mt-0.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Managing Your Assets</p>
         </div>
         <div className="flex gap-3">
-          <button className="flex-1 bg-[#ef4444]/10 border border-[#ef4444]/20 text-[#ef4444] py-3 rounded-xl font-black text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#ef4444]/15 transition-colors active:scale-[0.98]">
+          <button
+            onClick={handleOpenReport}
+            className="flex-1 bg-[#ef4444]/10 border border-[#ef4444]/20 text-[#ef4444] py-3 rounded-xl font-black text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#ef4444]/15 transition-colors active:scale-[0.98]"
+          >
             <AlertTriangle size={14} />
             Report Issue
           </button>
@@ -784,6 +869,177 @@ const VendorDashboard: React.FC = () => {
                     Cancel
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ===== REPORT ISSUE MODAL ===== */}
+      <AnimatePresence>
+        {isReportOpen && !showReportConfirm && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsReportOpen(false)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60]"
+            />
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] border-t rounded-t-[32px] p-7 z-[70] ${
+                isDark ? 'bg-[#111114] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+              }`}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-1">
+                <h3 className={`text-xl font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>
+                  Report Issue
+                </h3>
+                <button
+                  onClick={() => setIsReportOpen(false)}
+                  className={`p-2 transition-colors ${isDark ? 'text-gray-500 hover:text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <p className={`text-xs mb-6 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Submit a complaint to admin</p>
+
+              <div className="flex flex-col gap-4">
+                {/* Subject */}
+                <div className="flex flex-col gap-1.5">
+                  <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Subject</label>
+                  <input
+                    type="text"
+                    placeholder="Enter subject..."
+                    value={reportSubject}
+                    onChange={(e) => { setReportSubject(e.target.value); if (reportErrors.subject) setReportErrors(prev => ({ ...prev, subject: undefined })); }}
+                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:outline-none transition-colors ${
+                      reportErrors.subject
+                        ? isDark ? 'bg-[#1a1a1e] border-2 border-[#ef4444] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border-2 border-[#ef4444] text-[#111827] placeholder-gray-400'
+                        : isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white placeholder-gray-600 focus:border-[#22c55e]/50' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400 focus:border-[#22c55e]/50'
+                    }`}
+                  />
+                  {reportErrors.subject && (
+                    <p className="text-[10px] font-bold text-[#ef4444] flex items-center gap-1">
+                      <AlertCircle size={10} />
+                      {reportErrors.subject}
+                    </p>
+                  )}
+                </div>
+
+                {/* Message */}
+                <div className="flex flex-col gap-1.5">
+                  <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Message</label>
+                  <textarea
+                    placeholder="Describe the issue..."
+                    rows={4}
+                    value={reportMessage}
+                    onChange={(e) => { setReportMessage(e.target.value); if (reportErrors.message) setReportErrors(prev => ({ ...prev, message: undefined })); }}
+                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:outline-none resize-none transition-colors ${
+                      reportErrors.message
+                        ? isDark ? 'bg-[#1a1a1e] border-2 border-[#ef4444] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border-2 border-[#ef4444] text-[#111827] placeholder-gray-400'
+                        : isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white placeholder-gray-600 focus:border-[#22c55e]/50' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400 focus:border-[#22c55e]/50'
+                    }`}
+                  />
+                  {reportErrors.message && (
+                    <p className="text-[10px] font-bold text-[#ef4444] flex items-center gap-1">
+                      <AlertCircle size={10} />
+                      {reportErrors.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  onClick={handleReportSubmitClick}
+                  className="w-full bg-[#ef4444] text-white py-3.5 rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#dc2626] transition-colors active:scale-[0.98] mt-1"
+                >
+                  <Send size={16} />
+                  Submit Complaint
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ===== REPORT CONFIRMATION MODAL ===== */}
+      <AnimatePresence>
+        {showReportConfirm && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[80]"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-48px)] max-w-[380px] rounded-3xl p-7 z-[90] shadow-2xl ${
+                isDark ? 'bg-[#111114] border border-[#1f1f23]' : 'bg-white border border-[#e5e7eb]'
+              }`}
+            >
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-[#ef4444]/15 flex items-center justify-center">
+                  <AlertTriangle size={20} className="text-[#ef4444]" />
+                </div>
+                <div>
+                  <h3 className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Confirm Submission</h3>
+                  <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Are you sure you want to submit this complaint?</p>
+                </div>
+              </div>
+
+              {/* Preview */}
+              <div className={`rounded-2xl p-4 flex flex-col gap-3 mb-6 ${isDark ? 'bg-[#1a1a1e]' : 'bg-[#f3f4f6]'}`}>
+                <div>
+                  <p className={`text-[9px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Subject</p>
+                  <p className={`text-sm font-bold ${isDark ? 'text-white' : 'text-[#111827]'}`}>{reportSubject}</p>
+                </div>
+                <div className={`border-t ${isDark ? 'border-[#2a2a2e]' : 'border-[#e5e7eb]'}`} />
+                <div>
+                  <p className={`text-[9px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Message</p>
+                  <p className={`text-xs leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{reportMessage}</p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleReportGoBack}
+                  disabled={isSubmittingReport}
+                  className={`flex-1 py-3.5 rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50 ${
+                    isDark ? 'bg-[#1a1a1e] text-gray-400 hover:text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <ArrowLeft size={14} />
+                  Go Back
+                </button>
+                <button
+                  onClick={handleReportConfirm}
+                  disabled={isSubmittingReport}
+                  className="flex-1 bg-[#ef4444] text-white py-3.5 rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#dc2626] transition-colors active:scale-[0.98] disabled:opacity-70"
+                >
+                  {isSubmittingReport ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Check size={14} />
+                      Confirm
+                    </>
+                  )}
+                </button>
               </div>
             </motion.div>
           </>
