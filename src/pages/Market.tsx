@@ -33,9 +33,25 @@ const Market: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredCommodities = useMemo(() => {
-    let list = commodities
-      .filter(c => activeCategory === 'All' || c.category === activeCategory)
-      .filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    const keyword = searchQuery.trim().toLowerCase();
+
+    const categoryFiltered = commodities
+      .filter(c => activeCategory === 'All' || c.category === activeCategory);
+
+    // Prefix-first search: startsWith matches first, then contains matches
+    let list: typeof categoryFiltered;
+    if (keyword) {
+      const startsWithMatches = categoryFiltered.filter(c =>
+        c.name.toLowerCase().startsWith(keyword)
+      );
+      const containsMatches = categoryFiltered.filter(c =>
+        !c.name.toLowerCase().startsWith(keyword) &&
+        c.name.toLowerCase().includes(keyword)
+      );
+      list = [...startsWithMatches, ...containsMatches];
+    } else {
+      list = categoryFiltered;
+    }
 
     switch (activeSubFilter) {
       case '₱+':
