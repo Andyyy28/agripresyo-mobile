@@ -10,6 +10,7 @@ import { useAssets } from '../context/AssetContext';
 import { useWatchlist } from '../context/WatchlistContext';
 import { useNotifications } from '../context/NotificationContext';
 import CommodityDetailModal from '../components/CommodityDetailModal';
+import InsightsSection from '../components/InsightsSection';
 import type { Commodity } from '../types';
 
 function cn(...inputs: ClassValue[]) {
@@ -551,6 +552,9 @@ const Market: React.FC = () => {
             </div>
           )}
         </section>
+
+        {/* Insights for You */}
+        <InsightsSection role={user?.role || 'consumer'} />
       </div>
 
       {/* Commodity Detail Modal */}
