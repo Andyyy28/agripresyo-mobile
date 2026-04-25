@@ -9,6 +9,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useAssets } from '../context/AssetContext';
 import { useWatchlist } from '../context/WatchlistContext';
 import { useNotifications } from '../context/NotificationContext';
+import { useLanguage } from '../context/LanguageContext';
 import CommodityDetailModal from '../components/CommodityDetailModal';
 import InsightsSection from '../components/InsightsSection';
 import type { Commodity } from '../types';
@@ -23,9 +24,10 @@ const subFilters = ['ALL', '₱+', '₱-', 'HIGH DEMAND', 'TOP GAINER'];
 const Market: React.FC = () => {
   const { user } = useAuth();
   const { isDark, toggleTheme, colors } = useTheme();
-  const { assets, liquidity, removeAsset, updateQuantity, setLiquidity, addAsset } = useAssets();
+  const { assets, liquidity, removeAsset, updateQuantity, setLiquidity, addAsset, toggleMode } = useAssets();
   const { savedIds, toggleSaved, isSaved } = useWatchlist();
   const { openPanel, unreadCount } = useNotifications();
+  const { t } = useLanguage();
 
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeSubFilter, setActiveSubFilter] = useState('ALL');
@@ -92,13 +94,14 @@ const Market: React.FC = () => {
     setTimeout(() => setSelectedCommodity(null), 300);
   };
 
-  // Smart Asset Projection calculations
+  // Smart Budget Planner calculations
   const assetDetails = useMemo(() =>
     assets.map(asset => {
       const commodity = commodities.find(c => c.id === asset.commodityId)!;
-      const totalKg = asset.quantity * commodity.unitWeight;
+      const mode = asset.mode || 'qty';
+      const totalKg = mode === 'qty' ? asset.quantity * commodity.unitWeight : asset.quantity;
       const totalPrice = totalKg * commodity.price;
-      return { ...asset, commodity, totalKg, totalPrice };
+      return { ...asset, commodity, totalKg, totalPrice, mode };
     }),
     [assets]
   );
@@ -167,7 +170,7 @@ const Market: React.FC = () => {
 
         {/* Greeting */}
         <div>
-          <p className={`text-lg font-bold mt-0.5 ${isDark ? 'text-white' : 'text-[#111827]'}`}>Hello, {user?.name || 'User'} 👋</p>
+          <p className={`text-lg font-bold mt-0.5 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('greeting')}, {user?.name || 'User'} 👋</p>
         </div>
 
         {/* Search Bar */}
@@ -177,7 +180,7 @@ const Market: React.FC = () => {
             <input
               id="market-search"
               type="text"
-              placeholder="Search commodities..."
+              placeholder={t('search_commodities')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full rounded-xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:border-[#22c55e]/50 transition-colors ${isDark ? 'bg-[#141418] border border-[#1f1f23] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400'
@@ -202,7 +205,7 @@ const Market: React.FC = () => {
                       : "bg-white text-gray-500 border border-[#e5e7eb] hover:border-[#d1d5db]"
                 )}
               >
-                {cat}
+                {t(`cat_${cat.toLowerCase()}`)}
               </button>
             ))}
           </div>
@@ -224,7 +227,7 @@ const Market: React.FC = () => {
                       : "bg-gray-100 text-gray-400 border border-[#e5e7eb]"
                 )}
               >
-                {sf}
+                {t(`sf_${sf === 'ALL' ? 'all' : sf === '₱+' ? 'price_up' : sf === '₱-' ? 'price_down' : sf === 'HIGH DEMAND' ? 'high_demand' : 'top_gainer'}`)}
               </button>
             ))}
           </div>
@@ -235,9 +238,9 @@ const Market: React.FC = () => {
           <section>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-sm">❤️</span>
-              <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>My Watchlist</h2>
+              <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('my_watchlist')}</h2>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-100 text-gray-400'}`}>
-                {watchlistCommodities.length} {watchlistCommodities.length === 1 ? 'ITEM' : 'ITEMS'}
+                {watchlistCommodities.length} {watchlistCommodities.length === 1 ? t('item') : t('items')}
               </span>
             </div>
             <div className="flex gap-3 overflow-x-auto pb-3 no-scrollbar">
@@ -284,8 +287,8 @@ const Market: React.FC = () => {
         {/* Price Insights Header */}
         <section className="flex items-center gap-2">
           <BarChart3 size={16} className="text-[#22c55e]" />
-          <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>Price Insights</h2>
-          <span className={`text-[10px] font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{filteredCommodities.length} results</span>
+          <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('price_insights')}</h2>
+          <span className={`text-[10px] font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{filteredCommodities.length} {t('results')}</span>
         </section>
 
         {/* Commodity Grid — 3 columns */}
@@ -331,7 +334,7 @@ const Market: React.FC = () => {
                   "self-start px-1.5 py-0.5 rounded-full text-[6px] font-black uppercase tracking-wider",
                   item.isInSeason ? "bg-[#22c55e]/15 text-[#22c55e]" : "bg-[#ef4444]/15 text-[#ef4444]"
                 )}>
-                  {item.isInSeason ? 'IN SEASON' : 'OFF SEASON'}
+                  {item.isInSeason ? t('in_season') : t('off_season')}
                 </span>
 
                 <div className="flex items-center justify-between">
@@ -374,9 +377,9 @@ const Market: React.FC = () => {
         <section>
           <div className="flex items-center justify-between mb-3">
             <h2 className={`text-sm font-black uppercase tracking-wider flex items-center gap-2 ${isDark ? 'text-white' : 'text-[#111827]'}`}>
-              🧺 Suggested Basket
+              🧺 {t('suggested_basket')}
             </h2>
-            <span className={`text-[9px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Best Value Picks Within ₱1000</span>
+            <span className={`text-[9px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('best_value')}</span>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-3 no-scrollbar">
             {suggestedBasket.map((item) => (
@@ -398,13 +401,13 @@ const Market: React.FC = () => {
                   <p className={`font-bold text-xs truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{item.name}</p>
                 </div>
                 <p className={`text-base font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{item.price}</p>
-                <p className="text-[8px] font-bold text-[#22c55e] uppercase tracking-wider">Click to add to budget</p>
+                <p className="text-[8px] font-bold text-[#22c55e] uppercase tracking-wider">{t('click_add_budget')}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Smart Asset Projection — inline below Suggested Basket */}
+        {/* Smart Budget Planner — inline below Suggested Basket */}
         <section className={`rounded-2xl border p-5 ${isDark ? 'bg-[#0d0d10] border-[#1f1f23]' : 'bg-[#f8faf8] border-[#e5e7eb]'}`}>
           {/* Header */}
           <div className="flex items-center justify-between mb-1">
@@ -412,14 +415,14 @@ const Market: React.FC = () => {
               <div className="w-9 h-9 bg-[#22c55e]/15 rounded-xl flex items-center justify-center">
                 <Calculator size={20} className="text-[#22c55e]" />
               </div>
-              <h2 className={`text-base font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Smart Asset Projection</h2>
+              <h2 className={`text-base font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('smart_budget_planner')}</h2>
             </div>
           </div>
-          <p className={`text-xs mb-4 ml-12 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Auto-calculating unit weight vs market index values</p>
+          <p className={`text-xs mb-4 ml-12 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('auto_calc')}</p>
 
           {/* Liquidity Input */}
           <div className={`rounded-xl border p-3 flex items-center justify-between mb-4 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-            <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Liquidity</p>
+            <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('liquidity')}</p>
             <div className={`flex items-center gap-1 rounded-lg border px-3 py-2 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-[#f3f4f6] border-[#e5e7eb]'}`}>
               <span className="text-[#22c55e] font-black text-sm">₱</span>
               <input
@@ -444,64 +447,87 @@ const Market: React.FC = () => {
                     <Package size={24} className={isDark ? 'text-gray-600' : 'text-gray-400'} />
                   </div>
                   <p className={`text-center text-sm max-w-[220px] leading-relaxed font-bold uppercase tracking-wider ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
-                    No Active Trades
+                    {t('no_active_trades')}
                   </p>
                   <p className={`text-center text-xs max-w-[220px] ${isDark ? 'text-gray-700' : 'text-gray-400'}`}>
                     Select produce from market to begin calculating
                   </p>
                 </motion.div>
               ) : (
-                assetDetails.map((asset) => (
-                  <motion.div
-                    key={asset.commodityId}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -100 }}
-                    layout
-                    className={`rounded-xl border p-3 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${isDark ? asset.commodity.darkBgColor : asset.commodity.lightBgColor}`}>
-                        <img
-                          src={`/images/commodities/${asset.commodity.slug}.webp`}
-                          alt={asset.commodity.name}
-                          className="w-full h-full object-contain p-1"
-                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-bold truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{asset.commodity.name}</p>
-                        <p className="text-[9px] font-black text-[#22c55e] uppercase tracking-widest mt-0.5">
-                          {asset.quantity} Units = {asset.totalKg.toFixed(2)}KG
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-0 shrink-0">
-                        <span className="text-[8px] font-black text-[#22c55e] uppercase tracking-widest mr-2 bg-[#22c55e]/10 px-1.5 py-0.5 rounded">QTY</span>
-                        <button
-                          onClick={() => updateQuantity(asset.commodityId, asset.quantity - 1)}
-                          className={`w-7 h-7 border rounded-l-lg flex items-center justify-center transition-colors active:scale-95 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e] text-gray-400 hover:text-white hover:bg-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb] text-gray-500 hover:bg-gray-100'}`}
-                        >
-                          <Minus size={12} />
-                        </button>
-                        <div className={`w-8 h-7 border-y flex items-center justify-center ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb]'}`}>
-                          <span className={`text-xs font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{asset.quantity}</span>
+                assetDetails.map((asset) => {
+                  const isKgMode = asset.mode === 'kg';
+                  const stepAmount = isKgMode ? 0.5 : 1;
+                  const displayQty = isKgMode ? asset.quantity.toFixed(2) : asset.quantity;
+                  const subtractQty = isKgMode
+                    ? Math.max(0.01, parseFloat((asset.quantity - stepAmount).toFixed(2)))
+                    : asset.quantity - 1;
+                  const addQty = isKgMode
+                    ? parseFloat((asset.quantity + stepAmount).toFixed(2))
+                    : asset.quantity + 1;
+
+                  return (
+                    <motion.div
+                      key={asset.commodityId}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -100 }}
+                      layout
+                      className={`rounded-xl border p-3 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${isDark ? asset.commodity.darkBgColor : asset.commodity.lightBgColor}`}>
+                          <img
+                            src={`/images/commodities/${asset.commodity.slug}.webp`}
+                            alt={asset.commodity.name}
+                            className="w-full h-full object-contain p-1"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
                         </div>
-                        <button
-                          onClick={() => updateQuantity(asset.commodityId, asset.quantity + 1)}
-                          className={`w-7 h-7 border rounded-r-lg flex items-center justify-center transition-colors active:scale-95 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e] text-gray-400 hover:text-white hover:bg-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb] text-gray-500 hover:bg-gray-100'}`}
-                        >
-                          <Plus size={12} />
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-bold truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{asset.commodity.name}</p>
+                          <p className={`text-[9px] font-black uppercase tracking-widest mt-0.5 ${isKgMode ? 'text-[#3b82f6]' : 'text-[#22c55e]'}`}>
+                            {isKgMode
+                              ? `${asset.quantity.toFixed(2)} KG`
+                              : `${asset.quantity} Units ≈ ${asset.totalKg.toFixed(2)}KG`
+                            }
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-0 shrink-0">
+                          <button
+                            onClick={() => toggleMode(asset.commodityId)}
+                            className={`text-[8px] font-black uppercase tracking-widest mr-2 px-1.5 py-0.5 rounded cursor-pointer transition-colors active:scale-95 ${isKgMode
+                                ? 'text-[#3b82f6] bg-[#3b82f6]/10 hover:bg-[#3b82f6]/20'
+                                : 'text-[#22c55e] bg-[#22c55e]/10 hover:bg-[#22c55e]/20'
+                              }`}
+                          >
+                            {isKgMode ? 'KG' : t('qty')}
+                          </button>
+                          <button
+                            onClick={() => updateQuantity(asset.commodityId, subtractQty)}
+                            className={`w-7 h-7 border rounded-l-lg flex items-center justify-center transition-colors active:scale-95 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e] text-gray-400 hover:text-white hover:bg-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb] text-gray-500 hover:bg-gray-100'}`}
+                          >
+                            <Minus size={12} />
+                          </button>
+                          <div className={`w-10 h-7 border-y flex items-center justify-center ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb]'}`}>
+                            <span className={`text-[10px] font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{displayQty}</span>
+                          </div>
+                          <button
+                            onClick={() => updateQuantity(asset.commodityId, addQty)}
+                            className={`w-7 h-7 border rounded-r-lg flex items-center justify-center transition-colors active:scale-95 ${isDark ? 'bg-[#1a1a1e] border-[#2a2a2e] text-gray-400 hover:text-white hover:bg-[#2a2a2e]' : 'bg-gray-50 border-[#e5e7eb] text-gray-500 hover:bg-gray-100'}`}
+                          >
+                            <Plus size={12} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-end mt-2 gap-3">
+                        <p className={`text-base font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{asset.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        <button onClick={() => removeAsset(asset.commodityId)} className="text-gray-600 hover:text-[#ef4444] transition-colors p-1">
+                          <Trash2 size={14} />
                         </button>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-end mt-2 gap-3">
-                      <p className={`text-base font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{asset.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                      <button onClick={() => removeAsset(asset.commodityId)} className="text-gray-600 hover:text-[#ef4444] transition-colors p-1">
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </motion.div>
-                ))
+                    </motion.div>
+                  );
+                })
               )}
             </AnimatePresence>
           </div>
@@ -510,7 +536,7 @@ const Market: React.FC = () => {
           {assets.length > 0 && (
             <div className="flex flex-col gap-3 mt-4">
               <div className={`rounded-xl border p-4 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-                <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Total Projected Commitment</p>
+                <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('total_projected')}</p>
                 <div className="flex justify-between items-end">
                   <p className={`text-sm font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{totalKg.toFixed(2)}kg</p>
                   <p className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
@@ -518,7 +544,7 @@ const Market: React.FC = () => {
               </div>
 
               <div className={`rounded-xl border p-4 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-                <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Inventory Liquidity Used</p>
+                <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('inventory_liquidity')}</p>
                 <div className="flex justify-between items-center mb-2">
                   <p className="text-sm font-bold" style={{ color: getBarColor() }}>
                     {liquidityPercent.toFixed(1)}%
@@ -544,7 +570,7 @@ const Market: React.FC = () => {
                   >
                     <AlertTriangle size={14} className="text-[#ef4444] shrink-0" />
                     <p className="text-[10px] font-black text-[#ef4444] uppercase tracking-wider leading-relaxed">
-                      ⚠️ Projected cost exceeds available liquidity
+                      {t('warning_exceeds')}
                     </p>
                   </motion.div>
                 )}

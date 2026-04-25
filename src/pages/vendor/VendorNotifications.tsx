@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { announcements } from '../../data/mockData';
 import { Bell, Calendar, Megaphone, AlertTriangle, CheckCircle, MessageSquare, ChevronDown, ChevronUp, Send, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface Notification {
   id: string;
@@ -13,6 +14,7 @@ interface Notification {
 }
 
 const VendorNotifications: React.FC = () => {
+  const { t } = useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([
     ...announcements.map(a => ({
       id: a.id,
@@ -100,9 +102,9 @@ const VendorNotifications: React.FC = () => {
     <div className="px-5 py-6 flex flex-col gap-6">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black">Notifications</h1>
+          <h1 className="text-2xl font-black">{t('notifications_title')}</h1>
           {unreadCount > 0 && (
-            <p className="text-gray-500 text-xs font-bold mt-1">{unreadCount} unread</p>
+            <p className="text-gray-500 text-xs font-bold mt-1">{unreadCount} {t('unread')}</p>
           )}
         </div>
         <div className="flex items-center gap-3">
@@ -111,7 +113,7 @@ const VendorNotifications: React.FC = () => {
               onClick={markAllRead}
               className="text-[#22c55e] text-[10px] font-black uppercase tracking-widest"
             >
-              Mark all read
+              {t('mark_all_read')}
             </button>
           )}
           <button 
@@ -136,7 +138,7 @@ const VendorNotifications: React.FC = () => {
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-black uppercase tracking-wider flex items-center gap-2">
                   <MessageSquare size={14} className="text-[#22c55e]" />
-                  Submit a Concern
+                  {t('submit_concern')}
                 </h3>
                 <button onClick={() => setShowConcernForm(false)} className="text-gray-600 hover:text-white transition-colors">
                   <X size={16} />
@@ -152,16 +154,16 @@ const VendorNotifications: React.FC = () => {
                   <div className="w-12 h-12 rounded-full bg-[#22c55e]/15 flex items-center justify-center">
                     <CheckCircle size={24} className="text-[#22c55e]" />
                   </div>
-                  <p className="text-sm font-bold text-[#22c55e]">Concern submitted successfully!</p>
-                  <p className="text-xs text-gray-500">We'll review and respond within 24 hours.</p>
+                  <p className="text-sm font-bold text-[#22c55e]">{t('concern_submitted')}</p>
+                  <p className="text-xs text-gray-500">{t('concern_review')}</p>
                 </motion.div>
               ) : (
                 <>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Subject</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{t('subject')}</label>
                     <input
                       type="text"
-                      placeholder="Brief subject line..."
+                      placeholder={t('brief_subject')}
                       value={concernSubject}
                       onChange={(e) => setConcernSubject(e.target.value)}
                       className="w-full bg-[#1a1a1e] border border-[#2a2a2e] rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-[#22c55e]/50 placeholder-gray-600"
@@ -169,24 +171,24 @@ const VendorNotifications: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Category</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{t('category')}</label>
                     <select
                       value={concernCategory}
                       onChange={(e) => setConcernCategory(e.target.value)}
                       className="w-full bg-[#1a1a1e] border border-[#2a2a2e] rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-[#22c55e]/50"
                     >
-                      <option value="general">General Inquiry</option>
-                      <option value="pricing">Pricing Issue</option>
-                      <option value="technical">Technical Problem</option>
-                      <option value="complaint">Complaint</option>
-                      <option value="suggestion">Suggestion</option>
+                      <option value="general">{t('general_inquiry')}</option>
+                      <option value="pricing">{t('pricing_issue')}</option>
+                      <option value="technical">{t('technical_problem')}</option>
+                      <option value="complaint">{t('complaint')}</option>
+                      <option value="suggestion">{t('suggestion')}</option>
                     </select>
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Description</label>
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{t('description')}</label>
                     <textarea
-                      placeholder="Describe your concern in detail..."
+                      placeholder={t('describe_concern')}
                       value={concernDescription}
                       onChange={(e) => setConcernDescription(e.target.value)}
                       rows={4}
@@ -199,7 +201,7 @@ const VendorNotifications: React.FC = () => {
                     className="w-full bg-[#22c55e] text-black py-3.5 rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#1db053] transition-colors active:scale-[0.98]"
                   >
                     <Send size={16} />
-                    Submit Concern
+                    {t('submit_concern_btn')}
                   </button>
                 </>
               )}

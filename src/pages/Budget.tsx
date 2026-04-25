@@ -4,17 +4,20 @@ import { Calculator, Trash2, Minus, Plus, AlertTriangle, ShoppingBasket } from '
 import { motion, AnimatePresence } from 'motion/react';
 import { useAssets } from '../context/AssetContext';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const Budget: React.FC = () => {
-  const { assets, liquidity, removeAsset, updateQuantity, setLiquidity } = useAssets();
+  const { assets, liquidity, removeAsset, updateQuantity, setLiquidity, toggleMode } = useAssets();
   const { isDark } = useTheme();
+  const { t } = useLanguage();
 
   const assetDetails = useMemo(() =>
     assets.map(asset => {
       const commodity = commodities.find(c => c.id === asset.commodityId)!;
-      const totalKg = asset.quantity * commodity.unitWeight;
+      const mode = asset.mode || 'qty';
+      const totalKg = mode === 'qty' ? asset.quantity * commodity.unitWeight : asset.quantity;
       const totalPrice = totalKg * commodity.price;
-      return { ...asset, commodity, totalKg, totalPrice };
+      return { ...asset, commodity, totalKg, totalPrice, mode };
     }),
     [assets]
   );
@@ -53,14 +56,14 @@ const Budget: React.FC = () => {
           <div className="w-9 h-9 bg-[#22c55e]/15 rounded-xl flex items-center justify-center">
             <Calculator size={20} className="text-[#22c55e]" />
           </div>
-          <h1 className="text-xl font-black">Smart Asset Projection</h1>
+          <h1 className="text-xl font-black">{t('smart_budget_planner')}</h1>
         </div>
-        <p className="text-gray-500 text-xs ml-12">Auto-calculating unit weight vs market index values</p>
+        <p className="text-gray-500 text-xs ml-12">{t('auto_calc')}</p>
       </header>
 
       {/* Liquidity Input */}
       <div className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4 flex items-center justify-between">
-        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Liquidity</p>
+        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{t('liquidity')}</p>
         <div className="flex items-center gap-1 bg-[#1a1a1e] rounded-lg border border-[#2a2a2e] px-3 py-2">
           <span className="text-[#22c55e] font-black text-sm">₱</span>
           <input
@@ -85,11 +88,22 @@ const Budget: React.FC = () => {
                 <ShoppingBasket size={28} className="text-gray-600" />
               </div>
               <p className="text-center text-gray-600 text-sm max-w-[250px] leading-relaxed">
-                No active trades. Select produce from market to begin.
+                {t('no_active_budget')}
               </p>
             </motion.div>
           ) : (
-            assetDetails.map((asset) => (
+            assetDetails.map((asset) => {
+              const isKgMode = asset.mode === 'kg';
+              const stepAmount = isKgMode ? 0.5 : 1;
+              const displayQty = isKgMode ? asset.quantity.toFixed(2) : asset.quantity;
+              const subtractQty = isKgMode
+                ? Math.max(0.01, parseFloat((asset.quantity - stepAmount).toFixed(2)))
+                : asset.quantity - 1;
+              const addQty = isKgMode
+                ? parseFloat((asset.quantity + stepAmount).toFixed(2))
+                : asset.quantity + 1;
+
+              return (
               <motion.div
                 key={asset.commodityId}
                 initial={{ opacity: 0, y: 20 }}
@@ -112,25 +126,37 @@ const Budget: React.FC = () => {
                   {/* Name & Weight */}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white truncate">{asset.commodity.name}</p>
-                    <p className="text-[9px] font-black text-[#22c55e] uppercase tracking-widest mt-0.5">
-                      {asset.quantity} Units = {asset.totalKg.toFixed(2)}KG
+                    <p className={`text-[9px] font-black uppercase tracking-widest mt-0.5 ${isKgMode ? 'text-[#3b82f6]' : 'text-[#22c55e]'}`}>
+                      {isKgMode
+                        ? `${asset.quantity.toFixed(2)} KG`
+                        : `${asset.quantity} Units ≈ ${asset.totalKg.toFixed(2)}KG`
+                      }
                     </p>
                   </div>
 
                   {/* Quantity Controls */}
                   <div className="flex items-center gap-0 shrink-0">
-                    <span className="text-[8px] font-black text-[#22c55e] uppercase tracking-widest mr-2 bg-[#22c55e]/10 px-1.5 py-0.5 rounded">QTY</span>
                     <button
-                      onClick={() => updateQuantity(asset.commodityId, asset.quantity - 1)}
+                      onClick={() => toggleMode(asset.commodityId)}
+                      className={`text-[8px] font-black uppercase tracking-widest mr-2 px-1.5 py-0.5 rounded cursor-pointer transition-colors active:scale-95 ${
+                        isKgMode
+                          ? 'text-[#3b82f6] bg-[#3b82f6]/10 hover:bg-[#3b82f6]/20'
+                          : 'text-[#22c55e] bg-[#22c55e]/10 hover:bg-[#22c55e]/20'
+                      }`}
+                    >
+                      {isKgMode ? 'KG' : t('qty')}
+                    </button>
+                    <button
+                      onClick={() => updateQuantity(asset.commodityId, subtractQty)}
                       className="w-7 h-7 bg-[#1a1a1e] border border-[#2a2a2e] rounded-l-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2a2a2e] transition-colors active:scale-95"
                     >
                       <Minus size={12} />
                     </button>
-                    <div className="w-8 h-7 bg-[#1a1a1e] border-y border-[#2a2a2e] flex items-center justify-center">
-                      <span className="text-xs font-black text-white">{asset.quantity}</span>
+                    <div className="w-10 h-7 bg-[#1a1a1e] border-y border-[#2a2a2e] flex items-center justify-center">
+                      <span className="text-[10px] font-black text-white">{displayQty}</span>
                     </div>
                     <button
-                      onClick={() => updateQuantity(asset.commodityId, asset.quantity + 1)}
+                      onClick={() => updateQuantity(asset.commodityId, addQty)}
                       className="w-7 h-7 bg-[#1a1a1e] border border-[#2a2a2e] rounded-r-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#2a2a2e] transition-colors active:scale-95"
                     >
                       <Plus size={12} />
@@ -149,7 +175,8 @@ const Budget: React.FC = () => {
                   </button>
                 </div>
               </motion.div>
-            ))
+              );
+            })
           )}
         </AnimatePresence>
       </div>
@@ -159,7 +186,7 @@ const Budget: React.FC = () => {
         <div className="flex flex-col gap-3 pb-4">
           {/* Total Projected Commitment */}
           <div className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4">
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Total Projected Commitment</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">{t('total_projected')}</p>
             <div className="flex justify-between items-end">
               <p className="text-gray-500 text-sm font-bold">{totalKg.toFixed(2)}kg</p>
               <p className="text-2xl font-black text-white">₱{totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
@@ -168,7 +195,7 @@ const Budget: React.FC = () => {
 
           {/* Inventory Liquidity Used */}
           <div className="bg-[#141418] rounded-xl border border-[#1f1f23] p-4">
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Inventory Liquidity Used</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">{t('inventory_liquidity')}</p>
             
             <div className="flex justify-between items-center mb-2">
               <p className="text-sm font-bold" style={{ color: getBarColor() }}>

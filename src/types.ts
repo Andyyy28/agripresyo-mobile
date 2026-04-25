@@ -74,6 +74,7 @@ export interface ShopVendor {
 export interface AssetItem {
   commodityId: string;
   quantity: number;
+  mode?: 'qty' | 'kg'; // 'qty' = whole units, 'kg' = decimal kg
 }
 
 export interface Announcement {

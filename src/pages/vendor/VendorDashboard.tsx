@@ -50,7 +50,7 @@ const VendorDashboard: React.FC = () => {
     try {
       const stored = localStorage.getItem(SHOP_PROFILE_KEY);
       if (stored) return JSON.parse(stored);
-    } catch {}
+    } catch { }
     return getDefaultProfile();
   });
 
@@ -298,21 +298,19 @@ const VendorDashboard: React.FC = () => {
           <div className="flex gap-1.5 mt-1">
             <button
               onClick={() => setSellerType('fruit')}
-              className={`px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider transition-all ${
-                sellerType === 'fruit'
-                  ? 'bg-[#f97316] text-white'
-                  : isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-100 text-gray-400'
-              }`}
+              className={`px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider transition-all ${sellerType === 'fruit'
+                ? 'bg-[#f97316] text-white'
+                : isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-100 text-gray-400'
+                }`}
             >
               Fruit
             </button>
             <button
               onClick={() => setSellerType('veggie')}
-              className={`px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider transition-all ${
-                sellerType === 'veggie'
-                  ? 'bg-[#22c55e] text-white'
-                  : isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-100 text-gray-400'
-              }`}
+              className={`px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider transition-all ${sellerType === 'veggie'
+                ? 'bg-[#22c55e] text-white'
+                : isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-100 text-gray-400'
+                }`}
             >
               Veggie
             </button>
@@ -412,11 +410,10 @@ const VendorDashboard: React.FC = () => {
                         <button
                           key={opt}
                           onClick={() => { setEditProfile({ ...editProfile, specialty: opt }); setSpecialtyDropdownOpen(false); }}
-                          className={`w-full text-left px-3 py-2.5 text-sm font-bold transition-colors ${
-                            editProfile.specialty === opt
-                              ? isDark ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#dcfce7] text-[#16a34a]'
-                              : isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'
-                          }`}
+                          className={`w-full text-left px-3 py-2.5 text-sm font-bold transition-colors ${editProfile.specialty === opt
+                            ? isDark ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#dcfce7] text-[#16a34a]'
+                            : isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
                         >
                           {opt}
                         </button>
@@ -494,11 +491,10 @@ const VendorDashboard: React.FC = () => {
               </div>
             </div>
             {!isEditing && (
-              <span className={`text-[8px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                isShopOpen()
-                  ? 'bg-[#22c55e]/15 text-[#22c55e]'
-                  : 'bg-[#ef4444]/15 text-[#ef4444]'
-              }`}>
+              <span className={`text-[8px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${isShopOpen()
+                ? 'bg-[#22c55e]/15 text-[#22c55e]'
+                : 'bg-[#ef4444]/15 text-[#ef4444]'
+                }`}>
                 {isShopOpen() ? 'OPEN NOW' : 'CLOSED'}
               </span>
             )}
@@ -710,9 +706,8 @@ const VendorDashboard: React.FC = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] border-t rounded-t-[32px] p-7 z-[70] ${
-                isDark ? 'bg-[#111114] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
-              }`}
+              className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] border-t rounded-t-[32px] p-7 z-[70] ${isDark ? 'bg-[#111114] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+                }`}
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className={`text-xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>
@@ -751,21 +746,20 @@ const VendorDashboard: React.FC = () => {
                           <button
                             key={opt.name}
                             onClick={() => { setListingCommodity(opt); setCommodityDropdownOpen(false); }}
-                            className={`w-full text-left px-4 py-2.5 text-sm font-bold flex items-center gap-2 transition-colors ${
-                              listingCommodity.name === opt.name
-                                ? isDark ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#dcfce7] text-[#16a34a]'
-                                : isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'
-                            }`}
+                            className={`w-full text-left px-4 py-2.5 text-sm font-bold flex items-center gap-2 transition-colors ${listingCommodity.name === opt.name
+                              ? isDark ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#dcfce7] text-[#16a34a]'
+                              : isDark ? 'text-gray-300 hover:bg-[#1a1a1e]' : 'text-gray-700 hover:bg-gray-50'
+                              }`}
                           >
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden shrink-0 ${getCommodityBg(opt.slug, isDark)}`}>
-                            <img
-                              src={`/images/commodities/${opt.slug}.webp`}
-                              alt={opt.name}
-                              className="w-full h-full object-contain p-0.5"
-                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            />
-                          </div>
-                          {opt.name}
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden shrink-0 ${getCommodityBg(opt.slug, isDark)}`}>
+                              <img
+                                src={`/images/commodities/${opt.slug}.webp`}
+                                alt={opt.name}
+                                className="w-full h-full object-contain p-0.5"
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              />
+                            </div>
+                            {opt.name}
                           </button>
                         ))}
                       </div>
@@ -784,9 +778,8 @@ const VendorDashboard: React.FC = () => {
                         placeholder="0"
                         value={listingPrice}
                         onChange={(e) => setListingPrice(e.target.value)}
-                        className={`w-full rounded-xl py-3 pl-8 pr-4 text-sm font-bold focus:outline-none focus:border-[#22c55e]/50 ${
-                          isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827]'
-                        }`}
+                        className={`w-full rounded-xl py-3 pl-8 pr-4 text-sm font-bold focus:outline-none focus:border-[#22c55e]/50 ${isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827]'
+                          }`}
                       />
                     </div>
                   </div>
@@ -798,9 +791,8 @@ const VendorDashboard: React.FC = () => {
                         placeholder="0"
                         value={listingStock}
                         onChange={(e) => setListingStock(e.target.value)}
-                        className={`w-full rounded-xl py-3 pl-4 pr-10 text-sm font-bold focus:outline-none focus:border-[#22c55e]/50 ${
-                          isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827]'
-                        }`}
+                        className={`w-full rounded-xl py-3 pl-4 pr-10 text-sm font-bold focus:outline-none focus:border-[#22c55e]/50 ${isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827]'
+                          }`}
                       />
                       <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>kg</span>
                     </div>
@@ -816,11 +808,10 @@ const VendorDashboard: React.FC = () => {
                         <button
                           key={u}
                           onClick={() => setListingUnit(u)}
-                          className={`flex-1 py-2 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${
-                            listingUnit === u
-                              ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
-                              : isDark ? 'bg-[#1a1a1e] text-gray-500 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
-                          }`}
+                          className={`flex-1 py-2 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${listingUnit === u
+                            ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
+                            : isDark ? 'bg-[#1a1a1e] text-gray-500 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
+                            }`}
                         >
                           {u}
                         </button>
@@ -832,21 +823,19 @@ const VendorDashboard: React.FC = () => {
                     <div className="flex gap-1.5">
                       <button
                         onClick={() => setListingAvailability('in_stock')}
-                        className={`flex-1 py-2 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${
-                          listingAvailability === 'in_stock'
-                            ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
-                            : isDark ? 'bg-[#1a1a1e] text-gray-500 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
-                        }`}
+                        className={`flex-1 py-2 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${listingAvailability === 'in_stock'
+                          ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
+                          : isDark ? 'bg-[#1a1a1e] text-gray-500 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
+                          }`}
                       >
                         In Stock
                       </button>
                       <button
                         onClick={() => setListingAvailability('out_of_stock')}
-                        className={`flex-1 py-2 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${
-                          listingAvailability === 'out_of_stock'
-                            ? 'bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30'
-                            : isDark ? 'bg-[#1a1a1e] text-gray-500 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
-                        }`}
+                        className={`flex-1 py-2 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all ${listingAvailability === 'out_of_stock'
+                          ? 'bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30'
+                          : isDark ? 'bg-[#1a1a1e] text-gray-500 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
+                          }`}
                       >
                         Out
                       </button>
@@ -891,9 +880,8 @@ const VendorDashboard: React.FC = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] border-t rounded-t-[32px] p-7 z-[70] ${
-                isDark ? 'bg-[#111114] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
-              }`}
+              className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] border-t rounded-t-[32px] p-7 z-[70] ${isDark ? 'bg-[#111114] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+                }`}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-1">
@@ -918,11 +906,10 @@ const VendorDashboard: React.FC = () => {
                     placeholder="Enter subject..."
                     value={reportSubject}
                     onChange={(e) => { setReportSubject(e.target.value); if (reportErrors.subject) setReportErrors(prev => ({ ...prev, subject: undefined })); }}
-                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:outline-none transition-colors ${
-                      reportErrors.subject
-                        ? isDark ? 'bg-[#1a1a1e] border-2 border-[#ef4444] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border-2 border-[#ef4444] text-[#111827] placeholder-gray-400'
-                        : isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white placeholder-gray-600 focus:border-[#22c55e]/50' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400 focus:border-[#22c55e]/50'
-                    }`}
+                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:outline-none transition-colors ${reportErrors.subject
+                      ? isDark ? 'bg-[#1a1a1e] border-2 border-[#ef4444] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border-2 border-[#ef4444] text-[#111827] placeholder-gray-400'
+                      : isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white placeholder-gray-600 focus:border-[#22c55e]/50' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400 focus:border-[#22c55e]/50'
+                      }`}
                   />
                   {reportErrors.subject && (
                     <p className="text-[10px] font-bold text-[#ef4444] flex items-center gap-1">
@@ -940,11 +927,10 @@ const VendorDashboard: React.FC = () => {
                     rows={4}
                     value={reportMessage}
                     onChange={(e) => { setReportMessage(e.target.value); if (reportErrors.message) setReportErrors(prev => ({ ...prev, message: undefined })); }}
-                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:outline-none resize-none transition-colors ${
-                      reportErrors.message
-                        ? isDark ? 'bg-[#1a1a1e] border-2 border-[#ef4444] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border-2 border-[#ef4444] text-[#111827] placeholder-gray-400'
-                        : isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white placeholder-gray-600 focus:border-[#22c55e]/50' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400 focus:border-[#22c55e]/50'
-                    }`}
+                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:outline-none resize-none transition-colors ${reportErrors.message
+                      ? isDark ? 'bg-[#1a1a1e] border-2 border-[#ef4444] text-white placeholder-gray-600' : 'bg-[#f3f4f6] border-2 border-[#ef4444] text-[#111827] placeholder-gray-400'
+                      : isDark ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white placeholder-gray-600 focus:border-[#22c55e]/50' : 'bg-[#f3f4f6] border border-[#e5e7eb] text-[#111827] placeholder-gray-400 focus:border-[#22c55e]/50'
+                      }`}
                   />
                   {reportErrors.message && (
                     <p className="text-[10px] font-bold text-[#ef4444] flex items-center gap-1">
@@ -983,9 +969,8 @@ const VendorDashboard: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-48px)] max-w-[380px] rounded-3xl p-7 z-[90] shadow-2xl ${
-                isDark ? 'bg-[#111114] border border-[#1f1f23]' : 'bg-white border border-[#e5e7eb]'
-              }`}
+              className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-48px)] max-w-[380px] rounded-3xl p-7 z-[90] shadow-2xl ${isDark ? 'bg-[#111114] border border-[#1f1f23]' : 'bg-white border border-[#e5e7eb]'
+                }`}
             >
               {/* Header */}
               <div className="flex items-center gap-3 mb-4">
@@ -1016,9 +1001,8 @@ const VendorDashboard: React.FC = () => {
                 <button
                   onClick={handleReportGoBack}
                   disabled={isSubmittingReport}
-                  className={`flex-1 py-3.5 rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50 ${
-                    isDark ? 'bg-[#1a1a1e] text-gray-400 hover:text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-700'
-                  }`}
+                  className={`flex-1 py-3.5 rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50 ${isDark ? 'bg-[#1a1a1e] text-gray-400 hover:text-white' : 'bg-gray-100 text-gray-500 hover:text-gray-700'
+                    }`}
                 >
                   <ArrowLeft size={14} />
                   Go Back

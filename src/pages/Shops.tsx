@@ -4,6 +4,7 @@ import { Star, ShoppingBag, Leaf, ArrowRight, Bell, Sun, Moon } from 'lucide-rea
 import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext';
 import { useNotifications } from '../context/NotificationContext';
+import { useLanguage } from '../context/LanguageContext';
 import { getCommodityBg } from '../data/commodityColors';
 
 const filterOptions = ['ALL', 'FRUITS', 'VEGETABLES'];
@@ -11,6 +12,7 @@ const filterOptions = ['ALL', 'FRUITS', 'VEGETABLES'];
 const Shops: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
   const { openPanel, unreadCount } = useNotifications();
+  const { t } = useLanguage();
   const [activeFilter, setActiveFilter] = useState('ALL');
 
   const filteredVendors = useMemo(() => {
@@ -33,15 +35,13 @@ const Shops: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
-        className={`rounded-2xl border p-4 flex flex-col gap-3 relative overflow-hidden ${
-          isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
-        }`}
+        className={`rounded-2xl border p-4 flex flex-col gap-3 relative overflow-hidden ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+          }`}
       >
         {/* Location Badge */}
         <div className="absolute top-3 right-3">
-          <span className={`text-[7px] font-black uppercase tracking-wider px-2 py-1 rounded-full ${
-            isDark ? 'bg-[#1a1a1e] text-gray-400 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-500 border border-[#e5e7eb]'
-          }`}>
+          <span className={`text-[7px] font-black uppercase tracking-wider px-2 py-1 rounded-full ${isDark ? 'bg-[#1a1a1e] text-gray-400 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-500 border border-[#e5e7eb]'
+            }`}>
             {vendor.location}
           </span>
         </div>
@@ -58,7 +58,7 @@ const Shops: React.FC = () => {
             <h3 className={`text-sm font-bold truncate pr-16 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{vendor.name}</h3>
             {vendor.isNew && (
               <span className="text-[8px] font-black uppercase tracking-wider text-[#22c55e] bg-[#22c55e]/10 px-2 py-0.5 rounded-full mt-1 inline-block">
-                New Market Partner
+                {t('new_market_partner')}
               </span>
             )}
           </div>
@@ -74,7 +74,7 @@ const Shops: React.FC = () => {
           <div className="flex items-center gap-1.5">
             <div className={`w-2 h-2 rounded-full ${vendor.isOpen ? 'bg-[#22c55e]' : 'bg-[#ef4444]'}`} />
             <span className={`text-[9px] font-black uppercase tracking-wider ${vendor.isOpen ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
-              {vendor.isOpen ? 'OPEN' : 'CLOSED'}
+              {vendor.isOpen ? t('open_status') : t('closed_status')}
             </span>
           </div>
         </div>
@@ -103,7 +103,7 @@ const Shops: React.FC = () => {
             <ShoppingBag size={14} />
           </div>
           <button className="text-[#22c55e] text-[10px] font-black uppercase tracking-wider flex items-center gap-1 hover:underline">
-            View Shop <ArrowRight size={10} />
+            {t('view_shop')} <ArrowRight size={10} />
           </button>
         </div>
       </motion.div>
@@ -131,7 +131,7 @@ const Shops: React.FC = () => {
               <span className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Agri</span>
               <span className="text-lg font-black text-[#22c55e]">Presyo</span>
             </div>
-            <h1 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Shops</h1>
+            <h1 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('shops_title')}</h1>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -151,21 +151,20 @@ const Shops: React.FC = () => {
             </button>
           </div>
         </div>
-        <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Browse shops and find the best prices</p>
+        <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('browse_shops')}</p>
         <div className="flex gap-2 mt-3">
           {filterOptions.map((f) => (
             <button
               key={f}
               onClick={() => setActiveFilter(f)}
-              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${
-                activeFilter === f
+              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${activeFilter === f
                   ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
                   : isDark
                     ? 'bg-[#1a1a1e] text-gray-500 border border-[#1f1f23]'
                     : 'bg-gray-100 text-gray-400 border border-[#e5e7eb]'
-              }`}
+                }`}
             >
-              {f}
+              {t(`filter_${f.toLowerCase()}`)}
             </button>
           ))}
         </div>
@@ -179,8 +178,8 @@ const Shops: React.FC = () => {
               <ShoppingBag size={14} className="text-[#f97316]" />
             </div>
             <div>
-              <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>Fruit Shops</h2>
-              <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Shops that sell fruits</p>
+              <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('fruit_shops')}</h2>
+              <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('shops_sell_fruits')}</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -199,8 +198,8 @@ const Shops: React.FC = () => {
               <Leaf size={14} className="text-[#22c55e]" />
             </div>
             <div>
-              <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>Vegetable &amp; Spice Shops</h2>
-              <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Shops that sell vegetables and spices</p>
+              <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('veg_spice_shops')}</h2>
+              <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('shops_sell_veg')}</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">

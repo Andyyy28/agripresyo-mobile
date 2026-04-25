@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, TrendingUp, Lightbulb, Calendar, BarChart3, ShoppingCart, Tag, Clock, ChevronRight, Leaf } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 /* ════════════════════════════════════════════════════
    TYPES
@@ -240,6 +241,7 @@ const ArticleDetail: React.FC<{
    ════════════════════════════════════════════════════ */
 const InsightsSection: React.FC<{ role: 'consumer' | 'vendor' }> = ({ role }) => {
   const { isDark } = useTheme();
+  const { t } = useLanguage();
   const articles = role === 'consumer' ? consumerArticles : vendorArticles;
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [activeBanner, setActiveBanner] = useState(0);
@@ -283,7 +285,7 @@ const InsightsSection: React.FC<{ role: 'consumer' | 'vendor' }> = ({ role }) =>
         <div className="flex items-center gap-2">
           <Lightbulb size={16} className="text-[#22c55e]" />
           <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>
-            Insights for You
+            {t('insights_for_you')}
           </h2>
         </div>
 

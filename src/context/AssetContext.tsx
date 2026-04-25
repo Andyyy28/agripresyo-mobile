@@ -8,13 +8,14 @@ interface AssetContextType {
   removeAsset: (commodityId: string) => void;
   updateQuantity: (commodityId: string, quantity: number) => void;
   setLiquidity: (amount: number) => void;
+  toggleMode: (commodityId: string) => void;
 }
 
 const AssetContext = createContext<AssetContextType | undefined>(undefined);
 
 export const AssetProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [assets, setAssets] = useState<AssetItem[]>([]);
-  const [liquidity, setLiquidityState] = useState<number>(1000);
+  const [liquidityState, setLiquidityState] = useState<number>(1000);
 
   const addAsset = useCallback((commodityId: string) => {
     setAssets(prev => {
@@ -26,7 +27,7 @@ export const AssetProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             : a
         );
       }
-      return [...prev, { commodityId, quantity: 1 }];
+      return [...prev, { commodityId, quantity: 1, mode: 'qty' }];
     });
   }, []);
 
@@ -50,8 +51,25 @@ export const AssetProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setLiquidityState(Math.max(0, amount));
   }, []);
 
+  const toggleMode = useCallback((commodityId: string) => {
+    setAssets(prev =>
+      prev.map(a => {
+        if (a.commodityId !== commodityId) return a;
+        const currentMode = a.mode || 'qty';
+        if (currentMode === 'qty') {
+          // Switching to KG: convert units to kg (quantity * unitWeight handled by caller)
+          // Reset to a sensible default kg value
+          return { ...a, mode: 'kg', quantity: 0.5 };
+        } else {
+          // Switching to QTY: reset to 1 unit
+          return { ...a, mode: 'qty', quantity: 1 };
+        }
+      })
+    );
+  }, []);
+
   return (
-    <AssetContext.Provider value={{ assets, liquidity, addAsset, removeAsset, updateQuantity, setLiquidity }}>
+    <AssetContext.Provider value={{ assets, liquidity: liquidityState, addAsset, removeAsset, updateQuantity, setLiquidity, toggleMode }}>
       {children}
     </AssetContext.Provider>
   );

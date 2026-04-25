@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { Store, CheckCircle, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, MapPin, Package, Clock } from 'lucide-react';
-import { motion } from 'motion/react';
+import { useLanguage } from '../../context/LanguageContext';
+import { Store, CheckCircle, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, MapPin, Package, Clock, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { getCommodityBg } from '../../data/commodityColors';
 
 const VendorProfile: React.FC = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
+  const [showLangPicker, setShowLangPicker] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/login', { replace: true });
+  };
+
+  const handleLangChange = (lang: 'en' | 'fil') => {
+    setLanguage(lang);
+    setShowLangPicker(false);
   };
 
   const verificationStatus = user?.verificationStatus || 'none';
@@ -33,10 +41,10 @@ const VendorProfile: React.FC = () => {
   ];
 
   const settingsItems = [
-    { icon: Bell, label: 'Notifications', value: 'On', color: '#22c55e', onClick: () => {} },
-    { icon: isDark ? Moon : Sun, label: 'Dark Mode', value: isDark ? 'On' : 'Off', color: '#8b5cf6', onClick: toggleTheme },
-    { icon: Globe, label: 'Language', value: 'English', color: '#3b82f6', onClick: () => {} },
-    { icon: Shield, label: 'Privacy', value: '', color: '#f59e0b', onClick: () => {} },
+    { icon: Bell, label: t('notifications_label'), value: t('on'), color: '#22c55e', onClick: () => {} },
+    { icon: isDark ? Moon : Sun, label: t('dark_mode'), value: isDark ? t('on') : t('off'), color: '#8b5cf6', onClick: toggleTheme },
+    { icon: Globe, label: t('language'), value: language === 'en' ? 'English' : 'Filipino', color: '#3b82f6', onClick: () => setShowLangPicker(true) },
+    { icon: Shield, label: t('privacy'), value: '', color: '#f59e0b', onClick: () => {} },
   ];
 
   // Verification badge renderer
@@ -47,7 +55,7 @@ const VendorProfile: React.FC = () => {
     if (verificationStatus === 'pending') {
       return (
         <span className="text-[8px] font-black uppercase tracking-wider text-[#f59e0b] bg-[#f59e0b]/10 px-2 py-0.5 rounded-full">
-          Pending
+          {t('pending')}
         </span>
       );
     }
@@ -57,7 +65,7 @@ const VendorProfile: React.FC = () => {
   return (
     <div className="px-5 py-6 flex flex-col gap-6">
       <header>
-        <h1 className={`text-2xl font-black mb-6 ${isDark ? 'text-white' : 'text-[#111827]'}`}>Profile</h1>
+        <h1 className={`text-2xl font-black mb-6 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('profile')}</h1>
 
         {/* Vendor Profile Card */}
         <motion.div
@@ -88,18 +96,18 @@ const VendorProfile: React.FC = () => {
           <div className="flex items-center gap-2 relative z-10">
             <div className="bg-[#22c55e]/10 px-3 py-1.5 rounded-full flex items-center gap-1.5">
               <Store size={12} className="text-[#22c55e]" />
-              <span className="text-[#22c55e] text-[10px] font-black uppercase tracking-wider">Vendor</span>
+              <span className="text-[#22c55e] text-[10px] font-black uppercase tracking-wider">{t('vendor_label')}</span>
             </div>
             {verificationStatus === 'verified' && (
               <div className="bg-[#3b82f6]/10 px-3 py-1.5 rounded-full flex items-center gap-1.5">
                 <CheckCircle size={12} className="text-[#3b82f6]" />
-                <span className="text-[#3b82f6] text-[10px] font-black uppercase tracking-wider">Verified</span>
+                <span className="text-[#3b82f6] text-[10px] font-black uppercase tracking-wider">{t('verified')}</span>
               </div>
             )}
             {verificationStatus === 'pending' && (
               <div className="bg-[#f59e0b]/10 px-3 py-1.5 rounded-full flex items-center gap-1.5">
                 <Clock size={12} className="text-[#f59e0b]" />
-                <span className="text-[#f59e0b] text-[10px] font-black uppercase tracking-wider">Pending</span>
+                <span className="text-[#f59e0b] text-[10px] font-black uppercase tracking-wider">{t('pending')}</span>
               </div>
             )}
           </div>
@@ -108,13 +116,13 @@ const VendorProfile: React.FC = () => {
 
       {/* Account Info */}
       <section className={`rounded-2xl border p-5 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-        <h3 className={`text-xs font-black uppercase tracking-widest mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Account</h3>
+        <h3 className={`text-xs font-black uppercase tracking-widest mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('account')}</h3>
         <div className="flex flex-col gap-2">
           {[
-            { label: 'Name', value: user?.name || 'Vendor' },
-            { label: 'Shop Name', value: user?.shopName || `${user?.name || 'Vendor'}'s Shop` },
-            { label: 'Email', value: user?.email || 'vendor@email.com' },
-            { label: 'Member Since', value: 'Jan 2026' },
+            { label: t('name_label'), value: user?.name || 'Vendor' },
+            { label: t('shop_name_label'), value: user?.shopName || `${user?.name || 'Vendor'}'s Shop` },
+            { label: t('email_label'), value: user?.email || 'vendor@email.com' },
+            { label: t('member_since'), value: 'Jan 2026' },
           ].map(item => (
             <div key={item.label} className="flex justify-between text-sm">
               <span className={isDark ? 'text-gray-500' : 'text-gray-400'}>{item.label}</span>
@@ -128,7 +136,7 @@ const VendorProfile: React.FC = () => {
       <section className="flex flex-col gap-3">
         <h3 className={`text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
           <Package size={12} />
-          Commodities Sold
+          {t('commodities_sold')}
         </h3>
         <div className={`rounded-2xl border p-4 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
           <div className="flex flex-wrap gap-2">
@@ -151,7 +159,7 @@ const VendorProfile: React.FC = () => {
 
       {/* Settings */}
       <section className="flex flex-col gap-2">
-        <h3 className={`text-xs font-black uppercase tracking-widest px-1 mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Settings</h3>
+        <h3 className={`text-xs font-black uppercase tracking-widest px-1 mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('settings')}</h3>
         <div className={`rounded-2xl border divide-y overflow-hidden ${isDark ? 'bg-[#141418] border-[#1f1f23] divide-[#1f1f23]' : 'bg-white border-[#e5e7eb] divide-[#e5e7eb]'}`}>
           {settingsItems.map((item) => (
             <button
@@ -178,13 +186,65 @@ const VendorProfile: React.FC = () => {
           className="w-full bg-[#ef4444]/10 border border-[#ef4444]/20 rounded-2xl py-4 flex items-center justify-center gap-3 text-[#ef4444] font-bold text-sm hover:bg-[#ef4444]/15 transition-colors"
         >
           <LogOut size={18} />
-          Sign Out
+          {t('sign_out')}
         </button>
       </section>
 
       <p className={`text-center text-[10px] font-bold uppercase tracking-widest pb-4 ${isDark ? 'text-gray-700' : 'text-gray-300'}`}>
         AgriPresyo v2.0.0
       </p>
+
+      {/* Language Picker Modal */}
+      <AnimatePresence>
+        {showLangPicker && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80]"
+              onClick={() => setShowLangPicker(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="fixed inset-0 flex items-center justify-center z-[85] px-8"
+            >
+              <div className={`w-full max-w-[320px] rounded-2xl border p-6 ${isDark ? 'bg-[#111114] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('language')}</h3>
+                  <button onClick={() => setShowLangPicker(false)} className={isDark ? 'text-gray-500' : 'text-gray-400'}>
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { label: 'English', flag: '🇺🇸', value: 'en' as const },
+                    { label: 'Filipino', flag: '🇵🇭', value: 'fil' as const },
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => handleLangChange(opt.value)}
+                      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all ${
+                        language === opt.value
+                          ? 'bg-[#22c55e]/10 border border-[#22c55e]/30 text-[#22c55e]'
+                          : isDark
+                            ? 'bg-[#1a1a1e] border border-[#2a2a2e] text-white hover:border-[#22c55e]/20'
+                            : 'bg-gray-50 border border-[#e5e7eb] text-[#111827] hover:border-[#22c55e]/20'
+                      }`}
+                    >
+                      <span className="text-lg">{opt.flag}</span>
+                      {opt.label}
+                      {language === opt.value && <span className="ml-auto text-[#22c55e]">✓</span>}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

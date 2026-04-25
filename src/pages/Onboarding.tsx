@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { useLanguage } from '../context/LanguageContext';
 import {
   TrendingUp,
   TrendingDown,
@@ -164,8 +165,15 @@ const FeatureBullet: React.FC<{
    ════════════════════════════════════════════════════ */
 const Onboarding: React.FC = () => {
   const navigate = useNavigate();
+  const { language, setLanguage } = useLanguage();
   const [currentScreen, setCurrentScreen] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [selectedLang, setSelectedLang] = useState<'en' | 'fil'>(language);
+
+  const handleLangSelect = (lang: 'en' | 'fil') => {
+    setSelectedLang(lang);
+    setLanguage(lang);
+  };
 
   const handleSkip = () => {
     navigate('/login', { replace: true });
@@ -402,7 +410,7 @@ const Onboarding: React.FC = () => {
       ),
     },
 
-    /* ── Screen 5: Region & Alerts ────────────────── */
+    /* ── Screen 5: Language & Alerts ────────────────── */
     {
       id: 5,
       content: (
@@ -421,14 +429,14 @@ const Onboarding: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.5 }}
             className="text-2xl font-black text-white mb-1"
-          >Region &amp; Alerts</motion.h2>
+          >Language &amp; Alerts</motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.5 }}
             className="text-xs font-bold uppercase tracking-widest text-[#22c55e] mb-5"
-          >Personalize Your Experience</motion.p>
+          >SET YOUR PREFERENCES</motion.p>
 
           {/* Language Selector */}
           <motion.div
@@ -440,14 +448,14 @@ const Onboarding: React.FC = () => {
             <p className="text-[10px] font-black uppercase tracking-widest text-[#6b7c6e] mb-2 text-left">Language</p>
             <div className="flex items-center justify-center gap-2">
               {[
-                { flag: '🇵🇭', label: 'Filipino', active: true },
-                { flag: '🇺🇸', label: 'English', active: false },
-                { flag: '🗣️', label: 'Bisaya', active: false },
+                { flag: '🇵🇭', label: 'Filipino', value: 'fil' as const },
+                { flag: '🇺🇸', label: 'English', value: 'en' as const },
               ].map((lang) => (
                 <div
                   key={lang.label}
+                  onClick={() => handleLangSelect(lang.value)}
                   className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    lang.active
+                    selectedLang === lang.value
                       ? 'bg-[#16a34a]/15 border-[#16a34a]/40 text-[#22c55e]'
                       : 'bg-[#0a160d]/60 border-[#16a34a22] text-[#6b7c6e] hover:border-[#16a34a44]'
                   }`}
@@ -456,27 +464,6 @@ const Onboarding: React.FC = () => {
                   {lang.label}
                 </div>
               ))}
-            </div>
-          </motion.div>
-
-          {/* Region Dropdown */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.4 }}
-            className="w-full mb-4"
-          >
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#6b7c6e] mb-2 text-left">Region</p>
-            <div
-              className="rounded-xl px-4 py-3 flex items-center gap-3"
-              style={{
-                background: 'rgba(10, 22, 13, 0.55)',
-                border: '1px solid rgba(22, 163, 74, 0.2)',
-              }}
-            >
-              <Globe size={18} className="text-[#22c55e]" />
-              <span className="text-sm font-bold text-[#d1d5db]">Davao Region</span>
-              <span className="ml-auto text-[8px] font-black uppercase tracking-widest bg-[#16a34a]/15 text-[#22c55e] px-2 py-0.5 rounded-full">Default</span>
             </div>
           </motion.div>
 

@@ -11,6 +11,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { WatchlistProvider } from './context/WatchlistContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { InventoryProvider } from './context/InventoryContext';
+import { LanguageProvider } from './context/LanguageContext';
 import Layout from './components/Layout';
 import NotificationPanel from './components/NotificationPanel';
 import Login from './pages/Login';
@@ -186,20 +187,22 @@ function AppRoutes() {
 export default function App() {
   return (
     <Router>
-      <ThemeProvider>
-        <AuthProvider>
-          <AssetProvider>
-            <WatchlistProvider>
-              <NotificationProvider>
-                <InventoryProvider>
-                  <AppRoutes />
-                  <NotificationPanel />
-                </InventoryProvider>
-              </NotificationProvider>
-            </WatchlistProvider>
-          </AssetProvider>
-        </AuthProvider>
-      </ThemeProvider>
+      <LanguageProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <AssetProvider>
+              <WatchlistProvider>
+                <NotificationProvider>
+                  <InventoryProvider>
+                    <AppRoutes />
+                    <NotificationPanel />
+                  </InventoryProvider>
+                </NotificationProvider>
+              </WatchlistProvider>
+            </AssetProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </LanguageProvider>
     </Router>
   );
 }

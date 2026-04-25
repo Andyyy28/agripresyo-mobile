@@ -4,6 +4,7 @@ import { ShoppingCart, Store, BarChart3, User } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,12 +12,13 @@ function cn(...inputs: ClassValue[]) {
 
 const ConsumerBottomNav: React.FC = () => {
   const { isDark } = useTheme();
+  const { t } = useLanguage();
 
   const navItems = [
-    { to: '/market', icon: ShoppingCart, label: 'Market' },
-    { to: '/shops', icon: Store, label: 'Shops' },
-    { to: '/analytics', icon: BarChart3, label: 'Analytics' },
-    { to: '/profile', icon: User, label: 'Profile' },
+    { to: '/market', icon: ShoppingCart, label: t('nav_market') },
+    { to: '/shops', icon: Store, label: t('nav_shops') },
+    { to: '/analytics', icon: BarChart3, label: t('nav_analytics') },
+    { to: '/profile', icon: User, label: t('nav_profile') },
   ];
 
   return (

@@ -5,12 +5,14 @@ import { motion } from 'motion/react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTheme } from '../context/ThemeContext';
 import { useNotifications } from '../context/NotificationContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const timeFilters = ['3M', '6M', '1Y', 'ALL'];
 
 const Analytics: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
   const { openPanel, unreadCount } = useNotifications();
+  const { t } = useLanguage();
   const [activeTimeFilter, setActiveTimeFilter] = useState('1Y');
 
   // Price rankings
@@ -104,7 +106,7 @@ const Analytics: React.FC = () => {
               <span className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Agri</span>
               <span className="text-lg font-black text-[#22c55e]">Presyo</span>
             </div>
-            <h1 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Price Rankings</h1>
+            <h1 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('price_rankings')}</h1>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -125,36 +127,36 @@ const Analytics: React.FC = () => {
           </div>
         </div>
         <p className={`text-xs mt-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-          See which products are most and least expensive right now
+          {t('see_expensive')}
         </p>
       </header>
 
       {/* 2x2 Ranking Grid */}
       <section className="grid grid-cols-2 gap-3">
         <RankCard
-          title="Premium Fruits"
-          subtitle="Most Expensive"
+          title={t('premium_fruits')}
+          subtitle={t('most_expensive')}
           icon={<Trophy size={14} />}
           iconColor="#f59e0b"
           items={premiumFruits}
         />
         <RankCard
-          title="Value Fruits"
-          subtitle="Most Affordable"
+          title={t('value_fruits')}
+          subtitle={t('most_affordable')}
           icon={<Award size={14} />}
           iconColor="#22c55e"
           items={valueFruits}
         />
         <RankCard
-          title="Premium Veggies"
-          subtitle="Most Expensive"
+          title={t('premium_veggies')}
+          subtitle={t('most_expensive')}
           icon={<Trophy size={14} />}
           iconColor="#f97316"
           items={premiumVegs}
         />
         <RankCard
-          title="Value Veggies"
-          subtitle="Most Affordable"
+          title={t('value_veggies')}
+          subtitle={t('most_affordable')}
           icon={<Award size={14} />}
           iconColor="#22c55e"
           items={valueVegs}
@@ -167,7 +169,7 @@ const Analytics: React.FC = () => {
           <div className="flex items-center gap-2">
             <BarChart3 size={16} className="text-[#22c55e]" />
             <h2 className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>
-              Price Changes Over Time
+              {t('price_changes_time')}
             </h2>
           </div>
           <div className="flex gap-1.5">
@@ -241,19 +243,19 @@ const Analytics: React.FC = () => {
         {/* Stat Cards */}
         <div className="grid grid-cols-4 gap-2 mt-3">
           <div className={`rounded-xl border p-3 text-center ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-            <p className={`text-[8px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Period</p>
+            <p className={`text-[8px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('period')}</p>
             <p className={`text-xs font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Apr 2026</p>
           </div>
           <div className={`rounded-xl border p-3 text-center ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-            <p className={`text-[8px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Average</p>
+            <p className={`text-[8px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('average')}</p>
             <p className="text-xs font-black text-[#22c55e]">₱{avgPrice.toFixed(2)}</p>
           </div>
           <div className={`rounded-xl border p-3 text-center ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-            <p className={`text-[8px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Range</p>
+            <p className={`text-[8px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('range')}</p>
             <p className={`text-[10px] font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{minPrice.toFixed(0)}–₱{maxPrice.toFixed(0)}</p>
           </div>
           <div className={`rounded-xl border p-3 text-center ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-            <p className={`text-[8px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Change</p>
+            <p className={`text-[8px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('change')}</p>
             <p className={`text-xs font-black ${priceChange >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
               {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
             </p>

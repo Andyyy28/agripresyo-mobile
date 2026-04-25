@@ -3,12 +3,14 @@ import { Package, AlertCircle, Edit2, Trash2, Plus, Search, X } from 'lucide-rea
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../../context/ThemeContext';
 import { useInventory } from '../../context/InventoryContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { getCommodityBgByName, getSlugFromName } from '../../data/commodityColors';
 import type { InventoryItem } from '../../context/InventoryContext';
 
 const VendorInventory: React.FC = () => {
   const { isDark } = useTheme();
   const { inventory, addItem, updateItem, deleteItem, lowStockCount, totalValue } = useInventory();
+  const { t } = useLanguage();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
@@ -70,22 +72,22 @@ const VendorInventory: React.FC = () => {
   return (
     <div className="px-5 py-6 flex flex-col gap-6">
       <header>
-        <h1 className={`text-2xl font-black mb-4 ${isDark ? 'text-white' : 'text-[#111827]'}`}>Inventory</h1>
+        <h1 className={`text-2xl font-black mb-4 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('vendor_inventory_title')}</h1>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-4">
           <div className={`rounded-2xl border p-3.5 flex flex-col gap-1 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-            <p className={`text-[9px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Products</p>
+            <p className={`text-[9px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('products')}</p>
             <p className={`text-xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{inventory.length}</p>
           </div>
           <div className={`rounded-2xl border p-3.5 flex flex-col gap-1 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-            <p className={`text-[9px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Low Stock</p>
+            <p className={`text-[9px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('low_stock')}</p>
             <p className={lowStockCount > 0 ? "text-xl font-black text-[#ef4444]" : `text-xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>
               {lowStockCount}
             </p>
           </div>
           <div className={`rounded-2xl border p-3.5 flex flex-col gap-1 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
-            <p className={`text-[9px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Value</p>
+            <p className={`text-[9px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('value')}</p>
             <p className="text-xl font-black text-[#22c55e]">₱{(totalValue / 1000).toFixed(1)}k</p>
           </div>
         </div>
@@ -95,7 +97,7 @@ const VendorInventory: React.FC = () => {
           <Search className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} size={16} />
           <input
             type="text"
-            placeholder="Search inventory..."
+            placeholder={t('search_inventory')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={`w-full rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-[#22c55e]/50 transition-colors ${
@@ -110,14 +112,14 @@ const VendorInventory: React.FC = () => {
         <div className="flex items-center justify-between">
           <h2 className={`text-sm font-black flex items-center gap-2 uppercase tracking-wider ${isDark ? 'text-white' : 'text-[#111827]'}`}>
             <Package size={16} className="text-[#22c55e]" />
-            Current Stock
+            {t('current_stock')}
           </h2>
           <button
             onClick={openAddModal}
             className="text-[#22c55e] text-[10px] font-black uppercase tracking-widest flex items-center gap-1"
           >
             <Plus size={12} />
-            Add New
+            {t('add_new')}
           </button>
         </div>
 
@@ -146,7 +148,7 @@ const VendorInventory: React.FC = () => {
                   {item.stock < 10 && (
                     <span className="bg-[#ef4444]/15 text-[#ef4444] text-[7px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-0.5">
                       <AlertCircle size={7} />
-                      Low Stock
+                      {t('low_stock_badge')}
                     </span>
                   )}
                 </div>
@@ -202,7 +204,7 @@ const VendorInventory: React.FC = () => {
               }`}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className={`text-xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{editingItem ? 'Edit Product' : 'Add New Product'}</h3>
+                <h3 className={`text-xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{editingItem ? t('edit_product') : t('add_new_product')}</h3>
                 <button onClick={() => setIsModalOpen(false)} className={`p-2 transition-colors ${isDark ? 'text-gray-500 hover:text-white' : 'text-gray-400 hover:text-gray-600'}`}>
                   <X size={20} />
                 </button>
@@ -210,10 +212,10 @@ const VendorInventory: React.FC = () => {
 
               <div className="flex flex-col gap-5">
                 <div className="flex flex-col gap-1.5">
-                  <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Product Name</label>
+                  <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('product_name')}</label>
                   <input
                     type="text"
-                    placeholder="e.g. Carabao Mango"
+                    placeholder={t('eg_carabao_mango')}
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     className={`w-full rounded-xl py-3.5 px-4 text-sm focus:outline-none focus:border-[#22c55e]/50 ${
@@ -224,7 +226,7 @@ const VendorInventory: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col gap-1.5">
-                    <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Stock (kg)</label>
+                    <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('stock_kg')}</label>
                     <input
                       type="number"
                       placeholder="0"
@@ -236,7 +238,7 @@ const VendorInventory: React.FC = () => {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Price (₱/kg)</label>
+                    <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('price_per_kg')}</label>
                     <input
                       type="number"
                       placeholder="0"
@@ -253,7 +255,7 @@ const VendorInventory: React.FC = () => {
                   onClick={handleSave}
                   className="w-full bg-[#22c55e] text-black py-4 rounded-xl font-black text-sm uppercase tracking-wider mt-2 hover:bg-[#1db053] transition-colors active:scale-[0.98]"
                 >
-                  {editingItem ? 'Update Product' : 'Save Product'}
+                  {editingItem ? t('update_product') : t('save_product')}
                 </button>
               </div>
             </motion.div>

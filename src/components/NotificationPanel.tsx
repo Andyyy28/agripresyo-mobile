@@ -4,11 +4,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useNotifications } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const NotificationPanel: React.FC = () => {
   const { isPanelOpen, closePanel, markAsRead, markAllAsRead, getFilteredNotifications, unreadCount } = useNotifications();
   const { user } = useAuth();
   const { isDark } = useTheme();
+  const { t } = useLanguage();
 
   const role = user?.role || 'consumer';
   const filteredNotifications = getFilteredNotifications(role);
@@ -74,7 +76,7 @@ const NotificationPanel: React.FC = () => {
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
                   />
-                  <h2 className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Notifications</h2>
+                  <h2 className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('notifications_title')}</h2>
                 </div>
                 <div className="flex items-center gap-3">
                   {roleUnread > 0 && (
@@ -82,7 +84,7 @@ const NotificationPanel: React.FC = () => {
                       onClick={markAllAsRead}
                       className="text-[#22c55e] text-[10px] font-black uppercase tracking-wider"
                     >
-                      Mark all as read
+                      {t('mark_all')}
                     </button>
                   )}
                   <button
@@ -100,7 +102,7 @@ const NotificationPanel: React.FC = () => {
               <div className="flex-1 overflow-y-auto no-scrollbar">
                 {filteredNotifications.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-20 gap-3">
-                    <p className={`text-sm font-bold ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>No notifications</p>
+                    <p className={`text-sm font-bold ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>{t('no_notifications')}</p>
                   </div>
                 ) : (
                   filteredNotifications.map((notification) => (
