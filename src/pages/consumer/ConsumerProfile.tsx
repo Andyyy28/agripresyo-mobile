@@ -110,8 +110,8 @@ const ConsumerProfile: React.FC = () => {
         </button>
       </section>
 
-      <p className={`text-center text-[10px] font-bold uppercase tracking-widest pb-4 ${isDark ? 'text-gray-700' : 'text-gray-300'}`}>
-        AgriPresyo v2.0.0
+      <p className="text-center text-[10px] font-bold uppercase tracking-widest pb-4">
+        <span style={{ color: '#518706' }}>Agri</span><span style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Presyo</span> <span className={isDark ? 'text-gray-700' : 'text-gray-300'}>v2.0.0</span>
       </p>
 
       {/* Language Picker Modal */}

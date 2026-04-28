@@ -103,8 +103,8 @@ const Analytics: React.FC = () => {
             />
             {/* Fallback if logo image is missing */}
             <div className="hidden">
-              <span className={`text-lg font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>Agri</span>
-              <span className="text-lg font-black text-[#22c55e]">Presyo</span>
+              <span className="text-lg font-black" style={{ color: '#518706' }}>Agri</span>
+              <span className="text-lg font-black" style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Presyo</span>
             </div>
             <h1 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('price_rankings')}</h1>
           </div>

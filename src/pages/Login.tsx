@@ -119,7 +119,7 @@ const GoogleAuthModal: React.FC<{
                   </svg>
                   <span className="text-white text-sm font-bold">Choose an account</span>
                 </div>
-                <p className="text-[#6b7c6e] text-xs">to continue to AgriPresyo</p>
+                <p className="text-[#6b7c6e] text-xs">to continue to <span style={{ color: '#518706' }}>Agri</span><span className="text-white">Presyo</span></p>
               </div>
               <div className="py-2">
                 {accounts.map((account) => (
@@ -367,8 +367,8 @@ const Login: React.FC = () => {
             transition={{ delay: 0.15, duration: 0.5 }}
             className="text-3xl font-black tracking-tight"
           >
-            <span className="text-white">Agri</span>
-            <span className="text-[#22c55e]">Presyo</span>
+            <span style={{ color: '#518706' }}>Agri</span>
+            <span style={{ color: '#FFFFFF' }}>Presyo</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 16 }}

@@ -233,7 +233,7 @@ const Onboarding: React.FC = () => {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="text-2xl font-black text-white tracking-tight mb-2"
           >
-            Welcome to <span className="text-[#22c55e]">AgriPresyo</span>
+            Welcome to <span style={{ color: '#518706' }}>Agri</span><span className="text-white">Presyo</span>
           </motion.h1>
 
           <motion.p
