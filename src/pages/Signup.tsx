@@ -152,31 +152,16 @@ const Signup: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen font-sans flex justify-center relative overflow-hidden" style={{ backgroundColor: '#060e09' }}>
-      {/* Background layers */}
-      <HexMesh />
-      <FloatingParticles />
+    <div className="min-h-screen font-sans flex justify-center items-center" style={{ backgroundColor: '#0a0a0a' }}>
+      {/* ── Mobile Frame Container ── */}
+      <div className="w-full max-w-[430px] relative flex flex-col min-h-screen overflow-hidden shadow-2xl border-x border-[#1f1f23]" style={{ backgroundColor: '#060e09' }}>
+        {/* Background layers (inside frame) */}
+        <HexMesh />
+        <FloatingParticles />
+        <div className="absolute pointer-events-none" style={{ top: '-15%', left: '50%', transform: 'translateX(-50%)', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%)' }} />
+        <div className="absolute pointer-events-none" style={{ bottom: '-20%', left: '50%', transform: 'translateX(-50%)', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(22,163,74,0.08) 0%, transparent 70%)' }} />
 
-      {/* Radial glow top */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          top: '-15%', left: '50%', transform: 'translateX(-50%)',
-          width: '600px', height: '600px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%)',
-        }}
-      />
-      {/* Radial glow bottom */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          bottom: '-20%', left: '50%', transform: 'translateX(-50%)',
-          width: '500px', height: '500px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(22,163,74,0.08) 0%, transparent 70%)',
-        }}
-      />
-
-      <div className="w-full max-w-[430px] relative flex flex-col min-h-screen px-6 py-6 z-10">
+        <div className="w-full relative flex flex-col min-h-screen px-6 py-6 z-10">
         {/* Back button */}
         <motion.button
           initial={{ opacity: 0, x: -10 }}
@@ -465,6 +450,7 @@ const Signup: React.FC = () => {
             </div>
           </form>
         </motion.div>
+        </div>
       </div>
     </div>
   );
