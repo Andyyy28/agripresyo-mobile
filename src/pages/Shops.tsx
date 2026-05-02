@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { shopVendors, commodities } from '../data/mockData';
 import { Star, ShoppingBag, Leaf, ArrowRight, Bell, Sun, Moon } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -6,14 +6,42 @@ import { useTheme } from '../context/ThemeContext';
 import { useNotifications } from '../context/NotificationContext';
 import { useLanguage } from '../context/LanguageContext';
 import { getCommodityBg } from '../data/commodityColors';
+import ShopDetailModal from '../components/ShopDetailModal';
+import type { ShopVendor } from '../types';
 
 const filterOptions = ['ALL', 'FRUITS', 'VEGETABLES'];
+
+const avatarColors = ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 const Shops: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
   const { openPanel, unreadCount } = useNotifications();
   const { t } = useLanguage();
   const [activeFilter, setActiveFilter] = useState('ALL');
+  const [selectedVendor, setSelectedVendor] = useState<ShopVendor | null>(null);
+  const [selectedColor, setSelectedColor] = useState('#22c55e');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Session ratings — tracks user-submitted ratings per vendor
+  const [sessionRatings, setSessionRatings] = useState<Record<string, { rating: number; count: number }>>({});
+
+  const handleRatingSubmit = useCallback((vendorId: string, rating: number) => {
+    setSessionRatings(prev => {
+      const vendor = shopVendors.find(v => v.id === vendorId);
+      if (!vendor) return prev;
+      // Always recalculate from original base + user's current star
+      const baseTotal = vendor.rating * vendor.reviewCount;
+      const newCount = vendor.reviewCount + 1;
+      const newAvg = (baseTotal + rating) / newCount;
+      return {
+        ...prev,
+        [vendorId]: {
+          rating: Math.round(newAvg * 10) / 10,
+          count: newCount,
+        },
+      };
+    });
+  }, []);
 
   const filteredVendors = useMemo(() => {
     if (activeFilter === 'ALL') return shopVendors;
@@ -26,38 +54,63 @@ const Shops: React.FC = () => {
   const fruitShops = filteredVendors.filter(v => v.category === 'Fruits');
   const vegShops = filteredVendors.filter(v => v.category === 'Vegetables' || v.category === 'Spices');
 
+  const handleViewShop = (vendor: ShopVendor, colorIndex: number) => {
+    setSelectedVendor(vendor);
+    setSelectedColor(avatarColors[colorIndex % avatarColors.length]);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedVendor(null), 300);
+  };
+
   const VendorCard: React.FC<{ vendor: typeof shopVendors[0]; index: number }> = ({ vendor, index }) => {
-    const avatarColors = ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
     const color = avatarColors[index % avatarColors.length];
+
+    // Use session rating if user has rated
+    const displayRating = sessionRatings[vendor.id]?.rating ?? vendor.rating;
+    const displayCount = sessionRatings[vendor.id]?.count ?? vendor.reviewCount;
 
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
-        className={`rounded-2xl border p-4 flex flex-col gap-3 relative overflow-hidden ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'
+        className={`rounded-2xl border p-3.5 flex flex-col gap-2.5 relative overflow-hidden cursor-pointer active:scale-[0.97] transition-all ${isDark ? 'bg-[#141418] border-[#1f1f23] hover:border-[#3ddc6e]/30 hover:shadow-[0_0_12px_rgba(61,220,110,0.06)]' : 'bg-white border-[#e5e7eb] hover:border-[#22c55e]/30 hover:shadow-[0_0_12px_rgba(34,197,94,0.08)]'
           }`}
+        onClick={() => handleViewShop(vendor, index)}
       >
         {/* Location Badge */}
         <div className="absolute top-3 right-3">
-          <span className={`text-[7px] font-black uppercase tracking-wider px-2 py-1 rounded-full ${isDark ? 'bg-[#1a1a1e] text-gray-400 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-500 border border-[#e5e7eb]'
+          <span className={`text-[6px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full ${isDark ? 'bg-[#1a1a1e] text-gray-400 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-500 border border-[#e5e7eb]'
             }`}>
             {vendor.location}
           </span>
         </div>
 
         {/* Avatar & Name */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <div
-            className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-black text-white shrink-0"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black shrink-0"
             style={{ backgroundColor: color + '30', color }}
           >
             {vendor.initial}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className={`text-sm font-bold truncate pr-16 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{vendor.name}</h3>
+            <h3 className={`text-[11px] font-bold leading-tight ${isDark ? 'text-white' : 'text-[#111827]'}`}
+              style={{ 
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                paddingRight: vendor.location.length > 8 ? '0' : '2rem',
+              }}
+            >
+              {vendor.name}
+            </h3>
             {vendor.isNew && (
-              <span className="text-[8px] font-black uppercase tracking-wider text-[#22c55e] bg-[#22c55e]/10 px-2 py-0.5 rounded-full mt-1 inline-block">
+              <span className="text-[7px] font-black uppercase tracking-wider text-[#22c55e] bg-[#22c55e]/10 px-1.5 py-0.5 rounded-full mt-0.5 inline-block">
                 {t('new_market_partner')}
               </span>
             )}
@@ -66,26 +119,26 @@ const Shops: React.FC = () => {
 
         {/* Rating & Status */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <Star size={12} className="text-[#f59e0b] fill-[#f59e0b]" />
-            <span className="text-xs font-bold text-[#f59e0b]">{vendor.rating}</span>
-            <span className={`text-[10px] ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>({vendor.reviewCount})</span>
+          <div className="flex items-center gap-1">
+            <Star size={11} className="text-[#f59e0b] fill-[#f59e0b]" />
+            <span className="text-[10px] font-bold text-[#f59e0b]">{displayRating}</span>
+            <span className={`text-[9px] ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>({displayCount})</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <div className={`w-2 h-2 rounded-full ${vendor.isOpen ? 'bg-[#22c55e]' : 'bg-[#ef4444]'}`} />
-            <span className={`text-[9px] font-black uppercase tracking-wider ${vendor.isOpen ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
+          <div className="flex items-center gap-1">
+            <div className={`w-1.5 h-1.5 rounded-full ${vendor.isOpen ? 'bg-[#22c55e]' : 'bg-[#ef4444]'}`} />
+            <span className={`text-[8px] font-black uppercase tracking-wider ${vendor.isOpen ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
               {vendor.isOpen ? t('open_status') : t('closed_status')}
             </span>
           </div>
         </div>
 
         {/* Commodity Images */}
-        <div className="flex gap-1.5">
+        <div className="flex gap-1">
           {(vendor.commodityIds || []).slice(0, 4).map((cId, i) => {
             const commodity = commodities.find(c => c.id === cId);
             if (!commodity) return null;
             return (
-              <div key={i} className={`w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden ${getCommodityBg(commodity.slug, isDark)}`}>
+              <div key={i} className={`w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden ${getCommodityBg(commodity.slug, isDark)}`}>
                 <img
                   src={`/images/commodities/${commodity.slug}.webp`}
                   alt={commodity.name}
@@ -95,16 +148,21 @@ const Shops: React.FC = () => {
               </div>
             );
           })}
+          {(vendor.commodityIds || []).length > 4 && (
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[8px] font-bold ${isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-100 text-gray-400'}`}>
+              +{(vendor.commodityIds || []).length - 4}
+            </div>
+          )}
         </div>
 
         {/* Bottom Actions */}
         <div className="flex items-center justify-between pt-2 border-t" style={{ borderColor: isDark ? '#1f1f23' : '#e5e7eb' }}>
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-50 text-gray-400'}`}>
-            <ShoppingBag size={14} />
+          <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-50 text-gray-400'}`}>
+            <ShoppingBag size={12} />
           </div>
-          <button className="text-[#22c55e] text-[10px] font-black uppercase tracking-wider flex items-center gap-1 hover:underline">
-            {t('view_shop')} <ArrowRight size={10} />
-          </button>
+          <span className="text-[#22c55e] text-[9px] font-black uppercase tracking-wider flex items-center gap-1">
+            {t('view_shop')} <ArrowRight size={9} />
+          </span>
         </div>
       </motion.div>
     );
@@ -182,7 +240,7 @@ const Shops: React.FC = () => {
               <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('shops_sell_fruits')}</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             {fruitShops.map((vendor, i) => (
               <VendorCard key={vendor.id} vendor={vendor} index={i} />
             ))}
@@ -202,13 +260,22 @@ const Shops: React.FC = () => {
               <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t('shops_sell_veg')}</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             {vegShops.map((vendor, i) => (
               <VendorCard key={vendor.id} vendor={vendor} index={i + fruitShops.length} />
             ))}
           </div>
         </section>
       )}
+
+      {/* Shop Detail Modal */}
+      <ShopDetailModal
+        vendor={selectedVendor}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        avatarColor={selectedColor}
+        onRatingSubmit={handleRatingSubmit}
+      />
     </div>
   );
 };

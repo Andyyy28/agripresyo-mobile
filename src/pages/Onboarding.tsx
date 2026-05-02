@@ -242,7 +242,7 @@ const Onboarding: React.FC = () => {
             transition={{ delay: 0.4, duration: 0.5 }}
             className="text-sm text-[#8b9a8f] leading-relaxed max-w-[300px] mx-auto"
           >
-            Smarter farming decisions through real-time market updates. Track commodity prices across the Philippines.
+            Smarter farming decisions through real-time market updates.
           </motion.p>
 
           {/* Commodity icon row */}
@@ -454,11 +454,10 @@ const Onboarding: React.FC = () => {
                 <div
                   key={lang.label}
                   onClick={() => handleLangSelect(lang.value)}
-                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    selectedLang === lang.value
-                      ? 'bg-[#16a34a]/15 border-[#16a34a]/40 text-[#22c55e]'
-                      : 'bg-[#0a160d]/60 border-[#16a34a22] text-[#6b7c6e] hover:border-[#16a34a44]'
-                  }`}
+                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${selectedLang === lang.value
+                    ? 'bg-[#16a34a]/15 border-[#16a34a]/40 text-[#22c55e]'
+                    : 'bg-[#0a160d]/60 border-[#16a34a22] text-[#6b7c6e] hover:border-[#16a34a44]'
+                    }`}
                 >
                   <span className="text-base">{lang.flag}</span>
                   {lang.label}
@@ -534,101 +533,101 @@ const Onboarding: React.FC = () => {
 
         {/* ── Main Content ── */}
         <div className="w-full relative flex flex-col min-h-screen z-10">
-        {/* Skip + Close row */}
-        <div className="flex items-center justify-end px-6 pt-8 pb-2">
-          <button
-            onClick={handleSkip}
-            className="text-[#6b7c6e] text-[10px] font-bold uppercase tracking-[0.15em] hover:text-[#22c55e] transition-colors px-2 py-1"
-          >
-            Skip
-          </button>
-        </div>
+          {/* Skip + Close row */}
+          <div className="flex items-center justify-end px-6 pt-8 pb-2">
+            <button
+              onClick={handleSkip}
+              className="text-[#6b7c6e] text-[10px] font-bold uppercase tracking-[0.15em] hover:text-[#22c55e] transition-colors px-2 py-1"
+            >
+              Skip
+            </button>
+          </div>
 
-        {/* Content area inside glass card */}
-        <div className="flex-1 flex flex-col items-center justify-center px-5 pb-4 overflow-hidden">
-          {/* Glass card wrapper */}
-          <div
-            className="w-full rounded-3xl relative overflow-hidden animate-glow-pulse"
-            style={{
-              background: 'rgba(10, 22, 13, 0.72)',
-              border: '1px solid rgba(22, 163, 74, 0.33)',
-              padding: '36px 24px',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-            }}
-          >
-            {/* Top Accent Line */}
+          {/* Content area inside glass card */}
+          <div className="flex-1 flex flex-col items-center justify-center px-5 pb-4 overflow-hidden">
+            {/* Glass card wrapper */}
             <div
-              className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] rounded-full"
+              className="w-full rounded-3xl relative overflow-hidden animate-glow-pulse"
               style={{
-                width: '60%',
-                background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                background: 'rgba(10, 22, 13, 0.72)',
+                border: '1px solid rgba(22, 163, 74, 0.33)',
+                padding: '36px 24px',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
               }}
-            />
+            >
+              {/* Top Accent Line */}
+              <div
+                className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] rounded-full"
+                style={{
+                  width: '60%',
+                  background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                }}
+              />
 
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={screen.id}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="w-full"
-              >
-                {screen.content}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* ── Bottom: Progress + CTA ── */}
-        <div className="px-7 pb-10 flex flex-col gap-5">
-          {/* 5-step progress indicator */}
-          <div className="flex items-center justify-center gap-2">
-            {screens.map((_, i) => (
-              <button key={i} onClick={() => handleDotClick(i)} className="p-1">
+              <AnimatePresence mode="wait" custom={direction}>
                 <motion.div
-                  animate={{
-                    width: i === currentScreen ? 28 : 8,
-                    height: 8,
-                    backgroundColor: i === currentScreen ? '#16a34a' : '#1a2e1e',
-                    borderRadius: i === currentScreen ? 10 : 50,
-                  }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                />
-              </button>
-            ))}
+                  key={screen.id}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  className="w-full"
+                >
+                  {screen.content}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
 
-          {/* CTA Button */}
-          {!isLast && (
-            <button
-              onClick={handleNext}
-              className="onboard-cta w-full py-4 rounded-[14px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 active:scale-[0.98] text-white bg-[#16a34a] relative overflow-hidden"
-              style={{ boxShadow: '0 8px 32px rgba(22,163,74,0.25)' }}
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                {currentScreen === 0 ? 'Get Started' : 'Next'}
-                <ChevronRight size={18} />
-              </span>
-            </button>
-          )}
+          {/* ── Bottom: Progress + CTA ── */}
+          <div className="px-7 pb-10 flex flex-col gap-5">
+            {/* 5-step progress indicator */}
+            <div className="flex items-center justify-center gap-2">
+              {screens.map((_, i) => (
+                <button key={i} onClick={() => handleDotClick(i)} className="p-1">
+                  <motion.div
+                    animate={{
+                      width: i === currentScreen ? 28 : 8,
+                      height: 8,
+                      backgroundColor: i === currentScreen ? '#16a34a' : '#1a2e1e',
+                      borderRadius: i === currentScreen ? 10 : 50,
+                    }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  />
+                </button>
+              ))}
+            </div>
 
-          {isLast && (
-            <button
-              onClick={handleNext}
-              className="onboard-cta w-full py-4 rounded-[14px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 active:scale-[0.98] text-white bg-[#16a34a] relative overflow-hidden"
-              style={{ boxShadow: '0 8px 32px rgba(22,163,74,0.25)' }}
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                Continue to App
-                <ArrowRight size={18} />
-              </span>
-            </button>
-          )}
-        </div>
+            {/* CTA Button */}
+            {!isLast && (
+              <button
+                onClick={handleNext}
+                className="onboard-cta w-full py-4 rounded-[14px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 active:scale-[0.98] text-white bg-[#16a34a] relative overflow-hidden"
+                style={{ boxShadow: '0 8px 32px rgba(22,163,74,0.25)' }}
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  {currentScreen === 0 ? 'Get Started' : 'Next'}
+                  <ChevronRight size={18} />
+                </span>
+              </button>
+            )}
+
+            {isLast && (
+              <button
+                onClick={handleNext}
+                className="onboard-cta w-full py-4 rounded-[14px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 active:scale-[0.98] text-white bg-[#16a34a] relative overflow-hidden"
+                style={{ boxShadow: '0 8px 32px rgba(22,163,74,0.25)' }}
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Continue to App
+                  <ArrowRight size={18} />
+                </span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

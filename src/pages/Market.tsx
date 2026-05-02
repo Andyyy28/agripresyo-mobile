@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { commodities } from '../data/mockData';
-import { Bell, Heart, TrendingUp, ArrowUp, ArrowDown, Search, ShoppingCart, Sun, Moon, BarChart3, Calculator, Trash2, Minus, Plus, AlertTriangle, Package } from 'lucide-react';
+import { Bell, Heart, TrendingUp, ArrowUp, ArrowDown, Search, ShoppingCart, Sun, Moon, BarChart3, Calculator, Trash2, Minus, Plus, AlertTriangle, Package, Zap } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { motion, AnimatePresence } from 'motion/react';
@@ -83,6 +83,13 @@ const Market: React.FC = () => {
 
   const tickerItems = commodities.slice(0, 8);
   const suggestedBasket = commodities.filter(c => c.price <= 150).slice(0, 6);
+
+  // Top Gainer — commodity with the highest positive % change
+  const topGainer = useMemo(() => {
+    const gainers = commodities.filter(c => c.percentChange > 0);
+    if (gainers.length === 0) return null;
+    return gainers.reduce((best, c) => c.percentChange > best.percentChange ? c : best);
+  }, []);
 
   const handleCommodityClick = (commodity: Commodity) => {
     setSelectedCommodity(commodity);
@@ -233,6 +240,80 @@ const Market: React.FC = () => {
           </div>
         </section>
 
+        {/* ═══ MARKET TOP GAINER WIDGET ═══ */}
+        {topGainer && (
+          <section
+            className="rounded-2xl p-4 relative overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
+            style={{
+              background: isDark
+                ? 'linear-gradient(135deg, #111a11 0%, #0d1a0d 60%, #0a150a 100%)'
+                : 'linear-gradient(135deg, #f0faf2 0%, #e8f5eb 60%, #ffffff 100%)',
+              border: isDark
+                ? '1px solid rgba(61, 220, 110, 0.25)'
+                : '1px solid rgba(34, 197, 94, 0.3)',
+              boxShadow: isDark
+                ? '0 0 20px rgba(61, 220, 110, 0.08), inset 0 1px 0 rgba(61, 220, 110, 0.1)'
+                : '0 0 20px rgba(34, 197, 94, 0.06), inset 0 1px 0 rgba(34, 197, 94, 0.08)',
+            }}
+            onClick={() => handleCommodityClick(topGainer)}
+          >
+            {/* Decorative SVG leaf / lightning graphic — right side */}
+            <div className={`absolute -right-3 -top-3 pointer-events-none ${isDark ? 'opacity-[0.07]' : 'opacity-[0.10]'}`}>
+              <svg width="140" height="140" viewBox="0 0 140 140" fill="none">
+                <path d="M70 10 C90 30, 120 40, 130 70 C120 60, 100 55, 80 60 C100 70, 115 90, 120 120 C100 100, 80 95, 70 90 C60 95, 40 100, 20 120 C25 90, 40 70, 60 60 C40 55, 20 60, 10 70 C20 40, 50 30, 70 10Z" fill="#3ddc6e"/>
+              </svg>
+            </div>
+            <div className={`absolute right-4 bottom-3 pointer-events-none ${isDark ? 'opacity-[0.06]' : 'opacity-[0.08]'}`}>
+              <Zap size={60} className="text-[#3ddc6e]" />
+            </div>
+
+            {/* Header row */}
+            <div className="flex items-center gap-2 mb-2.5">
+              <div className="w-6 h-6 rounded-lg bg-[#3ddc6e]/15 flex items-center justify-center">
+                <TrendingUp size={12} className="text-[#3ddc6e]" />
+              </div>
+              <span className={`text-[9px] font-black uppercase tracking-[0.15em] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Market Top Gainer</span>
+            </div>
+            <p className={`text-[13px] font-black mb-3 tracking-tight ${isDark ? 'text-white' : 'text-[#111827]'}`}>Today's Highlight</p>
+
+            {/* Content row */}
+            <div className="flex items-center gap-3 relative z-10">
+              {/* Commodity image */}
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shrink-0 ${isDark ? topGainer.darkBgColor : topGainer.lightBgColor}`}>
+                <img
+                  src={`/images/commodities/${topGainer.slug}.webp`}
+                  alt={topGainer.name}
+                  className="w-full h-full object-contain p-1.5"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              </div>
+
+              {/* Name + % change */}
+              <div className="flex-1 min-w-0">
+                <p className={`text-sm font-black truncate ${isDark ? 'text-white' : 'text-[#111827]'}`}>{topGainer.name}</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[11px] font-black text-[#3ddc6e] flex items-center gap-0.5">
+                    <ArrowUp size={10} />
+                    +{topGainer.percentChange.toFixed(1)}%
+                  </span>
+                  <span className={`text-[9px] font-bold uppercase tracking-wider ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>7D</span>
+                </div>
+              </div>
+
+              {/* Price + change amount */}
+              <div className="text-right shrink-0">
+                <p className={`text-lg font-black leading-tight ${isDark ? 'text-white' : 'text-[#111827]'}`}>₱{topGainer.price.toFixed(2)}</p>
+                <div className="flex items-center justify-end gap-0.5 mt-0.5">
+                  <ArrowUp size={9} className="text-[#3ddc6e]" />
+                  <span className="text-[10px] font-bold text-[#3ddc6e]">
+                    ₱{Math.abs(topGainer.price - topGainer.previousPrice).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* MY WATCHLIST — only shows if user has saved at least 1 commodity */}
         {watchlistCommodities.length > 0 && (
           <section>
@@ -367,6 +448,19 @@ const Market: React.FC = () => {
                   onClick={(e) => { e.stopPropagation(); addAsset(item.id); }}
                 >
                   <ShoppingCart size={10} />
+                  {/* Budget count badge */}
+                  {(() => {
+                    const assetEntry = assets.find(a => a.commodityId === item.id);
+                    const count = assetEntry ? assetEntry.quantity : 0;
+                    return count > 0 ? (
+                      <span
+                        className="absolute -top-1.5 -right-1.5 min-w-[16px] h-[16px] rounded-full flex items-center justify-center text-[9px] font-black leading-none px-0.5 pointer-events-none"
+                        style={{ backgroundColor: '#3ddc6e', color: '#0a0f0a' }}
+                      >
+                        {count}
+                      </span>
+                    ) : null;
+                  })()}
                 </button>
               </motion.div>
             ))}

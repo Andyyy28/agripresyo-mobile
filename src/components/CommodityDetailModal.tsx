@@ -2,10 +2,11 @@ import React, { useState, useMemo } from 'react';
 import { X, ArrowUpRight, Clock, Star, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import type { Commodity } from '../types';
-import { getShopVendorsForCommodity } from '../data/mockData';
+import type { Commodity, ShopVendor } from '../types';
+import { getShopVendorsForCommodity, shopVendors as allShopVendors } from '../data/mockData';
 import { useAssets } from '../context/AssetContext';
 import { useTheme } from '../context/ThemeContext';
+import ShopDetailModal from './ShopDetailModal';
 
 interface CommodityDetailModalProps {
   commodity: Commodity | null;
@@ -32,6 +33,9 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
   const { addAsset } = useAssets();
   const { isDark } = useTheme();
   const [showToast, setShowToast] = useState(false);
+  const [selectedShopVendor, setSelectedShopVendor] = useState<ShopVendor | null>(null);
+  const [selectedShopColor, setSelectedShopColor] = useState('#22c55e');
+  const [isShopModalOpen, setIsShopModalOpen] = useState(false);
 
   // All hooks MUST be above the early return to avoid hook ordering issues
   // Chart data with dates
@@ -270,7 +274,17 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                         shopVendors.map((vendor) => (
                           <div
                             key={vendor.id}
-                            className={`rounded-xl border p-4 flex items-center gap-3 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-gray-50 border-[#e5e7eb]'}`}
+                            className={`rounded-xl border p-4 flex items-center gap-3 cursor-pointer active:scale-[0.97] transition-all ${isDark ? 'bg-[#141418] border-[#1f1f23] hover:border-[#3ddc6e]/30 hover:shadow-[0_0_12px_rgba(61,220,110,0.06)]' : 'bg-gray-50 border-[#e5e7eb] hover:border-[#22c55e]/30 hover:shadow-[0_0_12px_rgba(34,197,94,0.08)]'}`}
+                            onClick={() => {
+                              const original = allShopVendors.find(sv => sv.id === vendor.id);
+                              if (original) {
+                                const colors = ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+                                const idx = allShopVendors.indexOf(original);
+                                setSelectedShopVendor(original);
+                                setSelectedShopColor(colors[idx % colors.length]);
+                                setIsShopModalOpen(true);
+                              }
+                            }}
                           >
                             {/* Vendor avatar */}
                             <div
@@ -317,7 +331,7 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
                       onClick={handleAddToAssets}
                       className="flex-1 bg-[#22c55e] text-black font-black text-sm uppercase tracking-wider py-4 rounded-full hover:bg-[#16a34a] transition-colors active:scale-[0.98]"
                     >
-                      Add to Budget Plan
+                      Add to Budget
                     </button>
                     <button
                       onClick={onClose}
@@ -349,6 +363,16 @@ const CommodityDetailModal: React.FC<CommodityDetailModalProps> = ({ commodity, 
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Shop Detail Modal — opens on top of commodity modal */}
+      <ShopDetailModal
+        vendor={selectedShopVendor}
+        isOpen={isShopModalOpen}
+        onClose={() => {
+          setIsShopModalOpen(false);
+          setTimeout(() => setSelectedShopVendor(null), 300);
+        }}
+        avatarColor={selectedShopColor}
+      />
     </>
   );
 };
