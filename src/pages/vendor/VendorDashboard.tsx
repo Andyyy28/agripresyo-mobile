@@ -306,13 +306,13 @@ const VendorDashboard: React.FC = () => {
               Fruit
             </button>
             <button
-              onClick={() => setSellerType('veggie')}
+              onClick={() => setSellerType('veg')}
               className={`px-2 py-1 rounded-lg text-[7px] font-black uppercase tracking-wider transition-all ${sellerType === 'veggie'
                 ? 'bg-[#22c55e] text-white'
                 : isDark ? 'bg-[#1a1a1e] text-gray-500' : 'bg-gray-100 text-gray-400'
                 }`}
             >
-              Veggie
+              Veg
             </button>
           </div>
         </div>

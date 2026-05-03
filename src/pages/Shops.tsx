@@ -82,8 +82,8 @@ const Shops: React.FC = () => {
         onClick={() => handleViewShop(vendor, index)}
       >
         {/* Location Badge */}
-        <div className="absolute top-3 right-3">
-          <span className={`text-[6px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full ${isDark ? 'bg-[#1a1a1e] text-gray-400 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-500 border border-[#e5e7eb]'
+        <div>
+          <span className={`text-[6px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full inline-block ${isDark ? 'bg-[#1a1a1e] text-gray-400 border border-[#2a2a2e]' : 'bg-gray-100 text-gray-500 border border-[#e5e7eb]'
             }`}>
             {vendor.location}
           </span>
@@ -98,15 +98,7 @@ const Shops: React.FC = () => {
             {vendor.initial}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className={`text-[11px] font-bold leading-tight ${isDark ? 'text-white' : 'text-[#111827]'}`}
-              style={{ 
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-                paddingRight: vendor.location.length > 8 ? '0' : '2rem',
-              }}
-            >
+            <h3 className={`text-[11px] font-bold leading-tight ${isDark ? 'text-white' : 'text-[#111827]'}`}>
               {vendor.name}
             </h3>
             {vendor.isNew && (
