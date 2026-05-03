@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { User, ShoppingBasket, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, X } from 'lucide-react';
+import { User, ShoppingBasket, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, X, ArrowLeft, FileText, ScrollText, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 const ConsumerProfile: React.FC = () => {
@@ -12,6 +12,9 @@ const ConsumerProfile: React.FC = () => {
   const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
   const [showLangPicker, setShowLangPicker] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [privacyView, setPrivacyView] = useState<'menu' | 'policy' | 'terms'>('menu');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -27,7 +30,7 @@ const ConsumerProfile: React.FC = () => {
     { icon: Bell, label: t('notifications_label'), value: t('on'), color: '#22c55e', onClick: () => {} },
     { icon: isDark ? Moon : Sun, label: t('dark_mode'), value: isDark ? t('on') : t('off'), color: '#8b5cf6', onClick: toggleTheme },
     { icon: Globe, label: t('language'), value: language === 'en' ? 'English' : 'Filipino', color: '#3b82f6', onClick: () => setShowLangPicker(true) },
-    { icon: Shield, label: t('privacy'), value: '', color: '#f59e0b', onClick: () => {} },
+    { icon: Shield, label: t('privacy'), value: '', color: '#f59e0b', onClick: () => { setShowPrivacy(true); setPrivacyView('menu'); } },
   ];
 
   return (
@@ -159,6 +162,165 @@ const ConsumerProfile: React.FC = () => {
                       {language === opt.value && <span className="ml-auto text-[#22c55e]">✓</span>}
                     </button>
                   ))}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Privacy Panel Overlay */}
+      <AnimatePresence>
+        {showPrivacy && (
+          <motion.div
+            initial={{ opacity: 0, x: 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 60 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className={`fixed inset-0 z-[90] overflow-y-auto no-scrollbar ${isDark ? 'bg-[#0a0a0a]' : 'bg-[#f8faf8]'}`}
+          >
+            <div className="w-full max-w-[430px] mx-auto px-5 py-6">
+              {/* Back button */}
+              <button
+                onClick={() => {
+                  if (privacyView !== 'menu') {
+                    setPrivacyView('menu');
+                  } else {
+                    setShowPrivacy(false);
+                  }
+                }}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center mb-6 transition-colors ${isDark ? 'bg-[#141418] border border-[#1f1f23] text-gray-400 hover:text-white' : 'bg-white border border-[#e5e7eb] text-gray-500 hover:text-gray-700'}`}
+              >
+                <ArrowLeft size={20} />
+              </button>
+
+              <h2 className={`text-xl font-black mb-6 ${isDark ? 'text-white' : 'text-[#111827]'}`}>
+                {privacyView === 'menu' ? 'Privacy' : privacyView === 'policy' ? 'Privacy Policy' : 'Terms of Service'}
+              </h2>
+
+              {privacyView === 'menu' && (
+                <div className={`rounded-2xl border divide-y overflow-hidden ${isDark ? 'bg-[#141418] border-[#1f1f23] divide-[#1f1f23]' : 'bg-white border-[#e5e7eb] divide-[#e5e7eb]'}`}>
+                  {/* Privacy Policy */}
+                  <button
+                    onClick={() => setPrivacyView('policy')}
+                    className={`w-full flex items-center gap-4 px-5 py-4 transition-colors text-left ${isDark ? 'hover:bg-[#1a1a1e]' : 'hover:bg-gray-50'}`}
+                  >
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#3b82f6]/15 text-[#3b82f6]">
+                      <FileText size={18} />
+                    </div>
+                    <span className={`flex-1 text-sm font-semibold ${isDark ? 'text-white' : 'text-[#111827]'}`}>Privacy Policy</span>
+                    <ChevronRight size={16} className={isDark ? 'text-gray-700' : 'text-gray-300'} />
+                  </button>
+
+                  {/* Terms of Service */}
+                  <button
+                    onClick={() => setPrivacyView('terms')}
+                    className={`w-full flex items-center gap-4 px-5 py-4 transition-colors text-left ${isDark ? 'hover:bg-[#1a1a1e]' : 'hover:bg-gray-50'}`}
+                  >
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#22c55e]/15 text-[#22c55e]">
+                      <ScrollText size={18} />
+                    </div>
+                    <span className={`flex-1 text-sm font-semibold ${isDark ? 'text-white' : 'text-[#111827]'}`}>Terms of Service</span>
+                    <ChevronRight size={16} className={isDark ? 'text-gray-700' : 'text-gray-300'} />
+                  </button>
+
+                  {/* Delete Account */}
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className={`w-full flex items-center gap-4 px-5 py-4 transition-colors text-left ${isDark ? 'hover:bg-[#1a1a1e]' : 'hover:bg-gray-50'}`}
+                  >
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#ef4444]/15 text-[#ef4444]">
+                      <Trash2 size={18} />
+                    </div>
+                    <span className="flex-1 text-sm font-semibold text-[#ef4444]">Delete Account</span>
+                    <ChevronRight size={16} className={isDark ? 'text-gray-700' : 'text-gray-300'} />
+                  </button>
+                </div>
+              )}
+
+              {/* Privacy Policy Content */}
+              {privacyView === 'policy' && (
+                <div className={`rounded-2xl border p-5 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
+                  <div className={`flex flex-col gap-4 text-sm leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>Effective Date:</strong> January 1, 2026</p>
+                    <p>AgriPresyo ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you use the AgriPresyo mobile application.</p>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>Information We Collect</strong></p>
+                    <p>We collect your name, email address, and role (consumer or vendor) when you create an account. We also collect usage data such as commodity searches, watchlist preferences, and budget planner activity to improve your experience.</p>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>How We Use Your Information</strong></p>
+                    <p>Your data is used to provide personalized price tracking, budget recommendations, and market insights. We do not sell or share your personal information with third parties for marketing purposes.</p>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>Data Security</strong></p>
+                    <p>We implement industry-standard security measures to protect your data. All transmissions are encrypted and account credentials are securely hashed.</p>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>Your Rights</strong></p>
+                    <p>You may request access to, correction of, or deletion of your personal data at any time through the app settings or by contacting us at support@agripresyo.com.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Terms of Service Content */}
+              {privacyView === 'terms' && (
+                <div className={`rounded-2xl border p-5 ${isDark ? 'bg-[#141418] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
+                  <div className={`flex flex-col gap-4 text-sm leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>Effective Date:</strong> January 1, 2026</p>
+                    <p>By using AgriPresyo, you agree to the following terms and conditions. Please read them carefully before creating an account or using the application.</p>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>Use of Service</strong></p>
+                    <p>AgriPresyo provides real-time agricultural commodity price tracking for the Kabacan, North Cotabato region. Prices displayed are based on available market data and may not reflect exact transaction prices at all terminals.</p>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>User Accounts</strong></p>
+                    <p>You are responsible for maintaining the confidentiality of your account credentials. You agree to provide accurate information during registration and to update it as necessary.</p>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>Prohibited Conduct</strong></p>
+                    <p>Users may not misuse the platform by submitting false pricing data, impersonating vendors, or engaging in activities that disrupt the service for others.</p>
+                    <p><strong className={isDark ? 'text-white' : 'text-[#111827]'}>Limitation of Liability</strong></p>
+                    <p>AgriPresyo is provided "as is" without warranties of any kind. We are not liable for any losses resulting from reliance on the price data or market insights provided through the application.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Account Confirmation Dialog */}
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[95]"
+              onClick={() => setShowDeleteConfirm(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="fixed inset-0 flex items-center justify-center z-[100] px-8"
+            >
+              <div className={`w-full max-w-[320px] rounded-2xl border p-6 ${isDark ? 'bg-[#111114] border-[#1f1f23]' : 'bg-white border-[#e5e7eb]'}`}>
+                <div className="w-12 h-12 rounded-xl bg-[#ef4444]/15 flex items-center justify-center mx-auto mb-4">
+                  <Trash2 size={24} className="text-[#ef4444]" />
+                </div>
+                <h3 className={`text-lg font-black text-center mb-2 ${isDark ? 'text-white' : 'text-[#111827]'}`}>Delete Account</h3>
+                <p className={`text-sm text-center mb-6 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Are you sure? This cannot be undone.
+                </p>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setShowPrivacy(false);
+                      logout();
+                      navigate('/login', { replace: true });
+                    }}
+                    className="w-full bg-[#ef4444] text-white font-black text-sm uppercase tracking-wider py-3.5 rounded-xl hover:bg-[#dc2626] transition-colors active:scale-[0.98]"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className={`w-full font-bold text-sm py-3.5 rounded-xl transition-colors active:scale-[0.98] ${isDark ? 'bg-[#1a1a1e] text-gray-400 hover:bg-[#2a2a2e]' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             </motion.div>
