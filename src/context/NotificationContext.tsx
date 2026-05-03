@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { UserRole } from '../types';
 
 export interface AppNotification {
@@ -16,10 +16,12 @@ interface NotificationContextType {
   notifications: AppNotification[];
   unreadCount: number;
   isPanelOpen: boolean;
+  notificationsEnabled: boolean;
   openPanel: () => void;
   closePanel: () => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
+  toggleNotifications: () => void;
   getFilteredNotifications: (role: UserRole) => AppNotification[];
 }
 
@@ -81,8 +83,20 @@ const mockNotifications: AppNotification[] = [
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<AppNotification[]>(mockNotifications);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(() => {
+    const stored = localStorage.getItem('agripresyo_notifications_enabled');
+    return stored !== null ? stored === 'true' : true;
+  });
 
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  useEffect(() => {
+    localStorage.setItem('agripresyo_notifications_enabled', String(notificationsEnabled));
+  }, [notificationsEnabled]);
+
+  const toggleNotifications = useCallback(() => {
+    setNotificationsEnabled(prev => !prev);
+  }, []);
+
+  const unreadCount = notificationsEnabled ? notifications.filter(n => !n.isRead).length : 0;
 
   const openPanel = useCallback(() => setIsPanelOpen(true), []);
   const closePanel = useCallback(() => setIsPanelOpen(false), []);
@@ -108,10 +122,12 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         notifications,
         unreadCount,
         isPanelOpen,
+        notificationsEnabled,
         openPanel,
         closePanel,
         markAsRead,
         markAllAsRead,
+        toggleNotifications,
         getFilteredNotifications,
       }}
     >

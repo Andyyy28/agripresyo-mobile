@@ -6,6 +6,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { Store, CheckCircle, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, MapPin, Package, Clock, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { getCommodityBg } from '../../data/commodityColors';
+import { useNotifications } from '../../context/NotificationContext';
 
 const VendorProfile: React.FC = () => {
   const { user, logout } = useAuth();
@@ -13,6 +14,7 @@ const VendorProfile: React.FC = () => {
   const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
   const [showLangPicker, setShowLangPicker] = useState(false);
+  const { notificationsEnabled, toggleNotifications } = useNotifications();
 
   const handleLogout = () => {
     logout();
@@ -41,7 +43,7 @@ const VendorProfile: React.FC = () => {
   ];
 
   const settingsItems = [
-    { icon: Bell, label: t('notifications_label'), value: t('on'), color: '#22c55e', onClick: () => {} },
+    { icon: Bell, label: t('notifications_label'), value: notificationsEnabled ? t('on') : t('off'), color: '#22c55e', onClick: toggleNotifications },
     { icon: isDark ? Moon : Sun, label: t('dark_mode'), value: isDark ? t('on') : t('off'), color: '#8b5cf6', onClick: toggleTheme },
     { icon: Globe, label: t('language'), value: language === 'en' ? 'English' : 'Filipino', color: '#3b82f6', onClick: () => setShowLangPicker(true) },
     { icon: Shield, label: t('privacy'), value: '', color: '#f59e0b', onClick: () => {} },

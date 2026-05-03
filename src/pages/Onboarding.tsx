@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import { AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import {
   TrendingUp,
@@ -27,73 +27,30 @@ interface OnboardingScreen {
 }
 
 /* ════════════════════════════════════════════════════
-   HEXAGONAL MESH SVG (background overlay)
+   STATIC LEAF BACKGROUND (replaces HexMesh + Particles)
    ════════════════════════════════════════════════════ */
-const HexMesh: React.FC = () => (
+const LeafBackground: React.FC = () => (
   <svg
     className="absolute inset-0 w-full h-full pointer-events-none"
-    style={{ opacity: 0.07 }}
+    style={{ opacity: 0.06 }}
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      <pattern id="hex" width="56" height="100" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)">
-        <path
-          d="M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100"
-          fill="none"
-          stroke="#16a34a"
-          strokeWidth="0.5"
-        />
-        <path
-          d="M28 0L56 16L56 50L28 66L0 50L0 16Z"
-          fill="none"
-          stroke="#16a34a"
-          strokeWidth="0.5"
-        />
+      <pattern id="leaf-onboard" width="120" height="120" patternUnits="userSpaceOnUse">
+        <path d="M60 10 Q70 30 60 50 Q50 30 60 10Z" fill="none" stroke="#3ddc6e" strokeWidth="0.8" />
+        <path d="M20 70 Q30 90 20 110 Q10 90 20 70Z" fill="none" stroke="#3ddc6e" strokeWidth="0.8" />
+        <path d="M100 60 Q110 80 100 100 Q90 80 100 60Z" fill="none" stroke="#3ddc6e" strokeWidth="0.8" />
+        <path d="M60 10 L60 50" fill="none" stroke="#3ddc6e" strokeWidth="0.4" />
+        <path d="M20 70 L20 110" fill="none" stroke="#3ddc6e" strokeWidth="0.4" />
+        <path d="M100 60 L100 100" fill="none" stroke="#3ddc6e" strokeWidth="0.4" />
       </pattern>
     </defs>
-    <rect width="100%" height="100%" fill="url(#hex)" />
+    <rect width="100%" height="100%" fill="url(#leaf-onboard)" />
   </svg>
 );
 
 /* ════════════════════════════════════════════════════
-   FLOATING PARTICLES
-   ════════════════════════════════════════════════════ */
-const FloatingParticles: React.FC = () => {
-  const particles = useMemo(() => {
-    return Array.from({ length: 22 }, (_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      size: 2 + Math.random() * 4,
-      duration: 6 + Math.random() * 10,
-      delay: Math.random() * 8,
-      opacity: 0.15 + Math.random() * 0.35,
-    }));
-  }, []);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((p) => (
-        <div
-          key={p.id}
-          className="absolute rounded-full animate-float-up"
-          style={{
-            left: p.left,
-            bottom: '-10px',
-            width: p.size,
-            height: p.size,
-            backgroundColor: '#22c55e',
-            opacity: p.opacity,
-            animationDuration: `${p.duration}s`,
-            animationDelay: `${p.delay}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-/* ════════════════════════════════════════════════════
-   PRICE CARD (Screen 2)
+   PRICE CARD (Screen 2) — light theme
    ════════════════════════════════════════════════════ */
 const PriceCard: React.FC<{
   name: string;
@@ -101,19 +58,15 @@ const PriceCard: React.FC<{
   price: string;
   change: string;
   isUp: boolean;
-  delay?: number;
-}> = ({ name, slug, price, change, isUp, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 18 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 0.4 }}
+}> = ({ name, slug, price, change, isUp }) => (
+  <div
     className="flex items-center gap-3 rounded-2xl px-4 py-3"
     style={{
-      background: 'rgba(10, 22, 13, 0.55)',
-      border: '1px solid rgba(22, 163, 74, 0.2)',
+      background: '#ffffff',
+      border: '1px solid #d0ecd0',
     }}
   >
-    <div className="w-11 h-11 rounded-xl flex items-center justify-center overflow-hidden shrink-0 bg-[#0d1f12] border border-[#16a34a33]">
+    <div className="w-11 h-11 rounded-xl flex items-center justify-center overflow-hidden shrink-0 bg-[#f0faf0] border border-[#d0ecd0]">
       <img
         src={`/images/commodities/${slug}.webp`}
         alt={name}
@@ -122,43 +75,55 @@ const PriceCard: React.FC<{
       />
     </div>
     <div className="flex-1 min-w-0">
-      <p className="text-sm font-bold text-[#e2e8f0] truncate">{name}</p>
-      <p className="text-[10px] text-[#6b7c6e]">per kilo</p>
+      <p className="text-sm font-bold text-[#0a1a0a] truncate">{name}</p>
+      <p className="text-[10px] text-[#4a5e4a]">per kilo</p>
     </div>
     <div className="text-right shrink-0">
-      <p className="text-sm font-black text-white">{price}</p>
-      <div className={`flex items-center justify-end gap-0.5 text-[10px] font-bold ${isUp ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
+      <p className="text-sm font-black text-[#0a1a0a]">{price}</p>
+      <div className={`flex items-center justify-end gap-0.5 text-[10px] font-bold ${isUp ? 'text-[#16a34a]' : 'text-[#ef4444]'}`}>
         {isUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
         {change}
       </div>
     </div>
-  </motion.div>
+  </div>
 );
 
 /* ════════════════════════════════════════════════════
-   FEATURE BULLET (Screens 3 & 4)
+   FEATURE BULLET (Screens 3 & 4) — light theme
    ════════════════════════════════════════════════════ */
 const FeatureBullet: React.FC<{
   icon: React.ReactNode;
   label: string;
-  delay?: number;
-}> = ({ icon, label, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, x: -16 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ delay, duration: 0.4 }}
+}> = ({ icon, label }) => (
+  <div
     className="flex items-center gap-3 rounded-2xl px-4 py-3.5"
     style={{
-      background: 'rgba(10, 22, 13, 0.55)',
-      border: '1px solid rgba(22, 163, 74, 0.2)',
+      background: '#ffffff',
+      border: '1px solid #d0ecd0',
     }}
   >
-    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#16a34a]/10">
+    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#3ddc6e]/10">
       {icon}
     </div>
-    <span className="text-sm font-bold text-[#d1d5db]">{label}</span>
-  </motion.div>
+    <span className="text-sm font-bold text-[#0a1a0a]">{label}</span>
+  </div>
 );
+
+/* ════════════════════════════════════════════════════
+   INLINE STYLES for CSS-only animations
+   ════════════════════════════════════════════════════ */
+const fadeSlideStyle = `
+@keyframes onb-fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.onb-fade { animation: onb-fade-in 0.4s ease-out both; }
+.onb-fade-d1 { animation: onb-fade-in 0.4s ease-out 0.05s both; }
+.onb-fade-d2 { animation: onb-fade-in 0.4s ease-out 0.1s both; }
+.onb-fade-d3 { animation: onb-fade-in 0.4s ease-out 0.15s both; }
+.onb-fade-d4 { animation: onb-fade-in 0.4s ease-out 0.2s both; }
+.onb-fade-d5 { animation: onb-fade-in 0.4s ease-out 0.25s both; }
+`;
 
 /* ════════════════════════════════════════════════════
    MAIN ONBOARDING COMPONENT
@@ -167,7 +132,6 @@ const Onboarding: React.FC = () => {
   const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
   const [currentScreen, setCurrentScreen] = useState(0);
-  const [direction, setDirection] = useState(1);
   const [selectedLang, setSelectedLang] = useState<'en' | 'fil'>(language);
 
   const handleLangSelect = (lang: 'en' | 'fil') => {
@@ -183,13 +147,11 @@ const Onboarding: React.FC = () => {
     if (currentScreen === 4) {
       navigate('/login', { replace: true });
     } else {
-      setDirection(1);
       setCurrentScreen((prev) => prev + 1);
     }
   };
 
   const handleDotClick = (index: number) => {
-    setDirection(index > currentScreen ? 1 : -1);
     setCurrentScreen(index);
   };
 
@@ -200,14 +162,9 @@ const Onboarding: React.FC = () => {
       id: 1,
       content: (
         <div className="flex flex-col items-center text-center w-full">
-          {/* Logo with bobbing */}
-          <motion.div
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 180, delay: 0.1 }}
-            className="mb-6 animate-bob"
-          >
-            <div className="w-[76px] h-[76px] rounded-full border-2 border-[#16a34a44] flex items-center justify-center overflow-hidden bg-[#0a160d]/60 shadow-[0_0_30px_rgba(22,163,74,0.15)]">
+          {/* Logo */}
+          <div className="onb-fade mb-6">
+            <div className="w-[76px] h-[76px] rounded-full border-2 border-[#d0ecd0] flex items-center justify-center overflow-hidden bg-white shadow-sm">
               <img
                 src="/images/AgriPresyo_logoFinal.webp"
                 alt="AgriPresyo"
@@ -215,50 +172,27 @@ const Onboarding: React.FC = () => {
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             </div>
-          </motion.div>
+          </div>
 
           {/* Bilingual greeting */}
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-[#16a34a] text-sm font-bold tracking-widest uppercase mb-1"
-          >
+          <p className="onb-fade-d1 text-[#16a34a] text-sm font-bold tracking-widest uppercase mb-1">
             Maligayang Pagdating
-          </motion.p>
+          </p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-2xl font-black text-white tracking-tight mb-2"
-          >
-            Welcome to <span style={{ color: '#518706' }}>Agri</span><span className="text-white">Presyo</span>
-          </motion.h1>
+          <h1 className="onb-fade-d2 text-2xl font-black text-[#0a1a0a] tracking-tight mb-2">
+            Welcome to <span style={{ color: '#518706' }}>Agri</span><span className="text-[#0a1a0a]">Presyo</span>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="text-sm text-[#8b9a8f] leading-relaxed max-w-[300px] mx-auto"
-          >
+          <p className="onb-fade-d3 text-sm text-[#4a5e4a] leading-relaxed max-w-[300px] mx-auto">
             Smarter farming decisions through real-time market updates.
-          </motion.p>
+          </p>
 
           {/* Commodity icon row */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.55 }}
-            className="flex items-center gap-3 mt-8"
-          >
-            {['tomato', 'onion', 'potato', 'carrot', 'eggplant'].map((slug, i) => (
-              <motion.div
+          <div className="onb-fade-d4 flex items-center gap-3 mt-8">
+            {['tomato', 'onion', 'potato', 'carrot', 'eggplant'].map((slug) => (
+              <div
                 key={slug}
-                initial={{ scale: 0, rotate: -20 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.6 + i * 0.08, type: 'spring', stiffness: 260 }}
-                className="w-13 h-13 rounded-xl flex items-center justify-center overflow-hidden border border-[#16a34a33] bg-[#0d1f12] shadow-md"
+                className="w-13 h-13 rounded-xl flex items-center justify-center overflow-hidden border border-[#d0ecd0] bg-white shadow-sm"
               >
                 <img
                   src={`/images/commodities/${slug}.webp`}
@@ -266,9 +200,9 @@ const Onboarding: React.FC = () => {
                   className="w-full h-full object-contain p-1.5"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       ),
     },
@@ -278,41 +212,21 @@ const Onboarding: React.FC = () => {
       id: 2,
       content: (
         <div className="flex flex-col items-center text-center w-full">
-          <motion.div
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 200 }}
-            className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#15803d] flex items-center justify-center shadow-[0_8px_30px_rgba(34,197,94,0.3)] mb-5"
-          >
-            <BarChart3 size={28} className="text-white" strokeWidth={1.5} />
-          </motion.div>
+          <div className="onb-fade w-14 h-14 rounded-2xl bg-[#3ddc6e] flex items-center justify-center shadow-sm mb-5">
+            <BarChart3 size={28} className="text-[#0a1a0a]" strokeWidth={1.5} />
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.5 }}
-            className="text-2xl font-black text-white mb-1"
-          >Live Price Tracking</motion.h2>
+          <h2 className="onb-fade-d1 text-2xl font-black text-[#0a1a0a] mb-1">Live Price Tracking</h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-widest text-[#22c55e] mb-2"
-          >Real-Time Market Data</motion.p>
+          <p className="onb-fade-d2 text-xs font-bold uppercase tracking-widest text-[#16a34a] mb-2">Real-Time Market Data</p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-sm text-[#8b9a8f] leading-relaxed max-w-[300px] mx-auto mb-5"
-          >
+          <p className="onb-fade-d3 text-sm text-[#4a5e4a] leading-relaxed max-w-[300px] mx-auto mb-5">
             Monitor commodity prices as they change. Never overpay or undersell again.
-          </motion.p>
+          </p>
 
-          <div className="w-full flex flex-col gap-2.5">
-            <PriceCard name="Red Onion" slug="onion" price="₱120/kg" change="-1.8%" isUp={false} delay={0.35} />
-            <PriceCard name="Native Tomato" slug="tomato" price="₱65/kg" change="+3.2%" isUp={true} delay={0.45} />
+          <div className="onb-fade-d4 w-full flex flex-col gap-2.5">
+            <PriceCard name="Red Onion" slug="onion" price="₱120/kg" change="-1.8%" isUp={false} />
+            <PriceCard name="Native Tomato" slug="tomato" price="₱65/kg" change="+3.2%" isUp={true} />
           </div>
         </div>
       ),
@@ -323,42 +237,22 @@ const Onboarding: React.FC = () => {
       id: 3,
       content: (
         <div className="flex flex-col items-center text-center w-full">
-          <motion.div
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 200 }}
-            className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#15803d] flex items-center justify-center shadow-[0_8px_30px_rgba(34,197,94,0.3)] mb-5"
-          >
-            <ShoppingCart size={28} className="text-white" strokeWidth={1.5} />
-          </motion.div>
+          <div className="onb-fade w-14 h-14 rounded-2xl bg-[#3ddc6e] flex items-center justify-center shadow-sm mb-5">
+            <ShoppingCart size={28} className="text-[#0a1a0a]" strokeWidth={1.5} />
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.5 }}
-            className="text-2xl font-black text-white mb-1"
-          >For Consumers</motion.h2>
+          <h2 className="onb-fade-d1 text-2xl font-black text-[#0a1a0a] mb-1">For Consumers</h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-widest text-[#22c55e] mb-2"
-          >Smart Buying Starts Here</motion.p>
+          <p className="onb-fade-d2 text-xs font-bold uppercase tracking-widest text-[#16a34a] mb-2">Smart Buying Starts Here</p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-sm text-[#8b9a8f] leading-relaxed max-w-[300px] mx-auto mb-6"
-          >
+          <p className="onb-fade-d3 text-sm text-[#4a5e4a] leading-relaxed max-w-[300px] mx-auto mb-6">
             Easily check market prices, compare commodities, and make smarter buying decisions.
-          </motion.p>
+          </p>
 
-          <div className="w-full flex flex-col gap-2.5">
-            <FeatureBullet icon={<Eye size={20} className="text-[#22c55e]" />} label="View real-time prices" delay={0.35} />
-            <FeatureBullet icon={<BarChart3 size={20} className="text-[#22c55e]" />} label="Compare vendors easily" delay={0.45} />
-            <FeatureBullet icon={<TrendingUp size={20} className="text-[#22c55e]" />} label="Track market trends" delay={0.55} />
+          <div className="onb-fade-d4 w-full flex flex-col gap-2.5">
+            <FeatureBullet icon={<Eye size={20} className="text-[#16a34a]" />} label="View real-time prices" />
+            <FeatureBullet icon={<BarChart3 size={20} className="text-[#16a34a]" />} label="Compare vendors easily" />
+            <FeatureBullet icon={<TrendingUp size={20} className="text-[#16a34a]" />} label="Track market trends" />
           </div>
         </div>
       ),
@@ -369,42 +263,22 @@ const Onboarding: React.FC = () => {
       id: 4,
       content: (
         <div className="flex flex-col items-center text-center w-full">
-          <motion.div
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 200 }}
-            className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#15803d] flex items-center justify-center shadow-[0_8px_30px_rgba(34,197,94,0.3)] mb-5"
-          >
-            <Store size={28} className="text-white" strokeWidth={1.5} />
-          </motion.div>
+          <div className="onb-fade w-14 h-14 rounded-2xl bg-[#3ddc6e] flex items-center justify-center shadow-sm mb-5">
+            <Store size={28} className="text-[#0a1a0a]" strokeWidth={1.5} />
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.5 }}
-            className="text-2xl font-black text-white mb-1"
-          >For Vendors &amp; Sellers</motion.h2>
+          <h2 className="onb-fade-d1 text-2xl font-black text-[#0a1a0a] mb-1">For Vendors &amp; Sellers</h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-widest text-[#22c55e] mb-2"
-          >Grow Your Business</motion.p>
+          <p className="onb-fade-d2 text-xs font-bold uppercase tracking-widest text-[#16a34a] mb-2">Grow Your Business</p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-sm text-[#8b9a8f] leading-relaxed max-w-[300px] mx-auto mb-6"
-          >
+          <p className="onb-fade-d3 text-sm text-[#4a5e4a] leading-relaxed max-w-[300px] mx-auto mb-6">
             Manage your inventory, update product prices, and connect directly with consumers in your area.
-          </motion.p>
+          </p>
 
-          <div className="w-full flex flex-col gap-2.5">
-            <FeatureBullet icon={<Package size={20} className="text-[#22c55e]" />} label="Manage inventory" delay={0.35} />
-            <FeatureBullet icon={<DollarSign size={20} className="text-[#22c55e]" />} label="Update prices instantly" delay={0.45} />
-            <FeatureBullet icon={<Users size={20} className="text-[#22c55e]" />} label="Connect with consumers" delay={0.55} />
+          <div className="onb-fade-d4 w-full flex flex-col gap-2.5">
+            <FeatureBullet icon={<Package size={20} className="text-[#16a34a]" />} label="Manage inventory" />
+            <FeatureBullet icon={<DollarSign size={20} className="text-[#16a34a]" />} label="Update prices instantly" />
+            <FeatureBullet icon={<Users size={20} className="text-[#16a34a]" />} label="Connect with consumers" />
           </div>
         </div>
       ),
@@ -415,37 +289,17 @@ const Onboarding: React.FC = () => {
       id: 5,
       content: (
         <div className="flex flex-col items-center text-center w-full">
-          <motion.div
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 200 }}
-            className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#15803d] flex items-center justify-center shadow-[0_8px_30px_rgba(34,197,94,0.3)] mb-5"
-          >
-            <Globe size={28} className="text-white" strokeWidth={1.5} />
-          </motion.div>
+          <div className="onb-fade w-14 h-14 rounded-2xl bg-[#3ddc6e] flex items-center justify-center shadow-sm mb-5">
+            <Globe size={28} className="text-[#0a1a0a]" strokeWidth={1.5} />
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.5 }}
-            className="text-2xl font-black text-white mb-1"
-          >Language &amp; Alerts</motion.h2>
+          <h2 className="onb-fade-d1 text-2xl font-black text-[#0a1a0a] mb-1">Language &amp; Alerts</h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.5 }}
-            className="text-xs font-bold uppercase tracking-widest text-[#22c55e] mb-5"
-          >SET YOUR PREFERENCES</motion.p>
+          <p className="onb-fade-d2 text-xs font-bold uppercase tracking-widest text-[#16a34a] mb-5">SET YOUR PREFERENCES</p>
 
           {/* Language Selector */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.4 }}
-            className="w-full mb-4"
-          >
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#6b7c6e] mb-2 text-left">Language</p>
+          <div className="onb-fade-d3 w-full mb-4">
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#4a5e4a] mb-2 text-left">Language</p>
             <div className="flex items-center justify-center gap-2">
               {[
                 { flag: '🇵🇭', label: 'Filipino', value: 'fil' as const },
@@ -454,9 +308,9 @@ const Onboarding: React.FC = () => {
                 <div
                   key={lang.label}
                   onClick={() => handleLangSelect(lang.value)}
-                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${selectedLang === lang.value
-                    ? 'bg-[#16a34a]/15 border-[#16a34a]/40 text-[#22c55e]'
-                    : 'bg-[#0a160d]/60 border-[#16a34a22] text-[#6b7c6e] hover:border-[#16a34a44]'
+                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 cursor-pointer ${selectedLang === lang.value
+                    ? 'bg-[#3ddc6e]/15 border-[#3ddc6e]/40 text-[#16a34a]'
+                    : 'bg-white border-[#d0ecd0] text-[#4a5e4a] hover:border-[#3ddc6e]/40'
                     }`}
                 >
                   <span className="text-base">{lang.flag}</span>
@@ -464,49 +318,44 @@ const Onboarding: React.FC = () => {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Notification Options */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.4 }}
-            className="w-full"
-          >
+          <div className="onb-fade-d4 w-full">
             <div
               className="rounded-2xl p-5"
               style={{
-                background: 'linear-gradient(135deg, rgba(22,163,74,0.12) 0%, rgba(10,22,13,0.6) 100%)',
-                border: '1px solid rgba(22, 163, 74, 0.25)',
+                background: '#ffffff',
+                border: '1px solid #d0ecd0',
               }}
             >
               <div className="flex items-center gap-2 mb-2">
-                <Bell size={18} className="text-[#22c55e]" />
-                <p className="text-sm font-black text-white">Stay Updated with Price Alerts</p>
+                <Bell size={18} className="text-[#16a34a]" />
+                <p className="text-sm font-black text-[#0a1a0a]">Stay Updated with Price Alerts</p>
               </div>
-              <p className="text-xs text-[#8b9a8f] leading-relaxed mb-4">
+              <p className="text-xs text-[#4a5e4a] leading-relaxed mb-4">
                 Get notified when your tracked commodities hit your target price.
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={handleNext}
-                  className="flex-1 bg-[#16a34a] text-white py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-[#16a34a]/20 hover:bg-[#15803d] transition-colors"
+                  className="flex-1 bg-[#3ddc6e] text-[#0a1a0a] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-sm hover:bg-[#34c960] transition-colors duration-200 active:scale-[0.97]"
                 >
                   Allow Notifications
                 </button>
                 <button
                   onClick={handleNext}
-                  className="flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-[#6b7c6e] hover:text-[#8b9a8f] transition-colors"
+                  className="flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-[#4a5e4a] hover:text-[#0a1a0a] transition-colors duration-200 active:scale-[0.97]"
                   style={{
-                    background: 'rgba(10, 22, 13, 0.55)',
-                    border: '1px solid rgba(22, 163, 74, 0.15)',
+                    background: '#f0faf0',
+                    border: '1px solid #d0ecd0',
                   }}
                 >
                   Not Now
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       ),
     },
@@ -515,69 +364,57 @@ const Onboarding: React.FC = () => {
   const screen = screens[currentScreen];
   const isLast = currentScreen === screens.length - 1;
 
-  const slideVariants = {
-    enter: (dir: number) => ({ x: dir > 0 ? 280 : -280, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir: number) => ({ x: dir > 0 ? -280 : 280, opacity: 0 }),
-  };
-
   return (
-    <div className="min-h-screen font-sans flex justify-center items-center" style={{ backgroundColor: '#0a0a0a' }}>
+    <div className="min-h-screen font-sans flex justify-center items-center" style={{ backgroundColor: '#e8f5e8' }}>
+      <style>{fadeSlideStyle}</style>
+
       {/* ── Mobile Frame Container ── */}
-      <div className="w-full max-w-[430px] relative flex flex-col min-h-screen overflow-hidden shadow-2xl border-x border-[#1f1f23]" style={{ backgroundColor: '#060e09' }}>
-        {/* ── Background Layers (inside frame) ── */}
-        <HexMesh />
-        <FloatingParticles />
-        <div className="absolute pointer-events-none" style={{ top: '-15%', left: '50%', transform: 'translateX(-50%)', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%)' }} />
-        <div className="absolute pointer-events-none" style={{ bottom: '-20%', left: '50%', transform: 'translateX(-50%)', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(22,163,74,0.08) 0%, transparent 70%)' }} />
+      <div className="w-full max-w-[430px] relative flex flex-col min-h-screen overflow-hidden shadow-lg border-x border-[#d0ecd0]" style={{ backgroundColor: '#f0faf0' }}>
+        {/* ── Static Background ── */}
+        <LeafBackground />
 
         {/* ── Main Content ── */}
         <div className="w-full relative flex flex-col min-h-screen z-10">
-          {/* Skip + Close row */}
+          {/* Skip row */}
           <div className="flex items-center justify-end px-6 pt-8 pb-2">
             <button
               onClick={handleSkip}
-              className="text-[#6b7c6e] text-[10px] font-bold uppercase tracking-[0.15em] hover:text-[#22c55e] transition-colors px-2 py-1"
+              className="text-[#4a5e4a] text-[10px] font-bold uppercase tracking-[0.15em] hover:text-[#16a34a] transition-colors duration-200 px-2 py-1"
             >
               Skip
             </button>
           </div>
 
-          {/* Content area inside glass card */}
+          {/* Content area inside card */}
           <div className="flex-1 flex flex-col items-center justify-center px-5 pb-4 overflow-hidden">
-            {/* Glass card wrapper */}
+            {/* Card wrapper */}
             <div
-              className="w-full rounded-3xl relative overflow-hidden animate-glow-pulse"
+              className="w-full rounded-3xl relative overflow-hidden"
               style={{
-                background: 'rgba(10, 22, 13, 0.72)',
-                border: '1px solid rgba(22, 163, 74, 0.33)',
+                background: '#ffffff',
+                border: '1px solid #d0ecd0',
                 padding: '36px 24px',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
               }}
             >
-              {/* Top Accent Line */}
+              {/* Top accent line */}
               <div
                 className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] rounded-full"
                 style={{
                   width: '60%',
-                  background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                  background: 'linear-gradient(90deg, transparent, #3ddc6e, transparent)',
                 }}
               />
 
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
+              <AnimatePresence mode="wait">
+                <div
                   key={screen.id}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                   className="w-full"
+                  style={{
+                    animation: 'onb-fade-in 0.3s ease-out both',
+                  }}
                 >
                   {screen.content}
-                </motion.div>
+                </div>
               </AnimatePresence>
             </div>
           </div>
@@ -588,14 +425,14 @@ const Onboarding: React.FC = () => {
             <div className="flex items-center justify-center gap-2">
               {screens.map((_, i) => (
                 <button key={i} onClick={() => handleDotClick(i)} className="p-1">
-                  <motion.div
-                    animate={{
+                  <div
+                    style={{
                       width: i === currentScreen ? 28 : 8,
                       height: 8,
-                      backgroundColor: i === currentScreen ? '#16a34a' : '#1a2e1e',
+                      backgroundColor: i === currentScreen ? '#3ddc6e' : '#d0ecd0',
                       borderRadius: i === currentScreen ? 10 : 50,
+                      transition: 'all 0.3s ease-out',
                     }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                   />
                 </button>
               ))}
@@ -605,10 +442,9 @@ const Onboarding: React.FC = () => {
             {!isLast && (
               <button
                 onClick={handleNext}
-                className="onboard-cta w-full py-4 rounded-[14px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 active:scale-[0.98] text-white bg-[#16a34a] relative overflow-hidden"
-                style={{ boxShadow: '0 8px 32px rgba(22,163,74,0.25)' }}
+                className="w-full py-4 rounded-[14px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] text-[#0a1a0a] bg-[#3ddc6e] shadow-sm"
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="flex items-center gap-2">
                   {currentScreen === 0 ? 'Get Started' : 'Next'}
                   <ChevronRight size={18} />
                 </span>
@@ -618,10 +454,9 @@ const Onboarding: React.FC = () => {
             {isLast && (
               <button
                 onClick={handleNext}
-                className="onboard-cta w-full py-4 rounded-[14px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 active:scale-[0.98] text-white bg-[#16a34a] relative overflow-hidden"
-                style={{ boxShadow: '0 8px 32px rgba(22,163,74,0.25)' }}
+                className="w-full py-4 rounded-[14px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] text-[#0a1a0a] bg-[#3ddc6e] shadow-sm"
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="flex items-center gap-2">
                   Continue to App
                   <ArrowRight size={18} />
                 </span>

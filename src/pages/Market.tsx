@@ -260,7 +260,7 @@ const Market: React.FC = () => {
             {/* Decorative SVG leaf / lightning graphic — right side */}
             <div className={`absolute -right-3 -top-3 pointer-events-none ${isDark ? 'opacity-[0.07]' : 'opacity-[0.10]'}`}>
               <svg width="140" height="140" viewBox="0 0 140 140" fill="none">
-                <path d="M70 10 C90 30, 120 40, 130 70 C120 60, 100 55, 80 60 C100 70, 115 90, 120 120 C100 100, 80 95, 70 90 C60 95, 40 100, 20 120 C25 90, 40 70, 60 60 C40 55, 20 60, 10 70 C20 40, 50 30, 70 10Z" fill="#3ddc6e"/>
+                <path d="M70 10 C90 30, 120 40, 130 70 C120 60, 100 55, 80 60 C100 70, 115 90, 120 120 C100 100, 80 95, 70 90 C60 95, 40 100, 20 120 C25 90, 40 70, 60 60 C40 55, 20 60, 10 70 C20 40, 50 30, 70 10Z" fill="#3ddc6e" />
               </svg>
             </div>
             <div className={`absolute right-4 bottom-3 pointer-events-none ${isDark ? 'opacity-[0.06]' : 'opacity-[0.08]'}`}>
@@ -590,8 +590,8 @@ const Market: React.FC = () => {
                           <button
                             onClick={() => toggleMode(asset.commodityId)}
                             className={`text-[8px] font-black uppercase tracking-widest mr-2 px-1.5 py-0.5 rounded cursor-pointer transition-colors active:scale-95 ${isKgMode
-                                ? 'text-[#3b82f6] bg-[#3b82f6]/10 hover:bg-[#3b82f6]/20'
-                                : 'text-[#22c55e] bg-[#22c55e]/10 hover:bg-[#22c55e]/20'
+                              ? 'text-[#3b82f6] bg-[#3b82f6]/10 hover:bg-[#3b82f6]/20'
+                              : 'text-[#22c55e] bg-[#22c55e]/10 hover:bg-[#22c55e]/20'
                               }`}
                           >
                             {isKgMode ? 'KG' : t('qty')}

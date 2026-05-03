@@ -5,12 +5,14 @@ import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { User, ShoppingBasket, Bell, Moon, Sun, Globe, ChevronRight, LogOut, Shield, X, ArrowLeft, FileText, ScrollText, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useNotifications } from '../../context/NotificationContext';
 
 const ConsumerProfile: React.FC = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
+  const { notificationsEnabled, toggleNotifications } = useNotifications();
   const [showLangPicker, setShowLangPicker] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [privacyView, setPrivacyView] = useState<'menu' | 'policy' | 'terms'>('menu');
@@ -27,7 +29,7 @@ const ConsumerProfile: React.FC = () => {
   };
 
   const settingsItems = [
-    { icon: Bell, label: t('notifications_label'), value: t('on'), color: '#22c55e', onClick: () => {} },
+    { icon: Bell, label: t('notifications_label'), value: notificationsEnabled ? t('on') : t('off'), color: '#22c55e', onClick: toggleNotifications },
     { icon: isDark ? Moon : Sun, label: t('dark_mode'), value: isDark ? t('on') : t('off'), color: '#8b5cf6', onClick: toggleTheme },
     { icon: Globe, label: t('language'), value: language === 'en' ? 'English' : 'Filipino', color: '#3b82f6', onClick: () => setShowLangPicker(true) },
     { icon: Shield, label: t('privacy'), value: '', color: '#f59e0b', onClick: () => { setShowPrivacy(true); setPrivacyView('menu'); } },
