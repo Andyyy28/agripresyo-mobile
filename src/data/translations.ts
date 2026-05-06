@@ -2,7 +2,7 @@ const en: Record<string, string> = {
   // Nav
   nav_market: 'Market', nav_shops: 'Shops', nav_analytics: 'Analytics', nav_profile: 'Profile', nav_dashboard: 'Dashboard',
   // Market
-  greeting: 'Hello', search_commodities: 'Search commodities...', cat_all: 'All', cat_fruits: 'Fruits', cat_vegetables: 'Vegetables', cat_spices: 'Spices', cat_roots: 'Roots',
+  greeting: 'Hello', greeting_hi: 'Hi', greeting_hello: 'Hello', search_commodities: 'Search commodities...', cat_all: 'All', cat_fruits: 'Fruits', cat_vegetables: 'Vegetables', cat_spices: 'Spices', cat_roots: 'Roots',
   sf_all: 'ALL', sf_price_up: '₱+', sf_price_down: '₱-', sf_high_demand: 'HIGH DEMAND', sf_top_gainer: 'TOP GAINER',
   my_watchlist: 'My Watchlist', items: 'ITEMS', item: 'ITEM', price_insights: 'Price Insights', results: 'results',
   in_season: 'IN SEASON', off_season: 'OFF SEASON', suggested_basket: 'Suggested Basket', best_value: 'Best Value Picks Within ₱1000', click_add_budget: 'Click to add to budget',
@@ -101,7 +101,7 @@ const fil: Record<string, string> = {
   // Nav
   nav_market: 'Merkado', nav_shops: 'Mga Tindahan', nav_analytics: 'Pagsusuri', nav_profile: 'Profile', nav_dashboard: 'Dashboard',
   // Market
-  greeting: 'Kamusta', search_commodities: 'Maghanap ng produkto...', cat_all: 'Lahat', cat_fruits: 'Prutas', cat_vegetables: 'Gulay', cat_spices: 'Pampalasa', cat_roots: 'Ugat',
+  greeting: 'Kamusta', greeting_hi: 'Hoy', greeting_hello: 'Kamusta', search_commodities: 'Maghanap ng produkto...', cat_all: 'Lahat', cat_fruits: 'Prutas', cat_vegetables: 'Gulay', cat_spices: 'Pampalasa', cat_roots: 'Ugat',
   sf_all: 'LAHAT', sf_price_up: '₱+', sf_price_down: '₱-', sf_high_demand: 'MATAAS ANG DEMAND', sf_top_gainer: 'NANGUNGUNANG PAGTAAS',
   my_watchlist: 'Aking Listahan', items: 'MGA ITEM', item: 'ITEM', price_insights: 'Mga Insight sa Presyo', results: 'resulta',
   in_season: 'TAMANG PANAHON', off_season: 'LABAS SA PANAHON', suggested_basket: 'Mungkahing Basket', best_value: 'Pinakamahusay na Halaga sa Loob ng ₱1000', click_add_budget: 'I-click para idagdag sa badyet',

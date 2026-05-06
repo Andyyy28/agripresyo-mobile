@@ -34,6 +34,7 @@ const Market: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCommodity, setSelectedCommodity] = useState<Commodity | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [greeting] = useState(() => Math.random() < 0.5 ? 'greeting_hi' : 'greeting_hello');
 
   const filteredCommodities = useMemo(() => {
     const keyword = searchQuery.trim().toLowerCase();
@@ -177,7 +178,7 @@ const Market: React.FC = () => {
 
         {/* Greeting */}
         <div>
-          <p className={`text-lg font-bold mt-0.5 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t('greeting')}, {user?.name || 'User'} 👋</p>
+          <p className={`text-lg font-bold mt-0.5 ${isDark ? 'text-white' : 'text-[#111827]'}`}>{t(greeting)}, {user?.name || 'User'} 👋</p>
         </div>
 
         {/* Search Bar */}
